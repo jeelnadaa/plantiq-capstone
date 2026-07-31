@@ -55,10 +55,7 @@ def health_check():
         }
     }
 
-# Mount Mobile App Frontend (Serves UI directly at http://localhost:8000/ or http://<IP>:8000/)
-MOBILE_APP_DIR = settings.BASE_DIR.parent / "mobile_app"
-if MOBILE_APP_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(MOBILE_APP_DIR), html=True), name="mobile_frontend")
+
 
 @app.get("/api/i18n/{lang}")
 def get_i18n(lang: str = "en"):
@@ -190,3 +187,8 @@ def chat_start_from_scan(
         advisory=advisory
     )
     return res
+
+# Mount Mobile App Frontend at ROOT (MUST BE LAST so /api routes take precedence)
+MOBILE_APP_DIR = settings.BASE_DIR.parent / "mobile_app"
+if MOBILE_APP_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(MOBILE_APP_DIR), html=True), name="mobile_frontend")

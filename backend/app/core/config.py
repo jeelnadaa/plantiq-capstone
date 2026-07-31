@@ -25,7 +25,7 @@ class Settings:
     )
     PDF_FOLDER: str = os.getenv(
         "PDF_FOLDER", 
-        str(ROOT_DIR.parent / "rag" / "knowledge_base")
+        str(ROOT_DIR / "knowledge_base" if (ROOT_DIR / "knowledge_base").exists() else ROOT_DIR.parent / "rag" / "knowledge_base")
     )
     INDEX_FOLDER: str = os.getenv(
         "INDEX_FOLDER", 

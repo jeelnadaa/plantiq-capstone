@@ -64,6 +64,23 @@ def get_all_listings(db: Session = Depends(get_db)):
     listings = db.query(CropListing).order_by(CropListing.created_at.desc()).all()
     return [CropListingResponse.model_validate(item) for item in listings]
 
+def geocode_address_if_needed(address: str, lat: Optional[float], lng: Optional[float]) -> tuple:
+    if lat is not None and lng is not None:
+        return lat, lng
+    try:
+        import requests
+        from urllib.parse import quote
+        url = f"https://geocoding-api.open-meteo.com/v1/search?name={quote(address)}&count=1"
+        res = requests.get(url, timeout=3)
+        if res.status_code == 200:
+            data = res.json()
+            if data.get("results") and len(data["results"]) > 0:
+                first = data["results"][0]
+                return float(first["latitude"]), float(first["longitude"])
+    except Exception as e:
+        print(f"[Geocode Exception] {e}")
+    return 13.3161, 75.7720
+
 @router.post("/listings", response_model=CropListingResponse)
 def create_listing(
     crop_name: str = Form(...),
@@ -73,12 +90,14 @@ def create_listing(
     farmer_name: str = Form(...),
     contact_phone: str = Form(...),
     address: str = Form(...),
-    latitude: float = Form(...),
-    longitude: float = Form(...),
+    latitude: Optional[float] = Form(None),
+    longitude: Optional[float] = Form(None),
     description: str = Form(""),
     image: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
+    final_lat, final_lng = geocode_address_if_needed(address, latitude, longitude)
+
     image_url = None
     if image and image.filename:
         ext = os.path.splitext(image.filename)[1]
@@ -96,8 +115,8 @@ def create_listing(
         farmer_name=farmer_name,
         contact_phone=contact_phone,
         address=address,
-        latitude=latitude,
-        longitude=longitude,
+        latitude=final_lat,
+        longitude=final_lng,
         description=description,
         image_url=image_url
     )

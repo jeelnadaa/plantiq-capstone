@@ -10,8 +10,8 @@ class CropListingCreate(BaseModel):
     farmer_name: str
     contact_phone: str
     address: str
-    latitude: float
-    longitude: float
+    latitude: Optional[float] = 13.3161
+    longitude: Optional[float] = 75.7720
     description: Optional[str] = ""
 
 class CropListingResponse(CropListingCreate):

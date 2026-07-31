@@ -710,22 +710,58 @@ body {
 /* History Screen */
 .history-item {
   background: #ffffff;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
-  padding: 12px;
+  padding: 10px 12px;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
-.history-item h4 {
-  font-size: 0.9rem;
+.history-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.history-thumb-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.history-item-info h4 {
+  font-size: 0.86rem;
   font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 2px;
 }
 
-.history-item span {
-  font-size: 0.75rem;
+.history-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.history-item-meta span {
+  font-size: 0.71rem;
   color: var(--text-muted);
 }
 
@@ -853,3 +889,59 @@ input:checked + .slider { background-color: var(--primary); }
 input:checked + .slider:before { transform: translateX(20px); }
 .slider.round { border-radius: 24px; }
 .slider.round:before { border-radius: 50%; }
+
+/* Image Picker Modal Options */
+.attach-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.picker-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.picker-option-btn:hover {
+  background: #f8fafc;
+  border-color: var(--primary);
+}
+
+.picker-option-btn.primary-opt {
+  background: var(--primary-light);
+  border-color: #a7f3d0;
+  color: var(--primary-hover);
+}
+
+.picker-option-btn.secondary-opt {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.picker-option-btn .opt-icon {
+  flex-shrink: 0;
+}
+
+.picker-option-btn div {
+  display: flex;
+  flex-direction: column;
+}
+
+.picker-option-btn strong {
+  font-size: 0.86rem;
+  color: var(--text-dark);
+}
+
+.picker-option-btn span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}

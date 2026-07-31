@@ -23,9 +23,17 @@ class ProcessedImageCache(Base):
 # Ensure tables are created
 Base.metadata.create_all(bind=engine)
 
-def compute_image_hash(image_bytes: bytes) -> str:
-    """Computes SHA-256 hash for raw image bytes."""
-    return hashlib.sha256(image_bytes).hexdigest()
+def compute_image_hash(image_bytes: bytes, user_question: Optional[str] = None, language: str = "en") -> str:
+    """
+    Computes SHA-256 hash incorporating raw image bytes, user question, and language
+    so that asking a new question on the same image generates a distinct cache entry.
+    """
+    hasher = hashlib.sha256()
+    hasher.update(image_bytes)
+    hasher.update(language.strip().lower().encode("utf-8"))
+    if user_question and user_question.strip():
+        hasher.update(user_question.strip().lower().encode("utf-8"))
+    return hasher.hexdigest()
 
 def get_cached_image_result(db: Session, image_hash: str) -> Optional[Dict[str, Any]]:
     """Fetches stored result by image hash if available."""

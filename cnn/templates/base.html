@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantIQ - {{ title }}</title>
+    <!-- Satoshi Font -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.5">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    
+    <!-- Top Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <button id="toggle-sidebar-btn" class="hamburger-btn">☰</button>
+            <span class="brand-title">PlantIQ</span>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Analyze</a>
+            <a href="{{ url_for('evaluate_page') }}" class="{% if request.endpoint == 'evaluate_page' %}active{% endif %}">Evaluation</a>
+            <a href="{{ url_for('readme_page') }}" class="{% if request.endpoint == 'readme_page' %}active{% endif %}">Docs</a>
+        </div>
+    </nav>
+
+    <div class="layout-wrapper">
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+
+        <!-- Always Active Sidebar (Collapsible) -->
+        <aside id="history-sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>Batch History</h2>
+            </div>
+            <div class="sidebar-actions">
+                <button id="clear-history-btn" class="apple-btn outline-btn">Clear Records</button>
+            </div>
+            <div id="history-list" class="history-list">
+                <!-- Items injected here by JS -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="confirm-modal" class="modal hidden">
+        <div class="confirm-box">
+            <h3>Clear History?</h3>
+            <p>Are you sure you want to delete all saved analyses? This cannot be undone.</p>
+            <div class="confirm-actions">
+                <button id="cancel-clear-btn" class="apple-btn secondary-btn">Cancel</button>
+                <button id="confirm-clear-btn" class="apple-btn danger-btn">Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Image Modal -->
+    <div id="image-modal" class="modal hidden">
+        <button id="close-modal-btn" class="close-btn modal-close">&times;</button>
+        <img id="modal-image" src="" alt="Zoomed view">
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}?v=1.5"></script>
+</body>
+</html>

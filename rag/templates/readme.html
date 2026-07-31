@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="hero" style="margin-bottom: 20px;">
+    <h1>Project Documentation</h1>
+    <p>Implementation Details, Stack, and Models</p>
+</section>
+
+<div class="readme-content card">
+    {{ content | safe }}
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="page-header">
+    <h1>Model Evaluation</h1>
+    <p class="subtitle">Run inference specifically on the locked validation dataset</p>
+</header>
+
+<section class="dataset-section" style="text-align: center;">
+    <p class="section-desc">Pressing the button below will load <code>task1_X_test.npy</code> and generate overall test accuracy and confusion metrics. Note: this might take several seconds.</p>
+    
+    <div style="margin-top: 30px;">
+        <button id="run-eval-btn" class="apple-btn">Run Dataset Evaluation</button>
+    </div>
+    
+    <div class="loading-state" id="eval-loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Evaluating entire dataset stream...</p>
+    </div>
+
+    <!-- Evaluation Results -->
+    <div id="eval-results-container" class="eval-results hidden" style="margin-top: 40px;">
+        <div class="premium-card">
+            <h3 style="text-align: center; margin-bottom: 24px;">Performance Matrix</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-label">Accuracy</span>
+                    <span class="stat-value" id="eval-acc">-</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Macro F1</span>
+                    <span class="stat-value" id="eval-f1">-</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Precision</span>
+                    <span class="stat-value" id="eval-prec">-</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Recall</span>
+                    <span class="stat-value" id="eval-rec">-</span>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-wrapper">
+                <div class="chart-container">
+                    <canvas id="confusionMatrixChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

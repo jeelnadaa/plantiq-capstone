@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environments
+env/
+venv/
+ENV/
+.venv/
+backend/env/
+cnn/env/
+rag/env/
+
+# Secret Environment Variable Files
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Databases & Dynamic Storage
+*.db
+*.sqlite
+*.sqlite3
+backend/plantiq.db
+
+# FAISS Vector Index Stores (Generated dynamically on app startup)
+index/
+backend/index/
+rag/index/
+faiss.index
+chunks.pkl
+
+# Uploaded Files
+backend/uploads/*
+
+# Logs & Temporary Files
+*.log
+.pytest_cache/
+
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.gemini/

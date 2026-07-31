@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="hero">
+    <h1>Expert Coffee Agronomy</h1>
+    <p>Empowering farmers with RAG-powered disease diagnosis and treatment advice.</p>
+</section>
+
+<div class="mode-selection">
+    <a href="/query" class="card mode-card query">
+        <h2>Normal Query</h2>
+        <p>Ask any agriculture-related question and get answers from our RAG model.</p>
+        <span class="btn btn-secondary" style="margin-top: 24px;">Start Query</span>
+    </a>
+
+    <div id="cnn-card" class="card mode-card cnn" style="cursor: pointer;">
+        <h2>CNN Disease Mode</h2>
+        <p>Upload a leaf image for automated disease identification and advisory.</p>
+        <span class="btn btn-secondary" style="margin-top: 24px;">Pending Integration</span>
+    </div>
+</div>
+
+<!-- CNN Pending Modal -->
+<div id="cnnModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>CNN Integration Pending</h2>
+        <p>The computer vision module is currently under development. Please use our expert Query mode for immediate agricultural assistance.</p>
+        <a href="/query" class="btn btn-primary">Try Normal Query Instead</a>
+    </div>
+</div>
+{% endblock %}

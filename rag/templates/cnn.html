@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="hero">
+    <h1>CNN Disease Mode</h1>
+    <p>Automated identification from leaf images.</p>
+</section>
+
+<div class="card status-pending" style="text-align: center; padding: 100px 40px;">
+    <h2>CNN Integration Pending</h2>
+    <p style="color: var(--text-secondary); margin-top: 16px;">
+        The computer vision module is currently under development. <br>
+        Please use the <strong>Normal Query</strong> mode for now.
+    </p>
+    <a href="/query" class="btn btn-primary" style="margin-top: 40px;">Try Normal Query Instead</a>
+</div>
+{% endblock %}

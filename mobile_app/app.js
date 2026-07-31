@@ -215,7 +215,7 @@ const DISEASE_NAMES_MAP = {
 };
 
 // DOM Elements
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   lucide.createIcons();
   initNavigation();
   initLocation();
@@ -228,18 +228,67 @@ document.addEventListener("DOMContentLoaded", () => {
   initAuthUI();
   initLanguageToggle();
   initSpeech();
-  updateAuthProfileBar();
-  updateLanguageUI();
   
-  checkAuthOrPrompt();
+  await validateSessionAndInit();
+  updateLanguageUI();
 });
+
+async function validateSessionAndInit() {
+  const bottomNav = document.querySelector(".bottom-nav");
+  const screens = document.querySelectorAll(".app-screen");
+  const navItems = document.querySelectorAll(".nav-item");
+
+  if (authToken) {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/me`, {
+        headers: getAuthHeaders()
+      });
+      if (res.ok) {
+        currentUser = await res.json();
+        localStorage.setItem("plantiq_user", JSON.stringify(currentUser));
+      } else {
+        // Token expired/invalid
+        authToken = null;
+        currentUser = null;
+        localStorage.removeItem("plantiq_token");
+        localStorage.removeItem("plantiq_user");
+      }
+    } catch (e) {
+      console.warn("Session check offline:", e);
+    }
+  }
+
+  if (!authToken || !currentUser) {
+    screens.forEach(s => s.classList.remove("active"));
+    navItems.forEach(n => n.classList.remove("active"));
+    const authScreen = document.getElementById("screen-auth");
+    if (authScreen) authScreen.classList.add("active");
+    if (bottomNav) bottomNav.style.display = "none";
+    updateAuthProfileBar();
+    return false;
+  }
+
+  // User is Logged In! Activate Scanner Screen by default on reload
+  screens.forEach(s => s.classList.remove("active"));
+  navItems.forEach(n => n.classList.remove("active"));
+
+  document.getElementById("screen-scanner").classList.add("active");
+  document.querySelector('[data-target="screen-scanner"]').classList.add("active");
+  if (bottomNav) bottomNav.style.display = "flex";
+
+  updateAuthProfileBar();
+  fetchChatThreads();
+  return true;
+}
 
 function checkAuthOrPrompt() {
   const bottomNav = document.querySelector(".bottom-nav");
   const screens = document.querySelectorAll(".app-screen");
+  const navItems = document.querySelectorAll(".nav-item");
 
   if (!authToken || !currentUser) {
     screens.forEach(s => s.classList.remove("active"));
+    navItems.forEach(n => n.classList.remove("active"));
     const authScreen = document.getElementById("screen-auth");
     if (authScreen) authScreen.classList.add("active");
     if (bottomNav) bottomNav.style.display = "none";

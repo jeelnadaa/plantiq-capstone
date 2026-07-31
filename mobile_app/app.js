@@ -35,6 +35,7 @@ const I18N = {
     advisoryTitle: "Recommended Agronomic Solution",
     sourcesTitle: "Knowledge Sources:",
     btnHandoff: "Ask Follow-Up in Chat",
+    btnClearScan: "Clear Results & New Scan",
     chatTitle: "Agri Chatbot Assistant",
     chatSub: "Chat freely in English or Kannada. Speak via voice mic or attach photos for review.",
     chatWelcome: "Hello! I am your PlantIQ agronomy assistant. Ask me questions about coffee diseases, fertilizers, or pest management in English or Kannada!",
@@ -99,6 +100,7 @@ const I18N = {
     advisoryTitle: "ಶಿಫಾರಸು ಮಾಡಿದ ಕೃಷಿ ಪರಿಹಾರ",
     sourcesTitle: "ಜ್ಞಾನದ ಆಕರಗಳು:",
     btnHandoff: "ಚಾಟ್‌ನಲ್ಲಿ ಮತ್ತಷ್ಟು ವಿಚಾರಿಸಿ",
+    btnClearScan: "ಫಲಿತಾಂಶ ಅಳಿಸಿ & ಹೊಸ ಸ್ಕ್ಯಾನ್",
     chatTitle: "ಕೃಷಿ ಚಾಟ್‌ಬಾಟ್ ಸಹಾಯಕ",
     chatSub: "ಇಂಗ್ಲಿಷ್ ಅಥವಾ ಕನ್ನಡದಲ್ಲಿ ಮುಕ್ತವಾಗಿ ಚಾಟ್ ಮಾಡಿ. ಮೈಕ್ ಮೂಲಕ ಮಾತನಾಡಿ ಅಥವಾ ಫೋಟೋ ಲಗತ್ತಿಸಿ.",
     chatWelcome: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ PlantIQ ಕೃಷಿ ಸಹಾಯಕ. ಕಾಫಿ ರೋಗಗಳು, ಗೊಬ್ಬರಗಳು ಅಥವಾ ಕೀಟ ನಿರ್ವಹಣೆಯ ಬಗ್ಗೆ ಕನ್ನಡ ಅಥವಾ ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಉಚಿತವಾಗಿ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ!",
@@ -249,6 +251,7 @@ function initScanner() {
   const imagePreview = document.getElementById("image-preview");
   const removeBtn = document.getElementById("remove-img-btn");
   const analyzeBtn = document.getElementById("analyze-btn");
+  const clearScanBtn = document.getElementById("clear-scan-btn");
 
   uploadZone.addEventListener("click", (e) => {
     if (e.target !== removeBtn && !removeBtn.contains(e.target)) {
@@ -278,6 +281,34 @@ function initScanner() {
   });
 
   analyzeBtn.addEventListener("click", runLeafAnalysis);
+  if (clearScanBtn) {
+    clearScanBtn.addEventListener("click", clearScannerResults);
+  }
+}
+
+function clearScannerResults() {
+  const resultsSection = document.getElementById("results-section");
+  const placeholder = document.getElementById("upload-placeholder");
+  const previewContainer = document.getElementById("preview-container");
+  const fileInput = document.getElementById("leaf-image-input");
+  const questionInput = document.getElementById("scan-question-input");
+
+  // 1. Hide results
+  if (resultsSection) resultsSection.classList.add("hidden");
+
+  // 2. Reset upload inputs & file state
+  selectedScanFile = null;
+  currentDiagnosisData = null;
+  if (fileInput) fileInput.value = "";
+  if (questionInput) questionInput.value = "";
+
+  // 3. Reset image preview
+  if (previewContainer) previewContainer.classList.add("hidden");
+  if (placeholder) placeholder.classList.remove("hidden");
+
+  // 4. Scroll smoothly to top of scanner screen
+  const scannerScreen = document.getElementById("screen-scanner");
+  if (scannerScreen) scannerScreen.scrollIntoView({ behavior: "smooth" });
 }
 
 async function runLeafAnalysis() {
@@ -979,6 +1010,9 @@ function updateLanguageUI() {
   document.getElementById("txt-advisory-title").innerHTML = `<i data-lucide="shield-check"></i> ${t.advisoryTitle}`;
   document.getElementById("sources-title").textContent = t.sourcesTitle;
   document.getElementById("txt-btn-handoff").textContent = t.btnHandoff;
+  if (document.getElementById("txt-btn-clear-scan")) {
+    document.getElementById("txt-btn-clear-scan").textContent = t.btnClearScan;
+  }
 
   // Chatbot screen
   document.getElementById("txt-chat-title").textContent = t.chatTitle;

@@ -145,11 +145,18 @@
               </div>
             </div>
 
-            <!-- Jump to Chat Button Handoff -->
-            <button id="handoff-chat-btn" class="btn btn-secondary btn-block">
-              <i data-lucide="message-square"></i>
-              <span id="txt-btn-handoff">Ask Follow-Up in Chat</span>
-            </button>
+            <!-- Action Buttons: Chat Handoff & Clear Results -->
+            <div class="result-actions-row" style="display: flex; gap: 10px; margin-top: 14px;">
+              <button id="handoff-chat-btn" class="btn btn-secondary" style="flex: 1;">
+                <i data-lucide="message-square"></i>
+                <span id="txt-btn-handoff">Ask Follow-Up in Chat</span>
+              </button>
+
+              <button id="clear-scan-btn" class="btn btn-outline" style="flex: 1; border-color: #cbd5e1; color: #475569;">
+                <i data-lucide="trash-2"></i>
+                <span id="txt-btn-clear-scan">Clear Results</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>

@@ -17,9 +17,43 @@ from app.modules.cache.image_cache import (
     delete_cached_image_result,
     clear_all_cached_image_results
 )
-from app.modules.chat.chat_service import process_chat_message, start_chat_from_cnn_handoff
+from app.modules.chat.chat_service import (
+    process_chat_message, 
+    start_chat_from_cnn_handoff,
+    get_user_chat_threads,
+    get_thread_message_history,
+    get_or_create_thread
+)
+from app.modules.auth.router import router as auth_router
+from app.modules.auth.security import get_current_user
+from app.modules.auth.models import User
 from app.modules.marketplace.router import router as marketplace_router
 from app.modules.speech.translator import get_translations
+from sqlalchemy import text
+from app.core.database import engine, Base
+import app.modules.auth.models
+import app.modules.chat.models
+import app.modules.marketplace.models
+import app.modules.cache.image_cache
+
+def ensure_db_schema():
+    Base.metadata.create_all(bind=engine)
+    try:
+        with engine.connect() as conn:
+            res = conn.execute(text("PRAGMA table_info(marketplace_listings);")).fetchall()
+            columns = [row[1] for row in res]
+            if "user_id" not in columns:
+                print("[Migration] Adding user_id column to marketplace_listings table...")
+                conn.execute(text("ALTER TABLE marketplace_listings ADD COLUMN user_id VARCHAR REFERENCES users(id);"))
+                conn.commit()
+            if "image_url" not in columns:
+                print("[Migration] Adding image_url column to marketplace_listings table...")
+                conn.execute(text("ALTER TABLE marketplace_listings ADD COLUMN image_url VARCHAR;"))
+                conn.commit()
+    except Exception as e:
+        print("[Migration Check Note]", e)
+
+ensure_db_schema()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -39,7 +73,8 @@ app.add_middleware(
 # Mount static uploaded images
 app.mount("/static/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
 
-# Include Marketplace Router
+# Include Routers
+app.include_router(auth_router)
 app.include_router(marketplace_router)
 
 @app.get("/api/health")
@@ -49,15 +84,14 @@ def health_check():
         "app": settings.PROJECT_NAME,
         "version": settings.VERSION,
         "endpoints": {
+            "auth": "/api/auth/login",
             "predict_disease": "/api/predict",
             "chat_message": "/api/chat/message",
-            "chat_handoff": "/api/chat/start-from-scan",
+            "chat_threads": "/api/chat/threads",
             "marketplace": "/api/marketplace/listings",
             "translations": "/api/i18n/{lang}"
         }
     }
-
-
 
 @app.get("/api/i18n/{lang}")
 def get_i18n(lang: str = "en"):
@@ -68,12 +102,14 @@ async def predict_and_advise(
     file: UploadFile = File(...),
     latitude: Optional[float] = Form(None),
     longitude: Optional[float] = Form(None),
-    language: str = Form("en"),
     user_question: Optional[str] = Form(None),
-    db: Session = Depends(get_db)
+    language: str = Form("en"),
+    provider: str = Form("gemini"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
-    CNN -> Environmental Data -> RAG & LLM Advisory Pipeline with Image Deduplication Caching.
+    Main Diagnostic & Advisory Endpoint requiring mandatory authentication.
     """
     try:
         contents = await file.read()
@@ -95,28 +131,28 @@ async def predict_and_advise(
 
         disease = prediction["class"]
         confidence = prediction["confidence"]
-        is_healthy = prediction["is_healthy"]
         distribution = prediction["distribution"]
 
-        # Step 3: Fetch Environmental Data (Allowed vs Disallowed GPS)
+        # Step 3: Location Factors
         env_service = get_env_service()
         env_data = env_service.get_environmental_data(latitude, longitude)
 
-        # Step 4: Run RAG & LLM Advisory Engine with Low-Confidence Blending
+        # Step 4: RAG Agronomic Advisory Generation
         advisory_res = generate_disease_advisory(
             disease=disease,
             cnn_confidence=confidence,
-            is_healthy=is_healthy,
+            is_healthy=(disease == "Healthy"),
             env_data=env_data,
             user_question=user_question,
-            language=language
+            language=language,
+            provider=provider
         )
 
-        # Step 5: Save to Image Cache Store
+        # Step 5: Save Result in SQLite Cache Database
         save_image_result_to_cache(
             db=db,
             image_hash=image_hash,
-            filename=file.filename or "leaf.jpg",
+            filename=file.filename or "uploaded_leaf.jpg",
             disease_class=disease,
             confidence=confidence,
             distribution=distribution,
@@ -132,7 +168,7 @@ async def predict_and_advise(
             "filename": file.filename,
             "disease": disease,
             "confidence": confidence,
-            "is_healthy": is_healthy,
+            "is_healthy": disease == "Healthy",
             "distribution": distribution,
             "env_data": env_data,
             "advisory": advisory_res.answer,
@@ -145,6 +181,37 @@ async def predict_and_advise(
         print(f"[Predict API Error] {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/api/chat/threads")
+def list_chat_threads(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Lists persistent chat threads for current authenticated user."""
+    return get_user_chat_threads(db, user_id=current_user.id)
+
+@app.get("/api/chat/threads/{thread_id}/messages")
+def get_thread_messages(
+    thread_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Fetches full message history for a specific chat thread."""
+    return get_thread_message_history(db, thread_id)
+
+@app.post("/api/chat/threads/new")
+def create_new_chat_thread(
+    title: str = Form("New Conversation"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Creates a new empty chat thread for logged-in user."""
+    thread = get_or_create_thread(db, user_id=current_user.id, title=title)
+    return {
+        "thread_id": thread.id,
+        "title": thread.title,
+        "created_at": thread.created_at.isoformat()
+    }
+
 @app.post("/api/chat/message")
 async def chat_message(
     session_id: Optional[str] = Form(None),
@@ -152,18 +219,22 @@ async def chat_message(
     language: str = Form("en"),
     latitude: Optional[float] = Form(None),
     longitude: Optional[float] = Form(None),
-    image: Optional[UploadFile] = File(None)
+    image: Optional[UploadFile] = File(None),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
-    Chatbot endpoint supporting bilingual questions, location factors, and image attachments.
+    Chatbot endpoint requiring mandatory authentication.
     """
     image_bytes = None
     if image:
         image_bytes = await image.read()
 
     res = process_chat_message(
-        session_id=session_id or "",
+        db=db,
+        session_id=session_id,
         user_message=user_message,
+        user_id=current_user.id,
         language=language,
         latitude=latitude,
         longitude=longitude,
@@ -176,22 +247,30 @@ def chat_start_from_scan(
     disease: str = Form(...),
     confidence: float = Form(...),
     advisory: str = Form(...),
-    language: str = Form("en")
+    language: str = Form("en"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
-    Handoff entrypoint: Jump from CNN diagnostic scan into Chatbot with context pre-loaded.
+    Handoff entrypoint requiring mandatory authentication.
     """
     res = start_chat_from_cnn_handoff(
+        db=db,
         disease=disease,
         confidence=confidence,
         distribution={},
         env_data={},
-        advisory=advisory
+        advisory=advisory,
+        user_id=current_user.id
     )
     return res
 
 @app.delete("/api/cache/item/{image_hash}")
-def delete_cache_item(image_hash: str, db: Session = Depends(get_db)):
+def delete_cache_item(
+    image_hash: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """
     Deletes a specific image analysis result from the backend SQLite cache.
     """
@@ -199,7 +278,10 @@ def delete_cache_item(image_hash: str, db: Session = Depends(get_db)):
     return {"status": "deleted" if success else "not_found", "hash": image_hash}
 
 @app.delete("/api/cache/clear")
-def clear_cache(db: Session = Depends(get_db)):
+def clear_cache(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """
     Purges all cached image analysis results from the backend SQLite database.
     """

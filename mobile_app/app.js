@@ -14,6 +14,10 @@ let activePreviewItem = null;
 let undoTimer = null;
 let userCoords = { lat: 13.3161, lng: 75.7720, allowed: true }; // Default to Chikmagalur region
 
+// User Auth State
+let authToken = localStorage.getItem("plantiq_token") || null;
+let currentUser = JSON.parse(localStorage.getItem("plantiq_user") || "null");
+
 // Complete i18n Translation Dictionary
 const I18N = {
   en: {
@@ -44,6 +48,7 @@ const I18N = {
     attachedImage: "Attached: ",
     detachLbl: "Remove",
     btnSelectImg: "Select Image",
+    btnNewChat: "New Chat",
     pickerModalTitle: "Select Image for Chat Context",
     optNewTitle: "Upload / Capture New Image",
     optNewSub: "Take a photo or choose from device gallery",
@@ -87,7 +92,24 @@ const I18N = {
     btnFetchGps: "Use Current GPS Location",
     guideTitle: "How to get location coordinates:",
     guideBody: '1. Tap <strong>"Use Current GPS Location"</strong> above, OR<br>2. Open Google Maps, press & hold your estate pin, and copy the numbers.<br><em>(If left blank, address/pincode will auto-convert automatically)</em>',
-    btnPublish: "Publish Listing"
+    btnPublish: "Publish Listing",
+    btnLogin: "Login / Sign Up",
+    logout: "Logout",
+    authPageTitle: "Welcome to PlantIQ",
+    authPageSub: "Sign in to your farmer account to access leaf disease scanning, AI chat, and crop marketplace.",
+    authTitleLogin: "Farmer Account Sign In",
+    authTitleRegister: "Create Farmer Account",
+    tabLogin: "Sign In",
+    tabRegister: "Register",
+    lblLoginUser: "Email or Username",
+    lblLoginPass: "Password",
+    btnSubmitLogin: "Sign In to Dashboard",
+    lblRegFullname: "Full Name",
+    lblRegEmail: "Email Address",
+    lblRegUsername: "Username",
+    lblRegPass: "Password",
+    btnSubmitRegister: "Create Farmer Account",
+    loginRequiredMsg: "Please log in or register to access PlantIQ features."
   },
   kn: {
     taglineText: "ಕಾಫಿ ಬೆಳೆ ಎಐ ಮತ್ತು ಮಾರುಕಟ್ಟೆ",
@@ -117,6 +139,7 @@ const I18N = {
     attachedImage: "ಲಗತ್ತಿಸಲಾಗಿದೆ: ",
     detachLbl: "ತೆಗೆದುಹಾಕಿ",
     btnSelectImg: "ಚಿತ್ರ ಆಯ್ಕೆಮಾಡಿ",
+    btnNewChat: "ಹೊಸ ಚಾಟ್",
     pickerModalTitle: "ಚಾಟ್‌ಗಾಗಿ ಚಿತ್ರ ಆಯ್ಕೆಮಾಡಿ",
     optNewTitle: "ಹೊಸ ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
     optNewSub: "ಕ್ಯಾಮೆರಾ ಅಥವಾ ಗ್ಯಾಲರಿಯಿಂದ ಫೋಟೋ ಆಯ್ಕೆಮಾಡಿ",
@@ -160,7 +183,24 @@ const I18N = {
     btnFetchGps: "ಸ್ಥಳೀಯ ಜಿಪಿಎಸ್ ಬಳಸಿ",
     guideTitle: "ಅಕ್ಷಾಂಶ ಮತ್ತು ರೇಖಾಂಶ ಪಡೆಯುವುದು ಹೇಗೆ:",
     guideBody: '1. ಮೇಲಿರುವ <strong>"ಸ್ಥಳೀಯ ಜಿಪಿಎಸ್ ಬಳಸಿ"</strong> ಬಟನ್ ಟ್ಯಾಪ್ ಮಾಡಿ, ಅಥವಾ<br>2. ಮೊಬೈಲ್‌ನ ಗೂಗಲ್ ಮ್ಯಾಪ್ಸ್ ತೆರೆದು ಎಸ್ಟೇಟ್ ಜಾಗವನ್ನು ಒತ್ತಿ ಹಿಡಿದು ಸಂಖ್ಯೆಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ.<br><em>(ಖಾಲಿ ಬಿಟ್ಟರೆ ನಿಮ್ಮ ವಿಳಾಸದಿಂದ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಜಿಪಿಎಸ್ ಪಡೆಯಲಾಗುತ್ತದೆ)</em>',
-    btnPublish: "ಪ್ರಕಟಿಸಿ"
+    btnPublish: "ಪ್ರಕಟಿಸಿ",
+    btnLogin: "ಲಾಗಿನ್ / ಸೈನ್ ಅಪ್",
+    logout: "ನಿರ್ಗಮಿಸಿ",
+    authPageTitle: "PlantIQ ಗೆ ಸುಸ್ವಾಗತ",
+    authPageSub: "ಎಲೆ ರೋಗ ಪತ್ತೆ, ಎಐ ಚಾಟ್ ಮತ್ತು ಮಾರುಕಟ್ಟೆ ಬಳಸಲು ನಿಮ್ಮ ರೈತರ ಖಾತೆಗೆ ಲಾಗಿನ್ ಮಾಡಿ.",
+    authTitleLogin: "ರೈತರ ಖಾತೆ ಲಾಗಿನ್",
+    authTitleRegister: "ಹೊಸ ರೈತರ ಖಾತೆ ತೆರೆಯಿರಿ",
+    tabLogin: "ಲಾಗಿನ್",
+    tabRegister: "ನೋಂದಣಿ",
+    lblLoginUser: "ಇಮೇಲ್ ಅಥವಾ ಬಳಕೆದಾರ ಹೆಸರು",
+    lblLoginPass: "ಪಾಸ್‌ವರ್ಡ್",
+    btnSubmitLogin: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ",
+    lblRegFullname: "ಪೂರ್ಣ ಹೆಸರು",
+    lblRegEmail: "ಇಮೇಲ್ ವಿಳಾಸ",
+    lblRegUsername: "ಬಳಕೆದಾರ ಹೆಸರು",
+    lblRegPass: "ಪಾಸ್‌ವರ್ಡ್",
+    btnSubmitRegister: "ರೈತರ ಖಾತೆ ತೆರೆಯಿರಿ",
+    loginRequiredMsg: "PlantIQ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಬಳಸಲು ದಯವಿಟ್ಟು ಲಾಗಿನ್ ಮಾಡಿ."
   }
 };
 
@@ -185,10 +225,249 @@ document.addEventListener("DOMContentLoaded", () => {
   initModalsAndPreviews();
   initHistorySection();
   initMarketplace();
+  initAuthUI();
   initLanguageToggle();
   initSpeech();
+  updateAuthProfileBar();
   updateLanguageUI();
+  
+  checkAuthOrPrompt();
 });
+
+function checkAuthOrPrompt() {
+  const bottomNav = document.querySelector(".bottom-nav");
+  const screens = document.querySelectorAll(".app-screen");
+
+  if (!authToken || !currentUser) {
+    screens.forEach(s => s.classList.remove("active"));
+    const authScreen = document.getElementById("screen-auth");
+    if (authScreen) authScreen.classList.add("active");
+    if (bottomNav) bottomNav.style.display = "none";
+    return false;
+  }
+
+  if (bottomNav) bottomNav.style.display = "flex";
+  return true;
+}
+
+// Helper for auth headers
+function getAuthHeaders() {
+  const headers = {};
+  if (authToken) {
+    headers["Authorization"] = `Bearer ${authToken}`;
+  }
+  return headers;
+}
+
+/* -------------------------------------------------------------
+ * 0. User Authentication Module & Login Page
+ * ------------------------------------------------------------- */
+function initAuthUI() {
+  const openAuthBtn = document.getElementById("open-auth-modal-btn");
+  const closeAuthBtn = document.getElementById("close-auth-modal-btn");
+  const authModal = document.getElementById("auth-modal");
+  
+  // Modal tabs
+  const tabLogin = document.getElementById("tab-auth-login");
+  const tabRegister = document.getElementById("tab-auth-register");
+  const loginForm = document.getElementById("login-form");
+  const registerForm = document.getElementById("register-form");
+
+  // Page tabs
+  const pageTabLogin = document.getElementById("page-tab-login");
+  const pageTabRegister = document.getElementById("page-tab-register");
+  const pageLoginForm = document.getElementById("page-login-form");
+  const pageRegisterForm = document.getElementById("page-register-form");
+
+  if (openAuthBtn) openAuthBtn.addEventListener("click", () => authModal.classList.remove("hidden"));
+  if (closeAuthBtn) closeAuthBtn.addEventListener("click", () => authModal.classList.add("hidden"));
+
+  // Page Tab Switcher
+  if (pageTabLogin && pageTabRegister) {
+    pageTabLogin.addEventListener("click", () => {
+      pageTabLogin.classList.add("active");
+      pageTabLogin.style.background = "#ffffff";
+      pageTabLogin.style.color = "#166534";
+
+      pageTabRegister.classList.remove("active");
+      pageTabRegister.style.background = "transparent";
+      pageTabRegister.style.color = "#64748b";
+
+      pageLoginForm.classList.remove("hidden");
+      pageRegisterForm.classList.add("hidden");
+    });
+
+    pageTabRegister.addEventListener("click", () => {
+      pageTabRegister.classList.add("active");
+      pageTabRegister.style.background = "#ffffff";
+      pageTabRegister.style.color = "#166534";
+
+      pageTabLogin.classList.remove("active");
+      pageTabLogin.style.background = "transparent";
+      pageTabLogin.style.color = "#64748b";
+
+      pageRegisterForm.classList.remove("hidden");
+      pageLoginForm.classList.add("hidden");
+    });
+  }
+
+  // Handle Login (Page Form)
+  pageLoginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const userInput = document.getElementById("page-login-user-input").value.trim();
+    const passInput = document.getElementById("page-login-pass-input").value.trim();
+    await handleLoginSubmit(userInput, passInput, pageLoginForm);
+  });
+
+  // Handle Register (Page Form)
+  pageRegisterForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fullname = document.getElementById("page-reg-fullname-input").value.trim();
+    const email = document.getElementById("page-reg-email-input").value.trim();
+    const username = document.getElementById("page-reg-username-input").value.trim();
+    const pass = document.getElementById("page-reg-pass-input").value.trim();
+    await handleRegisterSubmit(fullname, email, username, pass, pageRegisterForm);
+  });
+
+  // Modal Login Form
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const userInput = document.getElementById("login-user-input").value.trim();
+      const passInput = document.getElementById("login-pass-input").value.trim();
+      await handleLoginSubmit(userInput, passInput, loginForm);
+    });
+  }
+
+  // Modal Register Form
+  if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fullname = document.getElementById("reg-fullname-input").value.trim();
+      const email = document.getElementById("reg-email-input").value.trim();
+      const username = document.getElementById("reg-username-input").value.trim();
+      const pass = document.getElementById("reg-pass-input").value.trim();
+      await handleRegisterSubmit(fullname, email, username, pass, registerForm);
+    });
+  }
+}
+
+async function handleLoginSubmit(usernameOrEmail, password, formElem) {
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email_or_username: usernameOrEmail, password: password })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || "Login failed.");
+    }
+
+    const data = await res.json();
+    authToken = data.access_token;
+    currentUser = data.user;
+    localStorage.setItem("plantiq_token", authToken);
+    localStorage.setItem("plantiq_user", JSON.stringify(currentUser));
+
+    document.getElementById("auth-modal").classList.add("hidden");
+    if (formElem) formElem.reset();
+
+    // Unlock App Navigation to Scanner Screen
+    document.querySelectorAll(".app-screen").forEach(s => s.classList.remove("active"));
+    document.getElementById("screen-scanner").classList.add("active");
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+    document.querySelector('[data-target="screen-scanner"]').classList.add("active");
+
+    updateAuthProfileBar();
+    checkAuthOrPrompt();
+    fetchChatThreads();
+  } catch (err) {
+    alert("Login Error: " + err.message);
+  }
+}
+
+async function handleRegisterSubmit(fullname, email, username, password, formElem) {
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        full_name: fullname,
+        email: email,
+        username: username,
+        password: password
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || "Registration failed.");
+    }
+
+    const data = await res.json();
+    authToken = data.access_token;
+    currentUser = data.user;
+    localStorage.setItem("plantiq_token", authToken);
+    localStorage.setItem("plantiq_user", JSON.stringify(currentUser));
+
+    document.getElementById("auth-modal").classList.add("hidden");
+    if (formElem) formElem.reset();
+
+    // Unlock App Navigation to Scanner Screen
+    document.querySelectorAll(".app-screen").forEach(s => s.classList.remove("active"));
+    document.getElementById("screen-scanner").classList.add("active");
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+    document.querySelector('[data-target="screen-scanner"]').classList.add("active");
+
+    updateAuthProfileBar();
+    checkAuthOrPrompt();
+    fetchChatThreads();
+  } catch (err) {
+    alert("Registration Error: " + err.message);
+  }
+}
+
+function updateAuthProfileBar() {
+  const profileBar = document.getElementById("user-profile-bar");
+  if (!profileBar) return;
+
+  if (currentUser && authToken) {
+    profileBar.innerHTML = `
+      <div style="display:flex; align-items:center; gap:6px; background:#f0fdf4; border:1px solid #bbf7d0; padding:4px 10px; border-radius:20px; font-size:0.76rem; color:#166534; font-weight:700;">
+        <i data-lucide="user" style="width:14px; height:14px;"></i>
+        <span>${currentUser.full_name || currentUser.username}</span>
+        <button id="user-logout-btn" style="background:none; border:none; color:#ef4444; margin-left:6px; cursor:pointer;" title="Logout"><i data-lucide="log-out" style="width:14px; height:14px;"></i></button>
+      </div>
+    `;
+
+    document.getElementById("user-logout-btn").onclick = async () => {
+      try {
+        await fetch(`${API_BASE}/api/auth/logout`, {
+          method: "POST",
+          headers: getAuthHeaders()
+        });
+      } catch (e) {}
+      authToken = null;
+      currentUser = null;
+      localStorage.removeItem("plantiq_token");
+      localStorage.removeItem("plantiq_user");
+      updateAuthProfileBar();
+      checkAuthOrPrompt();
+    };
+  } else {
+    profileBar.innerHTML = `
+      <button id="open-auth-modal-btn" class="btn btn-sm btn-outline" style="border-radius: 20px; font-size: 0.76rem; padding: 4px 10px; border-color: #a7f3d0; color: #15803d;">
+        <i data-lucide="user-check"></i> <span id="txt-btn-login">${I18N[currentLang].btnLogin}</span>
+      </button>
+    `;
+    document.getElementById("open-auth-modal-btn").onclick = () => {
+      checkAuthOrPrompt();
+    };
+  }
+  lucide.createIcons();
+}
 
 /* -------------------------------------------------------------
  * 1. Navigation & UI Tabs
@@ -199,6 +478,8 @@ function initNavigation() {
 
   navItems.forEach(item => {
     item.addEventListener("click", () => {
+      if (!checkAuthOrPrompt()) return;
+
       const targetId = item.getAttribute("data-target");
 
       navItems.forEach(n => n.classList.remove("active"));
@@ -209,6 +490,8 @@ function initNavigation() {
 
       if (targetId === "screen-market") {
         fetchMarketplaceListings();
+      } else if (targetId === "screen-chat") {
+        fetchChatThreads();
       }
     });
   });
@@ -272,6 +555,7 @@ function initScanner() {
   const clearScanBtn = document.getElementById("clear-scan-btn");
 
   uploadZone.addEventListener("click", (e) => {
+    if (!checkAuthOrPrompt()) return;
     if (e.target !== removeBtn && !removeBtn.contains(e.target)) {
       fileInput.click();
     }
@@ -311,25 +595,21 @@ function clearScannerResults() {
   const fileInput = document.getElementById("leaf-image-input");
   const questionInput = document.getElementById("scan-question-input");
 
-  // 1. Hide results
   if (resultsSection) resultsSection.classList.add("hidden");
-
-  // 2. Reset upload inputs & file state
   selectedScanFile = null;
   currentDiagnosisData = null;
   if (fileInput) fileInput.value = "";
   if (questionInput) questionInput.value = "";
-
-  // 3. Reset image preview
   if (previewContainer) previewContainer.classList.add("hidden");
   if (placeholder) placeholder.classList.remove("hidden");
 
-  // 4. Scroll smoothly to top of scanner screen
   const scannerScreen = document.getElementById("screen-scanner");
   if (scannerScreen) scannerScreen.scrollIntoView({ behavior: "smooth" });
 }
 
 async function runLeafAnalysis() {
+  if (!checkAuthOrPrompt()) return;
+
   if (!selectedScanFile) {
     alert(currentLang === "kn" ? "ದಯವಿಟ್ಟು ಮೊದಲಿಗೆ ಕಾಫಿ ಎಲೆಯ ಫೋಟೋ ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಸೆರೆಹಿಡಿಯಿರಿ." : "Please select or capture a coffee leaf image first.");
     return;
@@ -355,8 +635,14 @@ async function runLeafAnalysis() {
   try {
     const res = await fetch(`${API_BASE}/api/predict`, {
       method: "POST",
+      headers: getAuthHeaders(),
       body: formData
     });
+
+    if (res.status === 401) {
+      checkAuthOrPrompt();
+      throw new Error(I18N[currentLang].loginRequiredMsg);
+    }
 
     if (!res.ok) throw new Error("Diagnosis request failed.");
 
@@ -364,7 +650,6 @@ async function runLeafAnalysis() {
     currentDiagnosisData = data;
     renderDiagnosisResults(data);
 
-    // Save with image Data URL & timestamp
     const now = new Date();
     const formattedTime = now.toLocaleString(currentLang === "kn" ? "kn-IN" : "en-US", {
       day: "numeric",
@@ -401,7 +686,6 @@ function renderDiagnosisResults(data) {
   resultsSection.classList.remove("hidden");
   resultsSection.scrollIntoView({ behavior: "smooth" });
 
-  // Cache hit badge
   const cacheBadge = document.getElementById("cache-badge");
   if (data.cache_hit) {
     cacheBadge.classList.remove("hidden");
@@ -409,12 +693,10 @@ function renderDiagnosisResults(data) {
     cacheBadge.classList.add("hidden");
   }
 
-  // Class & Confidence (Translate class if Kannada)
   const mappedDisease = DISEASE_NAMES_MAP[data.disease] ? DISEASE_NAMES_MAP[data.disease][currentLang] : data.disease;
   document.getElementById("diag-class-name").textContent = mappedDisease;
   document.getElementById("diag-conf-value").textContent = `${data.confidence.toFixed(0)}%`;
 
-  // Low Confidence / Blended Warning
   const blendedBox = document.getElementById("blended-warning");
   if (data.is_blended) {
     blendedBox.classList.remove("hidden");
@@ -426,7 +708,6 @@ function renderDiagnosisResults(data) {
     blendedBox.classList.add("hidden");
   }
 
-  // Distribution Bars
   const distList = document.getElementById("dist-bars-list");
   distList.innerHTML = "";
   if (data.distribution) {
@@ -446,7 +727,6 @@ function renderDiagnosisResults(data) {
     });
   }
 
-  // Environmental Grid
   const envGrid = document.getElementById("env-grid-display");
   envGrid.innerHTML = "";
   if (data.env_data) {
@@ -460,10 +740,8 @@ function renderDiagnosisResults(data) {
     });
   }
 
-  // Advisory markdown
   document.getElementById("advisory-text-content").textContent = data.advisory;
 
-  // Sources
   const sourcesList = document.getElementById("sources-list");
   sourcesList.innerHTML = "";
   if (data.sources && data.sources.length) {
@@ -472,11 +750,11 @@ function renderDiagnosisResults(data) {
     });
   }
 
-  // Handoff to Chat button binding
   document.getElementById("handoff-chat-btn").onclick = handoffToChat;
 }
 
 async function handoffToChat() {
+  if (!checkAuthOrPrompt()) return;
   if (!currentDiagnosisData) return;
 
   const formData = new FormData();
@@ -488,25 +766,25 @@ async function handoffToChat() {
   try {
     const res = await fetch(`${API_BASE}/api/chat/start-from-scan`, {
       method: "POST",
+      headers: getAuthHeaders(),
       body: formData
     });
     const session = await res.json();
     currentSessionId = session.session_id;
 
-    // Set attached scan context
     attachedScanContext = currentDiagnosisData;
     updateAttachedImageBarUI();
 
-    // Switch to Chat Screen
     document.querySelector('[data-target="screen-chat"]').click();
     renderChatMessages(session.messages);
+    fetchChatThreads();
   } catch (e) {
     console.error("Handoff Error:", e);
   }
 }
 
 /* -------------------------------------------------------------
- * 4. Chatbot Module & Image Picker Modal
+ * 4. Multi-Threaded Chatbot Module & Image Picker Modal
  * ------------------------------------------------------------- */
 function initChatbot() {
   const sendBtn = document.getElementById("chat-send-btn");
@@ -514,8 +792,13 @@ function initChatbot() {
   const attachBtn = document.getElementById("chat-attach-btn");
   const fileInput = document.getElementById("chat-file-input");
   const detachBtn = document.getElementById("detach-image-btn");
+  const newChatBtn = document.getElementById("new-chat-btn");
+  const threadSelect = document.getElementById("chat-thread-select");
 
-  attachBtn.addEventListener("click", () => document.getElementById("open-picker-btn").click());
+  attachBtn.addEventListener("click", () => {
+    if (!checkAuthOrPrompt()) return;
+    document.getElementById("open-picker-btn").click();
+  });
 
   fileInput.addEventListener("change", (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -532,10 +815,100 @@ function initChatbot() {
     updateAttachedImageBarUI();
   });
 
+  if (newChatBtn) {
+    newChatBtn.addEventListener("click", () => {
+      if (!checkAuthOrPrompt()) return;
+      startNewChatThread();
+    });
+  }
+
+  if (threadSelect) {
+    threadSelect.addEventListener("change", (e) => {
+      if (!checkAuthOrPrompt()) return;
+      const selectedThreadId = e.target.value;
+      if (!selectedThreadId) {
+        startNewChatThread();
+      } else {
+        loadChatThreadMessages(selectedThreadId);
+      }
+    });
+  }
+
   sendBtn.addEventListener("click", sendChatMessage);
   textInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendChatMessage();
   });
+}
+
+async function fetchChatThreads() {
+  if (!authToken || !currentUser) return;
+  const threadSelect = document.getElementById("chat-thread-select");
+  if (!threadSelect) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/chat/threads`, {
+      headers: getAuthHeaders()
+    });
+
+    if (res.status === 401) {
+      checkAuthOrPrompt();
+      return;
+    }
+
+    const threads = await res.json();
+
+    threadSelect.innerHTML = `<option value="">+ ${I18N[currentLang].btnNewChat}</option>`;
+    if (threads && threads.length) {
+      threads.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t.thread_id;
+        opt.textContent = `💬 ${t.title}`;
+        if (t.thread_id === currentSessionId) opt.selected = true;
+        threadSelect.appendChild(opt);
+      });
+    }
+  } catch (err) {
+    console.warn("Failed to load chat threads:", err);
+  }
+}
+
+async function startNewChatThread() {
+  currentSessionId = null;
+  const messagesList = document.getElementById("chat-messages-list");
+  messagesList.innerHTML = `
+    <div class="msg assistant-msg">
+      <div class="avatar"><i data-lucide="bot"></i></div>
+      <div class="msg-bubble">
+        <p id="txt-chat-welcome">${I18N[currentLang].chatWelcome}</p>
+      </div>
+    </div>
+  `;
+  lucide.createIcons();
+
+  const threadSelect = document.getElementById("chat-thread-select");
+  if (threadSelect) threadSelect.value = "";
+}
+
+async function loadChatThreadMessages(threadId) {
+  currentSessionId = threadId;
+  const messagesList = document.getElementById("chat-messages-list");
+  messagesList.innerHTML = `<p style="text-align:center; font-size:0.8rem; color:#94a3b8; padding:20px;">${currentLang === "kn" ? "ಸಂದೇಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..." : "Loading chat messages..."}</p>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/chat/threads/${threadId}/messages`, {
+      headers: getAuthHeaders()
+    });
+
+    if (res.status === 401) {
+      checkAuthOrPrompt();
+      return;
+    }
+
+    const messages = await res.json();
+    renderChatMessages(messages);
+  } catch (err) {
+    messagesList.innerHTML = `<p style="text-align:center; color:#ef4444; font-size:0.8rem;">Failed to load messages.</p>`;
+  }
 }
 
 function initImagePickerModal() {
@@ -546,6 +919,7 @@ function initImagePickerModal() {
   const optClearImgBtn = document.getElementById("opt-clear-img-btn");
 
   openPickerBtn.addEventListener("click", () => {
+    if (!checkAuthOrPrompt()) return;
     renderPickerOptions();
     pickerModal.classList.remove("hidden");
   });
@@ -599,13 +973,11 @@ function renderPickerOptions() {
         </div>
       `;
 
-      // View button in Chat Picker
       historyOptDiv.querySelector(".view-opt-btn").onclick = (evt) => {
         evt.stopPropagation();
         openImagePreviewModal(item);
       };
 
-      // Select button in Chat Picker
       historyOptDiv.querySelector(".select-opt-btn").onclick = () => {
         attachedScanContext = item;
         selectedChatFile = null;
@@ -637,6 +1009,8 @@ function updateAttachedImageBarUI() {
 }
 
 async function sendChatMessage() {
+  if (!checkAuthOrPrompt()) return;
+
   const textInput = document.getElementById("chat-text-input");
   const message = textInput.value.trim();
   if (!message && !selectedChatFile && !attachedScanContext) return;
@@ -647,7 +1021,6 @@ async function sendChatMessage() {
     else if (attachedScanContext) displayMsg = `${currentLang === "kn" ? "[ರೋಗ ಪರಿಶೋಧನೆ ಲಗತ್ತಿಸಲಾಗಿದೆ: " : "[Scan context attached: "}${attachedScanContext.disease}]`;
   }
 
-  // Render user message bubble
   appendMessageBubble("user", displayMsg);
   textInput.value = "";
 
@@ -666,7 +1039,6 @@ async function sendChatMessage() {
     formData.append("user_message", `[Context: ${attachedScanContext.disease} (${attachedScanContext.confidence}% confidence)] ` + (message || "Please provide treatment details."));
   }
 
-  // Clear chat image selection after sending
   selectedChatFile = null;
   attachedScanContext = null;
   updateAttachedImageBarUI();
@@ -674,13 +1046,20 @@ async function sendChatMessage() {
   try {
     const res = await fetch(`${API_BASE}/api/chat/message`, {
       method: "POST",
+      headers: getAuthHeaders(),
       body: formData
     });
+
+    if (res.status === 401) {
+      checkAuthOrPrompt();
+      throw new Error(I18N[currentLang].loginRequiredMsg);
+    }
 
     const data = await res.json();
     currentSessionId = data.session_id;
 
     appendMessageBubble("assistant", data.reply, data.sources);
+    fetchChatThreads();
   } catch (err) {
     appendMessageBubble("assistant", currentLang === "kn" ? "ಕ್ಷಮಿಸಿ, ಸಹಾಯಕನಿಗೆ ಸಂಪರ್ಕಿಸಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ." : "Sorry, I had trouble connecting to the backend assistant.");
   }
@@ -715,11 +1094,23 @@ function appendMessageBubble(role, text, sources = []) {
 function renderChatMessages(messages) {
   const messagesList = document.getElementById("chat-messages-list");
   messagesList.innerHTML = "";
-  messages.forEach(m => {
-    if (m.role !== "system") {
-      appendMessageBubble(m.role, m.content, m.sources);
-    }
-  });
+  if (!messages || !messages.length) {
+    messagesList.innerHTML = `
+      <div class="msg assistant-msg">
+        <div class="avatar"><i data-lucide="bot"></i></div>
+        <div class="msg-bubble">
+          <p id="txt-chat-welcome">${I18N[currentLang].chatWelcome}</p>
+        </div>
+      </div>
+    `;
+  } else {
+    messages.forEach(m => {
+      if (m.role !== "system") {
+        appendMessageBubble(m.role, m.content, m.sources);
+      }
+    });
+  }
+  lucide.createIcons();
 }
 
 /* -------------------------------------------------------------
@@ -858,7 +1249,11 @@ function initMarketplace() {
   const form = document.getElementById("create-listing-form");
   const fetchGpsBtn = document.getElementById("use-gps-location-btn");
 
-  modalBtn.addEventListener("click", () => modal.classList.remove("hidden"));
+  modalBtn.addEventListener("click", () => {
+    if (!checkAuthOrPrompt()) return;
+    modal.classList.remove("hidden");
+  });
+
   closeModalBtn.addEventListener("click", () => modal.classList.add("hidden"));
 
   if (fetchGpsBtn) {
@@ -874,11 +1269,14 @@ function initMarketplace() {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!checkAuthOrPrompt()) return;
+
     const formData = new FormData(form);
 
     try {
       const res = await fetch(`${API_BASE}/api/marketplace/listings`, {
         method: "POST",
+        headers: getAuthHeaders(),
         body: formData
       });
       if (res.ok) {
@@ -947,6 +1345,7 @@ function initHistorySection() {
 
   if (clearBtn) {
     clearBtn.addEventListener("click", () => {
+      if (!checkAuthOrPrompt()) return;
       confirmModal.classList.remove("hidden");
     });
   }
@@ -987,23 +1386,26 @@ function showUndoToast(messageText, onUndoCallback) {
 }
 
 async function deleteHistoryItem(index) {
+  if (!checkAuthOrPrompt()) return;
+
   let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
   if (index >= 0 && index < history.length) {
     const deletedItem = history.splice(index, 1)[0];
     localStorage.setItem("plantiq_history", JSON.stringify(history));
     renderHistoryFeed();
 
-    // Invalidate from backend SQLite database cache as well
     if (deletedItem.sha256_hash) {
       try {
-        await fetch(`${API_BASE}/api/cache/item/${deletedItem.sha256_hash}`, { method: "DELETE" });
+        await fetch(`${API_BASE}/api/cache/item/${deletedItem.sha256_hash}`, {
+          method: "DELETE",
+          headers: getAuthHeaders()
+        });
       } catch (err) {
         console.warn("Backend cache delete request failed:", err);
       }
     }
 
     showUndoToast(I18N[currentLang].toastSingleDeleted, async () => {
-      // Re-insert into local history
       let currentHistory = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
       currentHistory.splice(index, 0, deletedItem);
       localStorage.setItem("plantiq_history", JSON.stringify(currentHistory));
@@ -1013,6 +1415,8 @@ async function deleteHistoryItem(index) {
 }
 
 async function clearAllHistory() {
+  if (!checkAuthOrPrompt()) return;
+
   let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
   if (!history.length) return;
 
@@ -1020,9 +1424,11 @@ async function clearAllHistory() {
   localStorage.removeItem("plantiq_history");
   renderHistoryFeed();
 
-  // Purge all entries from backend SQLite database cache as well
   try {
-    await fetch(`${API_BASE}/api/cache/clear`, { method: "DELETE" });
+    await fetch(`${API_BASE}/api/cache/clear`, {
+      method: "DELETE",
+      headers: getAuthHeaders()
+    });
   } catch (err) {
     console.warn("Backend cache clear request failed:", err);
   }
@@ -1076,12 +1482,10 @@ function renderHistoryFeed() {
       </div>
     `;
 
-    // Clicking View opens clean preview modal
     div.querySelector(".view-scan-btn").onclick = () => {
       openImagePreviewModal(item);
     };
 
-    // Clicking Delete removes this scan item
     div.querySelector(".delete-scan-btn").onclick = (e) => {
       e.stopPropagation();
       deleteHistoryItem(idx);
@@ -1109,7 +1513,6 @@ function initLanguageToggle() {
 function updateLanguageUI() {
   const t = I18N[currentLang];
 
-  // Brand tagline (PlantIQ remains PlantIQ)
   document.getElementById("tagline-text").textContent = t.taglineText;
 
   // Scanner screen
@@ -1138,8 +1541,13 @@ function updateLanguageUI() {
   // Chatbot screen
   document.getElementById("txt-chat-title").textContent = t.chatTitle;
   document.getElementById("txt-chat-sub").textContent = t.chatSub;
-  document.getElementById("txt-chat-welcome").textContent = t.chatWelcome;
+  if (document.getElementById("txt-chat-welcome")) {
+    document.getElementById("txt-chat-welcome").textContent = t.chatWelcome;
+  }
   document.getElementById("txt-btn-select-img").textContent = t.btnSelectImg;
+  if (document.getElementById("txt-btn-new-chat")) {
+    document.getElementById("txt-btn-new-chat").textContent = t.btnNewChat;
+  }
   document.getElementById("txt-detach-lbl").textContent = t.detachLbl;
   document.getElementById("chat-text-input").placeholder = t.chatPlaceholder;
 
@@ -1161,6 +1569,32 @@ function updateLanguageUI() {
   document.getElementById("txt-confirm-msg").textContent = t.confirmMsg;
   document.getElementById("txt-confirm-cancel").textContent = t.confirmCancel;
   document.getElementById("txt-confirm-ok").textContent = t.confirmOk;
+
+  // Auth Page & Modal
+  document.getElementById("txt-auth-page-title").textContent = t.authPageTitle;
+  document.getElementById("txt-auth-page-sub").textContent = t.authPageSub;
+  document.getElementById("txt-page-tab-login").textContent = t.tabLogin;
+  document.getElementById("txt-page-tab-register").textContent = t.tabRegister;
+  document.getElementById("lbl-page-login-user").textContent = t.lblLoginUser;
+  document.getElementById("lbl-page-login-pass").textContent = t.lblLoginPass;
+  document.getElementById("txt-btn-page-login").textContent = t.btnSubmitLogin;
+  document.getElementById("lbl-page-reg-fullname").textContent = t.lblRegFullname;
+  document.getElementById("lbl-page-reg-email").textContent = t.lblRegEmail;
+  document.getElementById("lbl-page-reg-username").textContent = t.lblRegUsername;
+  document.getElementById("lbl-page-reg-pass").textContent = t.lblRegPass;
+  document.getElementById("txt-btn-page-register").textContent = t.btnSubmitRegister;
+
+  document.getElementById("txt-auth-modal-title").textContent = t.authTitleLogin;
+  document.getElementById("txt-tab-login").textContent = t.tabLogin;
+  document.getElementById("txt-tab-register").textContent = t.tabRegister;
+  document.getElementById("lbl-login-user").textContent = t.lblLoginUser;
+  document.getElementById("lbl-login-pass").textContent = t.lblLoginPass;
+  document.getElementById("txt-btn-submit-login").textContent = t.tabLogin;
+  document.getElementById("lbl-reg-fullname").textContent = t.lblRegFullname;
+  document.getElementById("lbl-reg-email").textContent = t.lblRegEmail;
+  document.getElementById("lbl-reg-username").textContent = t.lblRegUsername;
+  document.getElementById("lbl-reg-pass").textContent = t.lblRegPass;
+  document.getElementById("txt-btn-submit-register").textContent = t.tabRegister;
 
   // Toast
   document.getElementById("txt-btn-undo").textContent = t.btnUndo;
@@ -1201,9 +1635,9 @@ function updateLanguageUI() {
   document.getElementById("txt-btn-publish").textContent = t.btnPublish;
 
   updateAttachedImageBarUI();
+  updateAuthProfileBar();
   lucide.createIcons();
 
-  // Re-render diagnosis & marketplace if data exists
   if (currentDiagnosisData) {
     renderDiagnosisResults(currentDiagnosisData);
   }

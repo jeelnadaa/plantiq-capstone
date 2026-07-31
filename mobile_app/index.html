@@ -29,6 +29,13 @@
       </div>
 
       <div class="header-actions">
+        <!-- Auth Profile Badge / Login Button -->
+        <div id="user-profile-bar" style="display: flex; align-items: center; gap: 8px;">
+          <button id="open-auth-modal-btn" class="btn btn-sm btn-outline" style="border-radius: 20px; font-size: 0.76rem; padding: 4px 10px; border-color: #a7f3d0; color: #15803d;">
+            <i data-lucide="user-check"></i> <span id="txt-btn-login">Login / Sign Up</span>
+          </button>
+        </div>
+
         <!-- Language Switcher EN / KN -->
         <button id="lang-btn" class="lang-toggle-btn" title="Toggle English / Kannada">
           <span class="lang-flag">🌐</span>
@@ -40,8 +47,59 @@
     <!-- Main Content Screens Container -->
     <main class="screen-container">
 
+      <!-- DEDICATED AUTH SCREEN: LOGIN & REGISTRATION PAGE -->
+      <section id="screen-auth" class="app-screen active">
+        <div class="auth-page-card card" style="max-width: 420px; margin: 20px auto; padding: 28px 24px; text-align: center;">
+          <div style="width: 64px; height: 64px; border-radius: 50%; background: #dcfce7; color: #166534; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+            <i data-lucide="sprout" style="width: 34px; height: 34px;"></i>
+          </div>
+          <h2 id="txt-auth-page-title" style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Welcome to PlantIQ</h2>
+          <p id="txt-auth-page-sub" style="font-size: 0.84rem; color: #64748b; margin-bottom: 24px; line-height: 1.4;">Sign in to your farmer account to access leaf disease scanning, AI chat, and crop marketplace.</p>
+
+          <!-- Auth Tab Switcher -->
+          <div class="auth-tabs" style="display: flex; gap: 10px; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 20px;">
+            <button class="btn btn-sm active" id="page-tab-login" type="button" style="flex: 1; border-radius: 8px; font-weight: 700;"><span id="txt-page-tab-login">Sign In</span></button>
+            <button class="btn btn-sm" id="page-tab-register" type="button" style="flex: 1; border-radius: 8px; font-weight: 700; background: transparent; color: #64748b;"><span id="txt-page-tab-register">Register</span></button>
+          </div>
+
+          <!-- Page Login Form -->
+          <form id="page-login-form">
+            <div class="form-group" style="margin-bottom: 14px; text-align: left;">
+              <label id="lbl-page-login-user" style="font-size: 0.8rem; font-weight: 600; color: #475569;">Email or Username</label>
+              <input type="text" id="page-login-user-input" class="form-control" required placeholder="farmer@example.com" style="margin-top: 4px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+              <label id="lbl-page-login-pass" style="font-size: 0.8rem; font-weight: 600; color: #475569;">Password</label>
+              <input type="password" id="page-login-pass-input" class="form-control" required placeholder="••••••••" style="margin-top: 4px;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 700; font-size: 0.92rem;"><span id="txt-btn-page-login">Sign In to Dashboard</span></button>
+          </form>
+
+          <!-- Page Register Form -->
+          <form id="page-register-form" class="hidden">
+            <div class="form-group" style="margin-bottom: 12px; text-align: left;">
+              <label id="lbl-page-reg-fullname" style="font-size: 0.8rem; font-weight: 600; color: #475569;">Full Name</label>
+              <input type="text" id="page-reg-fullname-input" class="form-control" required placeholder="Ramesh Gowda" style="margin-top: 4px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px; text-align: left;">
+              <label id="lbl-page-reg-email" style="font-size: 0.8rem; font-weight: 600; color: #475569;">Email Address</label>
+              <input type="email" id="page-reg-email-input" class="form-control" required placeholder="farmer@example.com" style="margin-top: 4px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px; text-align: left;">
+              <label id="lbl-page-reg-username" style="font-size: 0.8rem; font-weight: 600; color: #475569;">Username</label>
+              <input type="text" id="page-reg-username-input" class="form-control" required placeholder="coffeefarmer" style="margin-top: 4px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+              <label id="lbl-page-reg-pass" style="font-size: 0.8rem; font-weight: 600; color: #475569;">Password</label>
+              <input type="password" id="page-reg-pass-input" class="form-control" required placeholder="••••••••" style="margin-top: 4px;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 700; font-size: 0.92rem;"><span id="txt-btn-page-register">Create Farmer Account</span></button>
+          </form>
+        </div>
+      </section>
+
       <!-- SCREEN 1: SCANNER (CNN + RAG) -->
-      <section id="screen-scanner" class="app-screen active">
+      <section id="screen-scanner" class="app-screen">
         <div class="screen-header">
           <h1 id="txt-scan-title">Coffee Leaf Disease Diagnostic</h1>
           <p class="subtitle" id="txt-scan-sub">Upload or capture a leaf photo to diagnose diseases and receive tailored treatment advisories.</p>
@@ -166,6 +224,16 @@
         <div class="screen-header">
           <h1 id="txt-chat-title">Agri Chatbot Assistant</h1>
           <p class="subtitle" id="txt-chat-sub">Chat freely in English or Kannada. Speak via voice mic or attach photos for review.</p>
+        </div>
+
+        <!-- Chat Thread Selector & New Chat Bar -->
+        <div class="chat-thread-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px;">
+          <select id="chat-thread-select" class="form-control" style="flex: 1; padding: 6px 12px; font-size: 0.82rem; border-radius: 8px; background: #ffffff;">
+            <option value="">+ New Conversation</option>
+          </select>
+          <button id="new-chat-btn" class="btn btn-sm btn-primary" style="flex-shrink: 0; padding: 6px 12px;">
+            <i data-lucide="plus"></i> <span id="txt-btn-new-chat">New Chat</span>
+          </button>
         </div>
 
         <!-- Chat Container -->
@@ -427,6 +495,56 @@
     <div class="toast-notification hidden" id="undo-toast">
       <span id="txt-toast-message">Item deleted</span>
       <button class="toast-undo-btn" id="undo-action-btn"><i data-lucide="rotate-ccw"></i> <span id="txt-btn-undo">Undo</span></button>
+    </div>
+
+    <!-- User Authentication Modal (Login / Register) -->
+    <div class="modal-overlay hidden" id="auth-modal">
+      <div class="modal-card" style="max-width: 380px;">
+        <div class="modal-header">
+          <h3 id="txt-auth-modal-title">Farmer Account Sign In</h3>
+          <button class="btn-icon" id="close-auth-modal-btn"><i data-lucide="x"></i></button>
+        </div>
+
+        <!-- Auth Tabs: Login vs Register -->
+        <div class="auth-tabs" style="display: flex; gap: 10px; border-bottom: 1px solid #e2e8f0; margin-bottom: 16px; padding-bottom: 8px;">
+          <button class="btn btn-sm btn-secondary active" id="tab-auth-login" type="button" style="flex: 1;"><span id="txt-tab-login">Sign In</span></button>
+          <button class="btn btn-sm btn-secondary" id="tab-auth-register" type="button" style="flex: 1;"><span id="txt-tab-register">Register</span></button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="login-form">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label id="lbl-login-user" style="font-size: 0.8rem; font-weight: 600;">Email or Username</label>
+            <input type="text" id="login-user-input" class="form-control" required placeholder="farmer@example.com">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label id="lbl-login-pass" style="font-size: 0.8rem; font-weight: 600;">Password</label>
+            <input type="password" id="login-pass-input" class="form-control" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;"><span id="txt-btn-submit-login">Sign In</span></button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="hidden">
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label id="lbl-reg-fullname" style="font-size: 0.8rem; font-weight: 600;">Full Name</label>
+            <input type="text" id="reg-fullname-input" class="form-control" required placeholder="Coffee Farmer">
+          </div>
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label id="lbl-reg-email" style="font-size: 0.8rem; font-weight: 600;">Email Address</label>
+            <input type="email" id="reg-email-input" class="form-control" required placeholder="farmer@example.com">
+          </div>
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label id="lbl-reg-username" style="font-size: 0.8rem; font-weight: 600;">Username</label>
+            <input type="text" id="reg-username-input" class="form-control" required placeholder="coffeefarmer">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label id="lbl-reg-pass" style="font-size: 0.8rem; font-weight: 600;">Password</label>
+            <input type="password" id="reg-pass-input" class="form-control" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;"><span id="txt-btn-submit-register">Create Account</span></button>
+        </form>
+      </div>
     </div>
 
   </div>

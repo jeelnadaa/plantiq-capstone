@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Float, DateTime, Text
+from sqlalchemy import Column, Integer, String, Float, DateTime, Text, ForeignKey
 from app.core.database import Base, engine
 
 class CropListing(Base):
@@ -17,6 +17,7 @@ class CropListing(Base):
     longitude = Column(Float, nullable=False)
     description = Column(Text, nullable=True)
     image_url = Column(String(255), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 Base.metadata.create_all(bind=engine)

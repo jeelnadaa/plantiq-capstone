@@ -84,3 +84,18 @@ def save_image_result_to_cache(
     db.merge(entry)  # Use merge to insert or update
     db.commit()
     return entry
+
+def delete_cached_image_result(db: Session, image_hash: str) -> bool:
+    """Deletes a specific cached image record by its SHA-256 hash."""
+    cached = db.query(ProcessedImageCache).filter(ProcessedImageCache.sha256_hash == image_hash).first()
+    if cached:
+        db.delete(cached)
+        db.commit()
+        return True
+    return False
+
+def clear_all_cached_image_results(db: Session) -> int:
+    """Deletes all cached image records from the SQLite database."""
+    count = db.query(ProcessedImageCache).delete()
+    db.commit()
+    return count

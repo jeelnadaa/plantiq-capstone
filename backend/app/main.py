@@ -13,7 +13,9 @@ from app.modules.rag.pipeline import generate_disease_advisory, query_llm
 from app.modules.cache.image_cache import (
     compute_image_hash, 
     get_cached_image_result, 
-    save_image_result_to_cache
+    save_image_result_to_cache,
+    delete_cached_image_result,
+    clear_all_cached_image_results
 )
 from app.modules.chat.chat_service import process_chat_message, start_chat_from_cnn_handoff
 from app.modules.marketplace.router import router as marketplace_router
@@ -187,6 +189,22 @@ def chat_start_from_scan(
         advisory=advisory
     )
     return res
+
+@app.delete("/api/cache/item/{image_hash}")
+def delete_cache_item(image_hash: str, db: Session = Depends(get_db)):
+    """
+    Deletes a specific image analysis result from the backend SQLite cache.
+    """
+    success = delete_cached_image_result(db, image_hash)
+    return {"status": "deleted" if success else "not_found", "hash": image_hash}
+
+@app.delete("/api/cache/clear")
+def clear_cache(db: Session = Depends(get_db)):
+    """
+    Purges all cached image analysis results from the backend SQLite database.
+    """
+    count = clear_all_cached_image_results(db)
+    return {"status": "cleared", "deleted_count": count}
 
 # Mount Mobile App Frontend at ROOT (MUST BE LAST so /api routes take precedence)
 MOBILE_APP_DIR = settings.BASE_DIR.parent / "mobile_app"

@@ -11,6 +11,7 @@ let selectedChatFile = null;
 let attachedScanContext = null; // Holds selected scanner or history scan object
 let currentDiagnosisData = null;
 let activePreviewItem = null;
+let undoTimer = null;
 let userCoords = { lat: 13.3161, lng: 75.7720, allowed: true }; // Default to Chikmagalur region
 
 // Complete i18n Translation Dictionary
@@ -52,6 +53,14 @@ const I18N = {
     detailsModalTitle: "Complete Diagnostic Report",
     btnMoreDetails: "More Details",
     btnClosePreview: "Close",
+    btnClearHistory: "Clear All",
+    confirmTitle: "Clear All Scan History?",
+    confirmMsg: "Are you sure you want to permanently delete all saved leaf scan history? This action cannot be undone.",
+    confirmCancel: "Cancel",
+    confirmOk: "Delete All",
+    toastSingleDeleted: "Scan deleted & backend cache cleared",
+    toastAllCleared: "All scan history & cache cleared",
+    btnUndo: "Undo",
     chatPlaceholder: "Type a message or use mic...",
     marketTitle: "Coffee Crop Marketplace",
     marketSub: "Browse listings from local coffee farmers with 1-tap Google Maps navigation.",
@@ -117,6 +126,14 @@ const I18N = {
     detailsModalTitle: "ಸಂಪೂರ್ಣ ರೋಗ ನಿರ್ಣಯ ವರದಿ",
     btnMoreDetails: "ಹೆಚ್ಚಿನ ವಿವರಗಳು",
     btnClosePreview: "ಮುಚ್ಚಿ",
+    btnClearHistory: "ಎಲ್ಲಾ ಅಳಿಸಿ",
+    confirmTitle: "ಎಲ್ಲಾ ರೋಗ ಪರಿಶೋಧನೆಗಳನ್ನು ಅಳಿಸಬೇಕೇ?",
+    confirmMsg: "ನಿಮ್ಮ ಎಲ್ಲಾ ಉಳಿಸಲಾದ ಇತಿಹಾಸವನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿದ್ದೀರಾ? ಇದನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+    confirmCancel: "ರದ್ದುಗೊಳಿಸಿ",
+    confirmOk: "ಎಲ್ಲಾ ಅಳಿಸಿ",
+    toastSingleDeleted: "ರೋಗ ಪರಿಶೋಧನೆ & ಕ್ಯಾಶ್ ಅಳಿಸಲಾಗಿದೆ",
+    toastAllCleared: "ಎಲ್ಲಾ ಇತಿಹಾಸ & ಕ್ಯಾಶ್ ಅಳಿಸಲಾಗಿದೆ",
+    btnUndo: "ಹಿಂಪಡೆಯಿರಿ",
     chatPlaceholder: "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಮೈಕ್ ಬಳಸಿ...",
     marketTitle: "ಕಾಫಿ ಬೆಳೆ ಮಾರುಕಟ್ಟೆ",
     marketSub: "ಸ್ಥಳೀಯ ಕಾಫಿ ಬೆಳೆಗಾರರ ಮಾರಾಟ ವಿವರಗಳನ್ನು ನೋಡಿ ಮತ್ತು ಗೂಗಲ್ ಮ್ಯಾಪ್ಸ್ ಮೂಲಕ ಸಂಪರ್ಕಿಸಿ.",
@@ -166,6 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initChatbot();
   initImagePickerModal();
   initModalsAndPreviews();
+  initHistorySection();
   initMarketplace();
   initLanguageToggle();
   initSpeech();
@@ -919,8 +937,102 @@ async function fetchMarketplaceListings() {
 }
 
 /* -------------------------------------------------------------
- * 7. History Local Cache View (with Image Thumbnails & Timestamps)
+ * 7. History Local Cache View & Backend Cache Invalidation
  * ------------------------------------------------------------- */
+function initHistorySection() {
+  const clearBtn = document.getElementById("clear-history-btn");
+  const confirmModal = document.getElementById("confirm-dialog-modal");
+  const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
+  const confirmOkBtn = document.getElementById("confirm-ok-btn");
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      confirmModal.classList.remove("hidden");
+    });
+  }
+
+  if (confirmCancelBtn) {
+    confirmCancelBtn.addEventListener("click", () => {
+      confirmModal.classList.add("hidden");
+    });
+  }
+
+  if (confirmOkBtn) {
+    confirmOkBtn.addEventListener("click", () => {
+      clearAllHistory();
+      confirmModal.classList.add("hidden");
+    });
+  }
+}
+
+function showUndoToast(messageText, onUndoCallback) {
+  const toast = document.getElementById("undo-toast");
+  const msgSpan = document.getElementById("txt-toast-message");
+  const undoBtn = document.getElementById("undo-action-btn");
+
+  if (undoTimer) clearTimeout(undoTimer);
+
+  msgSpan.textContent = messageText;
+  toast.classList.remove("hidden");
+
+  undoBtn.onclick = () => {
+    if (onUndoCallback) onUndoCallback();
+    toast.classList.add("hidden");
+    if (undoTimer) clearTimeout(undoTimer);
+  };
+
+  undoTimer = setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 3000);
+}
+
+async function deleteHistoryItem(index) {
+  let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
+  if (index >= 0 && index < history.length) {
+    const deletedItem = history.splice(index, 1)[0];
+    localStorage.setItem("plantiq_history", JSON.stringify(history));
+    renderHistoryFeed();
+
+    // Invalidate from backend SQLite database cache as well
+    if (deletedItem.sha256_hash) {
+      try {
+        await fetch(`${API_BASE}/api/cache/item/${deletedItem.sha256_hash}`, { method: "DELETE" });
+      } catch (err) {
+        console.warn("Backend cache delete request failed:", err);
+      }
+    }
+
+    showUndoToast(I18N[currentLang].toastSingleDeleted, async () => {
+      // Re-insert into local history
+      let currentHistory = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
+      currentHistory.splice(index, 0, deletedItem);
+      localStorage.setItem("plantiq_history", JSON.stringify(currentHistory));
+      renderHistoryFeed();
+    });
+  }
+}
+
+async function clearAllHistory() {
+  let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
+  if (!history.length) return;
+
+  const previousHistory = [...history];
+  localStorage.removeItem("plantiq_history");
+  renderHistoryFeed();
+
+  // Purge all entries from backend SQLite database cache as well
+  try {
+    await fetch(`${API_BASE}/api/cache/clear`, { method: "DELETE" });
+  } catch (err) {
+    console.warn("Backend cache clear request failed:", err);
+  }
+
+  showUndoToast(I18N[currentLang].toastAllCleared, () => {
+    localStorage.setItem("plantiq_history", JSON.stringify(previousHistory));
+    renderHistoryFeed();
+  });
+}
+
 function saveToHistoryLocal(item) {
   let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
   history.unshift(item);
@@ -938,7 +1050,7 @@ function renderHistoryFeed() {
   }
 
   feed.innerHTML = "";
-  history.forEach(item => {
+  history.forEach((item, idx) => {
     const div = document.createElement("div");
     div.className = "history-item";
     const mappedDisease = DISEASE_NAMES_MAP[item.disease] ? DISEASE_NAMES_MAP[item.disease][currentLang] : item.disease;
@@ -958,12 +1070,21 @@ function renderHistoryFeed() {
           </div>
         </div>
       </div>
-      <button class="btn btn-sm btn-secondary view-scan-btn">${currentLang === "kn" ? "ನೋಡಿ" : "View"}</button>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <button class="btn btn-sm btn-secondary view-scan-btn">${currentLang === "kn" ? "ನೋಡಿ" : "View"}</button>
+        <button class="btn-icon delete-scan-btn" title="Delete scan" style="color: #ef4444; padding: 6px;"><i data-lucide="trash-2"></i></button>
+      </div>
     `;
 
-    // Clicking View opens clean preview modal (without redirecting!)
+    // Clicking View opens clean preview modal
     div.querySelector(".view-scan-btn").onclick = () => {
       openImagePreviewModal(item);
+    };
+
+    // Clicking Delete removes this scan item
+    div.querySelector(".delete-scan-btn").onclick = (e) => {
+      e.stopPropagation();
+      deleteHistoryItem(idx);
     };
 
     feed.appendChild(div);
@@ -1035,6 +1156,15 @@ function updateLanguageUI() {
   document.getElementById("txt-btn-more-details").textContent = t.btnMoreDetails;
   document.getElementById("txt-btn-close-preview").textContent = t.btnClosePreview;
 
+  // Confirm Modal
+  document.getElementById("txt-confirm-title").textContent = t.confirmTitle;
+  document.getElementById("txt-confirm-msg").textContent = t.confirmMsg;
+  document.getElementById("txt-confirm-cancel").textContent = t.confirmCancel;
+  document.getElementById("txt-confirm-ok").textContent = t.confirmOk;
+
+  // Toast
+  document.getElementById("txt-btn-undo").textContent = t.btnUndo;
+
   // Marketplace screen
   document.getElementById("txt-market-title").textContent = t.marketTitle;
   document.getElementById("txt-market-sub").textContent = t.marketSub;
@@ -1044,6 +1174,9 @@ function updateLanguageUI() {
   // History screen
   document.getElementById("txt-history-title").textContent = t.historyTitle;
   document.getElementById("txt-history-sub").textContent = t.historySub;
+  if (document.getElementById("txt-btn-clear-history")) {
+    document.getElementById("txt-btn-clear-history").textContent = t.btnClearHistory;
+  }
 
   // Bottom Navigation Labels
   document.getElementById("nav-scanner-lbl").textContent = t.navScanner;

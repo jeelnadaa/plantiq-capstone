@@ -11,12 +11,21 @@ let selectedChatFile = null;
 let attachedScanContext = null; // Holds selected scanner or history scan object
 let currentDiagnosisData = null;
 let activePreviewItem = null;
+let activeMarketTab = "all"; // 'all' or 'mine'
 let undoTimer = null;
 let userCoords = { lat: 13.3161, lng: 75.7720, allowed: true }; // Default to Chikmagalur region
 
 // User Auth State
 let authToken = localStorage.getItem("plantiq_token") || null;
 let currentUser = JSON.parse(localStorage.getItem("plantiq_user") || "null");
+
+// Helper for User-Scoped LocalStorage History Key
+function getHistoryStorageKey() {
+  if (currentUser && (currentUser.id || currentUser.username)) {
+    return `plantiq_history_user_${currentUser.id || currentUser.username}`;
+  }
+  return "plantiq_history_guest";
+}
 
 // Complete i18n Translation Dictionary
 const I18N = {
@@ -69,16 +78,31 @@ const I18N = {
     chatPlaceholder: "Type a message or use mic...",
     marketTitle: "Coffee Crop Marketplace",
     marketSub: "Browse listings from local coffee farmers with 1-tap Google Maps navigation.",
+    marketTabAll: "All Marketplace Listings",
+    marketTabMine: "Your Listings",
     btnSell: "Sell Crop",
-    marketSearchPlaceholder: "Search Arabica, Robusta, Location...",
+    marketSearchPlaceholder: "Search by crop title, variety, location, farmer...",
+    lblPriceRangeTitle: "Price Range Filter (₹/kg)",
+    lblMinPrice: "Min ₹",
+    lblMaxPrice: "Max ₹",
+    lblMinSlider: "Min Price:",
+    lblMaxSlider: "Max Price:",
     viewGmaps: "View on Google Maps",
     historyTitle: "Deduplicated Scans History",
     historySub: "Quickly review past coffee leaf disease scans saved in your local image cache.",
     historyEmpty: "No recent scan history found.",
+    profileTitle: "Farmer Profile",
+    profileSub: "Manage your farmer account, scan diagnostics stats, and marketplace listings.",
+    statScansLbl: "Total Scans",
+    statListingsLbl: "Your Listings",
+    lblProfileEmail: "Email Address:",
+    lblProfileStatus: "Account Status:",
+    profileLogout: "Sign Out of Account",
     navScanner: "Scanner",
     navChat: "Chatbot",
     navMarket: "Market",
     navHistory: "History",
+    navProfile: "Profile",
     modalTitle: "List Coffee Crop for Sale",
     cropTitle: "Crop Title",
     variety: "Variety",
@@ -160,16 +184,31 @@ const I18N = {
     chatPlaceholder: "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಮೈಕ್ ಬಳಸಿ...",
     marketTitle: "ಕಾಫಿ ಬೆಳೆ ಮಾರುಕಟ್ಟೆ",
     marketSub: "ಸ್ಥಳೀಯ ಕಾಫಿ ಬೆಳೆಗಾರರ ಮಾರಾಟ ವಿವರಗಳನ್ನು ನೋಡಿ ಮತ್ತು ಗೂಗಲ್ ಮ್ಯಾಪ್ಸ್ ಮೂಲಕ ಸಂಪರ್ಕಿಸಿ.",
+    marketTabAll: "ಎಲ್ಲಾ ಮಾರುಕಟ್ಟೆ ಪ್ರಕಟಣೆಗಳು",
+    marketTabMine: "ನಿಮ್ಮ ಬೆಳೆ ಪ್ರಕಟಣೆಗಳು",
     btnSell: "ಬೆಳೆ ಮಾರಾಟ ಮಾಡಿ",
-    marketSearchPlaceholder: "ಅರಾಬಿಕಾ, ರೊಬಸ್ಟಾ, ಸ್ಥಳ ಹುಡುಕಿ...",
+    marketSearchPlaceholder: "ಶೀರ್ಷಿಕೆ, ತಳಿ, ಸ್ಥಳ ಅಥವಾ ರೈತರ ಹೆಸರಿನ ಮೂಲಕ ಹುಡುಕಿ...",
+    lblPriceRangeTitle: "ಬೆಲೆ ಶ್ರೇಣಿ ಫಿಲ್ಟರ್ (₹/ಕೆಜಿ)",
+    lblMinPrice: "ಕನಿಷ್ಠ ₹",
+    lblMaxPrice: "ಗರಿಷ್ಠ ₹",
+    lblMinSlider: "ಕನಿಷ್ಠ ದರ:",
+    lblMaxSlider: "ಗರಿಷ್ಠ ದರ:",
     viewGmaps: "ಗೂಗಲ್ ಮ್ಯಾಪ್ಸ್‌ನಲ್ಲಿ ನೋಡಿ",
     historyTitle: "ಹಿಂದಿನ ಪರಿಶೋಧನೆಗಳ ಇತಿಹಾಸ",
     historySub: "ನಿಮ್ಮ ಕ್ಯಾಶ್‌ನಲ್ಲಿ ಉಳಿಸಲಾದ ಇತ್ತೀಚಿನ ಎಲೆ ರೋಗ ಪರಿಶೋಧನೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
     historyEmpty: "ಯಾವುದೇ ಇತ್ತೀಚಿನ ರೋಗ ನಿರ್ಣಯಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
+    profileTitle: "ರೈತರ ಪ್ರೊಫೈಲ್",
+    profileSub: "ನಿಮ್ಮ ಖಾತೆ ವಿವರಗಳು, ರೋಗ ಪರಿಶೋಧನೆಗಳ ವಿವರ ಮತ್ತು ಮಾರುಕಟ್ಟೆ ಪ್ರಕಟಣೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ.",
+    statScansLbl: "ಒಟ್ಟು ಪರಿಶೋಧನೆಗಳು",
+    statListingsLbl: "ನಿಮ್ಮ ಪ್ರಕಟಣೆಗಳು",
+    lblProfileEmail: "ಇಮೇಲ್ ವಿಳಾಸ:",
+    lblProfileStatus: "ಖಾತೆ ಸ್ಥಿತಿ:",
+    profileLogout: "ಖಾತೆಯಿಂದ ನಿರ್ಗಮಿಸಿ",
     navScanner: "ಸ್ಕಾನರ್",
     navChat: "ಚಾಟ್‌ಬಾಟ್",
     navMarket: "ಮಾರುಕಟ್ಟೆ",
     navHistory: "ಇತಿಹಾಸ",
+    navProfile: "ಪ್ರೊಫೈಲ್",
     modalTitle: "ಮಾರಾಟಕ್ಕಾಗಿ ಕಾಫಿ ಬೆಳೆ ನೋಂದಾಯಿಸಿ",
     cropTitle: "ಬೆಳೆಯ ಶೀರ್ಷಿಕೆ",
     variety: "ತಳಿ",
@@ -265,6 +304,7 @@ async function validateSessionAndInit() {
     if (authScreen) authScreen.classList.add("active");
     if (bottomNav) bottomNav.style.display = "none";
     updateAuthProfileBar();
+    renderHistoryFeed();
     return false;
   }
 
@@ -277,7 +317,9 @@ async function validateSessionAndInit() {
   if (bottomNav) bottomNav.style.display = "flex";
 
   updateAuthProfileBar();
+  renderHistoryFeed();
   fetchChatThreads();
+  renderProfileStats();
   return true;
 }
 
@@ -431,7 +473,9 @@ async function handleLoginSubmit(usernameOrEmail, password, formElem) {
 
     updateAuthProfileBar();
     checkAuthOrPrompt();
+    renderHistoryFeed();
     fetchChatThreads();
+    renderProfileStats();
   } catch (err) {
     alert("Login Error: " + err.message);
   }
@@ -472,7 +516,9 @@ async function handleRegisterSubmit(fullname, email, username, password, formEle
 
     updateAuthProfileBar();
     checkAuthOrPrompt();
+    renderHistoryFeed();
     fetchChatThreads();
+    renderProfileStats();
   } catch (err) {
     alert("Registration Error: " + err.message);
   }
@@ -492,18 +538,7 @@ function updateAuthProfileBar() {
     `;
 
     document.getElementById("user-logout-btn").onclick = async () => {
-      try {
-        await fetch(`${API_BASE}/api/auth/logout`, {
-          method: "POST",
-          headers: getAuthHeaders()
-        });
-      } catch (e) {}
-      authToken = null;
-      currentUser = null;
-      localStorage.removeItem("plantiq_token");
-      localStorage.removeItem("plantiq_user");
-      updateAuthProfileBar();
-      checkAuthOrPrompt();
+      await performUserLogout();
     };
   } else {
     profileBar.innerHTML = `
@@ -516,6 +551,22 @@ function updateAuthProfileBar() {
     };
   }
   lucide.createIcons();
+}
+
+async function performUserLogout() {
+  try {
+    await fetch(`${API_BASE}/api/auth/logout`, {
+      method: "POST",
+      headers: getAuthHeaders()
+    });
+  } catch (e) {}
+  authToken = null;
+  currentUser = null;
+  localStorage.removeItem("plantiq_token");
+  localStorage.removeItem("plantiq_user");
+  updateAuthProfileBar();
+  checkAuthOrPrompt();
+  renderHistoryFeed();
 }
 
 /* -------------------------------------------------------------
@@ -541,6 +592,10 @@ function initNavigation() {
         fetchMarketplaceListings();
       } else if (targetId === "screen-chat") {
         fetchChatThreads();
+      } else if (targetId === "screen-history") {
+        renderHistoryFeed();
+      } else if (targetId === "screen-profile") {
+        renderProfileStats();
       }
     });
   });
@@ -994,7 +1049,7 @@ function renderPickerOptions() {
   const pickerModal = document.getElementById("image-picker-modal");
 
   historyContainer.innerHTML = "";
-  let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
+  let history = JSON.parse(localStorage.getItem(getHistoryStorageKey()) || "[]");
   if (!history || !history.length) {
     historyContainer.innerHTML = `<p style="font-size: 0.75rem; color: #94a3b8;">${I18N[currentLang].historyEmpty}</p>`;
   } else {
@@ -1289,7 +1344,7 @@ function openFullDetailsModal(item) {
 }
 
 /* -------------------------------------------------------------
- * 6. Marketplace Discovery (Crop listings & Google Maps)
+ * 6. Marketplace Discovery & Universal Search / Dual Price Range
  * ------------------------------------------------------------- */
 function initMarketplace() {
   const modalBtn = document.getElementById("add-listing-modal-btn");
@@ -1297,6 +1352,87 @@ function initMarketplace() {
   const modal = document.getElementById("listing-modal");
   const form = document.getElementById("create-listing-form");
   const fetchGpsBtn = document.getElementById("use-gps-location-btn");
+
+  const tabAll = document.getElementById("market-tab-all");
+  const tabMine = document.getElementById("market-tab-mine");
+  const searchInput = document.getElementById("market-search-input");
+  
+  const minSlider = document.getElementById("market-min-slider");
+  const maxSlider = document.getElementById("market-max-slider");
+  const minInput = document.getElementById("market-min-input");
+  const maxInput = document.getElementById("market-max-input");
+  const badge = document.getElementById("market-price-range-badge");
+
+  if (tabAll && tabMine) {
+    tabAll.addEventListener("click", () => {
+      activeMarketTab = "all";
+      tabAll.classList.add("active");
+      tabAll.style.background = "#ffffff";
+      tabAll.style.color = "#166534";
+
+      tabMine.classList.remove("active");
+      tabMine.style.background = "transparent";
+      tabMine.style.color = "#64748b";
+
+      fetchMarketplaceListings();
+    });
+
+    tabMine.addEventListener("click", () => {
+      if (!checkAuthOrPrompt()) return;
+      activeMarketTab = "mine";
+      tabMine.classList.add("active");
+      tabMine.style.background = "#ffffff";
+      tabMine.style.color = "#166534";
+
+      tabAll.classList.remove("active");
+      tabAll.style.background = "transparent";
+      tabAll.style.color = "#64748b";
+
+      fetchMarketplaceListings();
+    });
+  }
+
+  function syncPriceControls(source) {
+    let minV = parseFloat(minSlider.value) || 0;
+    let maxV = parseFloat(maxSlider.value) || 1000;
+
+    if (source === "minInput") {
+      minV = parseFloat(minInput.value) || 0;
+      minSlider.value = minV;
+    } else if (source === "maxInput") {
+      maxV = parseFloat(maxInput.value) || 1000;
+      maxSlider.value = maxV;
+    } else if (source === "minSlider") {
+      minInput.value = minV;
+    } else if (source === "maxSlider") {
+      maxInput.value = maxV;
+    }
+
+    if (minV > maxV) {
+      if (source === "minInput" || source === "minSlider") {
+        maxV = minV;
+        maxSlider.value = maxV;
+        maxInput.value = maxV;
+      } else {
+        minV = maxV;
+        minSlider.value = minV;
+        minInput.value = minV;
+      }
+    }
+
+    if (badge) {
+      badge.textContent = `₹${minV} - ₹${maxV}/${currentLang === "kn" ? "ಕೆಜಿ" : "kg"}`;
+    }
+
+    fetchMarketplaceListings();
+  }
+
+  if (searchInput) searchInput.addEventListener("input", fetchMarketplaceListings);
+
+  if (minSlider) minSlider.addEventListener("input", () => syncPriceControls("minSlider"));
+  if (maxSlider) maxSlider.addEventListener("input", () => syncPriceControls("maxSlider"));
+  if (minInput) minInput.addEventListener("input", () => syncPriceControls("minInput"));
+  if (maxInput) maxInput.addEventListener("input", () => syncPriceControls("maxInput"));
 
   modalBtn.addEventListener("click", () => {
     if (!checkAuthOrPrompt()) return;
@@ -1332,6 +1468,7 @@ function initMarketplace() {
         modal.classList.add("hidden");
         form.reset();
         fetchMarketplaceListings();
+        renderProfileStats();
       }
     } catch (err) {
       alert("Failed to publish listing: " + err.message);
@@ -1341,25 +1478,73 @@ function initMarketplace() {
 
 async function fetchMarketplaceListings() {
   const feed = document.getElementById("marketplace-feed");
+  if (!feed) return;
   feed.innerHTML = `<p class='empty-state'>${currentLang === "kn" ? "ಬೆಳೆ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..." : "Loading listings..."}</p>`;
 
+  const searchInput = document.getElementById("market-search-input");
+  const minSlider = document.getElementById("market-min-slider");
+  const maxSlider = document.getElementById("market-max-slider");
+
+  const queryVal = searchInput ? searchInput.value.trim() : "";
+  const minPriceVal = minSlider ? parseFloat(minSlider.value) : 0;
+  const maxPriceVal = maxSlider ? parseFloat(maxSlider.value) : 1000;
+
   try {
-    const res = await fetch(`${API_BASE}/api/marketplace/listings`);
-    const listings = await res.json();
+    let endpoint = activeMarketTab === "mine" ? `${API_BASE}/api/marketplace/my-listings` : `${API_BASE}/api/marketplace/listings`;
+    
+    // Append search & price parameters
+    const params = new URLSearchParams();
+    if (queryVal) params.append("query", queryVal);
+    if (minPriceVal > 0) params.append("min_price", minPriceVal.toString());
+    if (maxPriceVal < 1000) params.append("max_price", maxPriceVal.toString());
+
+    if (params.toString() && activeMarketTab !== "mine") {
+      endpoint += `?${params.toString()}`;
+    }
+
+    const headers = activeMarketTab === "mine" ? getAuthHeaders() : {};
+    const res = await fetch(endpoint, { headers });
+
+    if (res.status === 401) {
+      checkAuthOrPrompt();
+      return;
+    }
+
+    let listings = await res.json();
+
+    // Client-side multi-field filter fallback for 'mine' tab
+    if (activeMarketTab === "mine" && listings && listings.length) {
+      listings = listings.filter(l => l.price_per_kg >= minPriceVal && l.price_per_kg <= maxPriceVal);
+      if (queryVal) {
+        const q = queryVal.toLowerCase();
+        listings = listings.filter(l => 
+          (l.crop_name && l.crop_name.toLowerCase().includes(q)) ||
+          (l.variety && l.variety.toLowerCase().includes(q)) ||
+          (l.address && l.address.toLowerCase().includes(q)) ||
+          (l.farmer_name && l.farmer_name.toLowerCase().includes(q)) ||
+          (l.description && l.description.toLowerCase().includes(q))
+        );
+      }
+    }
 
     feed.innerHTML = "";
     if (!listings || !listings.length) {
-      feed.innerHTML = `<p class='empty-state'>${currentLang === "kn" ? "ಯಾವುದೇ ಬೆಳೆ ಮಾರಾಟ ವಿವರಗಳು ಪ್ರಸ್ತುತ ಲಭ್ಯವಿಲ್ಲ." : "No crop listings currently available."}</p>`;
+      feed.innerHTML = `<p class='empty-state'>${activeMarketTab === "mine" ? (currentLang === "kn" ? "ನೀವು ಯಾವುದೇ ಬೆಳೆ ಮಾರಾಟ ವಿವರಗಳನ್ನು ಪ್ರಕಟಿಸಿಲ್ಲ." : "You have not published any crop listings yet.") : (currentLang === "kn" ? "ಯಾವುದೇ ಬೆಳೆ ಮಾರಾಟ ವಿವರಗಳು ಕಂಡುಬಂದಿಲ್ಲ." : "No crop listings found matching your search.")}</p>`;
       return;
     }
 
     listings.forEach(item => {
       const card = document.createElement("div");
       card.className = "market-card";
+      const isOwner = currentUser && item.user_id === currentUser.id;
+
       card.innerHTML = `
         <div class="market-card-body">
-          <div class="market-title-row">
-            <h3 class="market-title">${item.crop_name}</h3>
+          <div class="market-title-row" style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <h3 class="market-title">${item.crop_name}</h3>
+              ${isOwner ? `<span style="background:#e0f2fe; color:#0369a1; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:10px;">${currentLang === "kn" ? "ನಿಮ್ಮ ಪ್ರಕಟಣೆ" : "Your Listing"}</span>` : ''}
+            </div>
             <span class="market-price">₹${item.price_per_kg}/${currentLang === "kn" ? "ಕೆಜಿ" : "kg"}</span>
           </div>
           <p class="market-meta">${currentLang === "kn" ? "ತಳಿ" : "Variety"}: <strong>${item.variety}</strong> | ${currentLang === "kn" ? "ಪ್ರಮಾಣ" : "Quantity"}: <strong>${item.quantity_kg} kg</strong></p>
@@ -1368,18 +1553,46 @@ async function fetchMarketplaceListings() {
             <span>${item.address} (${item.farmer_name} • ${item.contact_phone})</span>
           </div>
           ${item.description ? `<p class="market-meta">${item.description}</p>` : ''}
-          <div style="margin-top: 10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
             <a href="${item.google_maps_url}" target="_blank" rel="noopener" class="btn-gmaps">
               <i data-lucide="navigation"></i> ${I18N[currentLang].viewGmaps}
             </a>
+            ${isOwner ? `<button class="btn btn-sm btn-outline delete-listing-btn" data-id="${item.id}" style="border-color:#fca5a5; color:#dc2626;"><i data-lucide="trash-2"></i> ${currentLang === "kn" ? "ಅಳಿಸಿ" : "Delete"}</button>` : ''}
           </div>
         </div>
       `;
+
+      if (isOwner) {
+        const delBtn = card.querySelector(".delete-listing-btn");
+        if (delBtn) {
+          delBtn.onclick = async () => {
+            if (confirm(currentLang === "kn" ? "ಈ ಪ್ರಕಟಣೆಯನ್ನು ಅಳಿಸಲು ಖಚಿತವಾಗಿದ್ದೀರಾ?" : "Are you sure you want to delete this listing?")) {
+              await deleteMyListing(item.id);
+            }
+          };
+        }
+      }
+
       feed.appendChild(card);
     });
     lucide.createIcons();
   } catch (err) {
     feed.innerHTML = `<p class='empty-state'>${currentLang === "kn" ? "ಮಾರುಕಟ್ಟೆ ವಿವರಗಳನ್ನು ಪಡೆಯುವಲ್ಲಿ ದೋಷವಾಗಿದೆ." : "Error loading marketplace listings."}</p>`;
+  }
+}
+
+async function deleteMyListing(listingId) {
+  try {
+    const res = await fetch(`${API_BASE}/api/marketplace/listings/${listingId}`, {
+      method: "DELETE",
+      headers: getAuthHeaders()
+    });
+    if (res.ok) {
+      fetchMarketplaceListings();
+      renderProfileStats();
+    }
+  } catch (e) {
+    alert("Failed to delete listing.");
   }
 }
 
@@ -1437,11 +1650,13 @@ function showUndoToast(messageText, onUndoCallback) {
 async function deleteHistoryItem(index) {
   if (!checkAuthOrPrompt()) return;
 
-  let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
+  const storageKey = getHistoryStorageKey();
+  let history = JSON.parse(localStorage.getItem(storageKey) || "[]");
   if (index >= 0 && index < history.length) {
     const deletedItem = history.splice(index, 1)[0];
-    localStorage.setItem("plantiq_history", JSON.stringify(history));
+    localStorage.setItem(storageKey, JSON.stringify(history));
     renderHistoryFeed();
+    renderProfileStats();
 
     if (deletedItem.sha256_hash) {
       try {
@@ -1455,10 +1670,11 @@ async function deleteHistoryItem(index) {
     }
 
     showUndoToast(I18N[currentLang].toastSingleDeleted, async () => {
-      let currentHistory = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
+      let currentHistory = JSON.parse(localStorage.getItem(storageKey) || "[]");
       currentHistory.splice(index, 0, deletedItem);
-      localStorage.setItem("plantiq_history", JSON.stringify(currentHistory));
+      localStorage.setItem(storageKey, JSON.stringify(currentHistory));
       renderHistoryFeed();
+      renderProfileStats();
     });
   }
 }
@@ -1466,12 +1682,14 @@ async function deleteHistoryItem(index) {
 async function clearAllHistory() {
   if (!checkAuthOrPrompt()) return;
 
-  let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
+  const storageKey = getHistoryStorageKey();
+  let history = JSON.parse(localStorage.getItem(storageKey) || "[]");
   if (!history.length) return;
 
   const previousHistory = [...history];
-  localStorage.removeItem("plantiq_history");
+  localStorage.removeItem(storageKey);
   renderHistoryFeed();
+  renderProfileStats();
 
   try {
     await fetch(`${API_BASE}/api/cache/clear`, {
@@ -1483,22 +1701,27 @@ async function clearAllHistory() {
   }
 
   showUndoToast(I18N[currentLang].toastAllCleared, () => {
-    localStorage.setItem("plantiq_history", JSON.stringify(previousHistory));
+    localStorage.setItem(storageKey, JSON.stringify(previousHistory));
     renderHistoryFeed();
+    renderProfileStats();
   });
 }
 
 function saveToHistoryLocal(item) {
-  let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
+  const storageKey = getHistoryStorageKey();
+  let history = JSON.parse(localStorage.getItem(storageKey) || "[]");
   history.unshift(item);
   if (history.length > 15) history.pop();
-  localStorage.setItem("plantiq_history", JSON.stringify(history));
+  localStorage.setItem(storageKey, JSON.stringify(history));
   renderHistoryFeed();
+  renderProfileStats();
 }
 
 function renderHistoryFeed() {
   const feed = document.getElementById("history-feed");
-  let history = JSON.parse(localStorage.getItem("plantiq_history") || "[]");
+  if (!feed) return;
+  const storageKey = getHistoryStorageKey();
+  let history = JSON.parse(localStorage.getItem(storageKey) || "[]");
   if (!history.length) {
     feed.innerHTML = `<p class='empty-state'>${I18N[currentLang].historyEmpty}</p>`;
     return;
@@ -1546,7 +1769,48 @@ function renderHistoryFeed() {
 }
 
 /* -------------------------------------------------------------
- * 8. Language Toggle (English <-> Kannada) & Voice STT Input
+ * 8. Farmer Profile Page Logic
+ * ------------------------------------------------------------- */
+async function renderProfileStats() {
+  if (!currentUser) return;
+
+  const nameElem = document.getElementById("profile-full-name");
+  const usernameElem = document.getElementById("profile-username");
+  const emailElem = document.getElementById("profile-email-val");
+  const scansCountElem = document.getElementById("profile-stat-scans");
+  const listingsCountElem = document.getElementById("profile-stat-listings");
+  const logoutBtn = document.getElementById("profile-logout-btn");
+
+  if (nameElem) nameElem.textContent = currentUser.full_name || currentUser.username;
+  if (usernameElem) usernameElem.textContent = `@${currentUser.username}`;
+  if (emailElem) emailElem.textContent = currentUser.email || "-";
+
+  // Total Scans Count from User-Scoped LocalStorage
+  let history = JSON.parse(localStorage.getItem(getHistoryStorageKey()) || "[]");
+  if (scansCountElem) scansCountElem.textContent = history.length;
+
+  // Total Listings Count from Backend API
+  try {
+    const res = await fetch(`${API_BASE}/api/marketplace/my-listings`, {
+      headers: getAuthHeaders()
+    });
+    if (res.ok) {
+      const myListings = await res.json();
+      if (listingsCountElem) listingsCountElem.textContent = myListings.length;
+    }
+  } catch (e) {
+    console.warn("Failed to fetch my listings count:", e);
+  }
+
+  if (logoutBtn) {
+    logoutBtn.onclick = async () => {
+      await performUserLogout();
+    };
+  }
+}
+
+/* -------------------------------------------------------------
+ * 9. Language Toggle (English <-> Kannada) & Voice STT Input
  * ------------------------------------------------------------- */
 function initLanguageToggle() {
   const langBtn = document.getElementById("lang-btn");
@@ -1648,11 +1912,25 @@ function updateLanguageUI() {
   // Toast
   document.getElementById("txt-btn-undo").textContent = t.btnUndo;
 
-  // Marketplace screen
+  // Marketplace screen & Dual Price Controls
   document.getElementById("txt-market-title").textContent = t.marketTitle;
   document.getElementById("txt-market-sub").textContent = t.marketSub;
   document.getElementById("txt-btn-sell").textContent = t.btnSell;
   document.getElementById("market-search-input").placeholder = t.marketSearchPlaceholder;
+  if (document.getElementById("lbl-price-range-title")) document.getElementById("lbl-price-range-title").textContent = t.lblPriceRangeTitle;
+  if (document.getElementById("lbl-min-price")) document.getElementById("lbl-min-price").textContent = t.lblMinPrice;
+  if (document.getElementById("lbl-max-price")) document.getElementById("lbl-max-price").textContent = t.lblMaxPrice;
+  if (document.getElementById("lbl-min-slider")) document.getElementById("lbl-min-slider").textContent = t.lblMinSlider;
+  if (document.getElementById("lbl-max-slider")) document.getElementById("lbl-max-slider").textContent = t.lblMaxSlider;
+  if (document.getElementById("txt-market-tab-all")) document.getElementById("txt-market-tab-all").textContent = t.marketTabAll;
+  if (document.getElementById("txt-market-tab-mine")) document.getElementById("txt-market-tab-mine").textContent = t.marketTabMine;
+
+  const minSlider = document.getElementById("market-min-slider");
+  const maxSlider = document.getElementById("market-max-slider");
+  const badge = document.getElementById("market-price-range-badge");
+  if (minSlider && maxSlider && badge) {
+    badge.textContent = `₹${minSlider.value} - ₹${maxSlider.value}/${currentLang === "kn" ? "ಕೆಜಿ" : "kg"}`;
+  }
 
   // History screen
   document.getElementById("txt-history-title").textContent = t.historyTitle;
@@ -1661,11 +1939,21 @@ function updateLanguageUI() {
     document.getElementById("txt-btn-clear-history").textContent = t.btnClearHistory;
   }
 
+  // Profile screen
+  if (document.getElementById("txt-profile-title")) document.getElementById("txt-profile-title").textContent = t.profileTitle;
+  if (document.getElementById("txt-profile-sub")) document.getElementById("txt-profile-sub").textContent = t.profileSub;
+  if (document.getElementById("txt-stat-scans-lbl")) document.getElementById("txt-stat-scans-lbl").textContent = t.statScansLbl;
+  if (document.getElementById("txt-stat-listings-lbl")) document.getElementById("txt-stat-listings-lbl").textContent = t.statListingsLbl;
+  if (document.getElementById("lbl-profile-email")) document.getElementById("lbl-profile-email").textContent = t.lblProfileEmail;
+  if (document.getElementById("lbl-profile-status")) document.getElementById("lbl-profile-status").textContent = t.lblProfileStatus;
+  if (document.getElementById("txt-profile-logout")) document.getElementById("txt-profile-logout").textContent = t.profileLogout;
+
   // Bottom Navigation Labels
   document.getElementById("nav-scanner-lbl").textContent = t.navScanner;
   document.getElementById("nav-chat-lbl").textContent = t.navChat;
   document.getElementById("nav-market-lbl").textContent = t.navMarket;
   document.getElementById("nav-history-lbl").textContent = t.navHistory;
+  if (document.getElementById("nav-profile-lbl")) document.getElementById("nav-profile-lbl").textContent = t.navProfile;
 
   // Listing Modal Labels & Location Guide
   document.getElementById("txt-modal-title").textContent = t.modalTitle;
@@ -1692,6 +1980,7 @@ function updateLanguageUI() {
   }
   fetchMarketplaceListings();
   renderHistoryFeed();
+  renderProfileStats();
 }
 
 function initSpeech() {

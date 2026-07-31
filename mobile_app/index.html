@@ -287,10 +287,52 @@
         </div>
 
         <!-- Filter Bar -->
-        <div class="market-filter-bar">
-          <div class="search-box">
+        <!-- Market Sub-Tabs & Filtering Controls -->
+        <div class="market-sub-tabs" style="display: flex; gap: 10px; margin-bottom: 14px; background: #f1f5f9; padding: 4px; border-radius: 10px;">
+          <button class="btn btn-sm active" id="market-tab-all" style="flex:1; font-weight:700; border-radius:8px;"><span id="txt-market-tab-all">All Marketplace Listings</span></button>
+          <button class="btn btn-sm" id="market-tab-mine" style="flex:1; font-weight:700; border-radius:8px; background:transparent; color:#64748b;"><span id="txt-market-tab-mine">Your Listings</span></button>
+        </div>
+
+        <!-- Universal Search & Interactive Dual Price Slider Card -->
+        <div class="card market-filter-card" style="padding: 14px 16px; margin-bottom: 16px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <!-- Universal Search Input -->
+          <div class="search-box" style="margin-bottom: 14px;">
             <i data-lucide="search"></i>
-            <input type="text" id="market-search-input" placeholder="Search Arabica, Robusta, Location...">
+            <input type="text" id="market-search-input" placeholder="Search by crop title, variety, location, farmer..." style="width: 100%;">
+          </div>
+
+          <!-- Dual Price Filter Header -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <div style="display: flex; align-items: center; gap: 6px; color: #166534; font-weight: 700; font-size: 0.84rem;">
+              <i data-lucide="sliders-horizontal" style="width: 16px; height: 16px;"></i>
+              <span id="lbl-price-range-title">Price Range Filter (₹/kg)</span>
+            </div>
+            <span id="market-price-range-badge" style="font-weight: 800; color: #166534; background: #dcfce7; padding: 3px 10px; border-radius: 12px; font-size: 0.78rem;">₹0 - ₹1000/kg</span>
+          </div>
+
+          <!-- Two-Way Custom Amount Numeric Input Boxes -->
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <div style="flex: 1; display: flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 4px 8px;">
+              <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;" id="lbl-min-price">Min ₹</span>
+              <input type="number" id="market-min-input" min="0" max="1000" step="10" value="0" placeholder="0" style="width: 100%; border: none; background: transparent; font-weight: 700; font-size: 0.84rem; color: #0f172a; outline: none;">
+            </div>
+            <span style="color: #94a3b8; font-weight: 700;">-</span>
+            <div style="flex: 1; display: flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 4px 8px;">
+              <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;" id="lbl-max-price">Max ₹</span>
+              <input type="number" id="market-max-input" min="0" max="1000" step="10" value="1000" placeholder="1000" style="width: 100%; border: none; background: transparent; font-weight: 700; font-size: 0.84rem; color: #0f172a; outline: none;">
+            </div>
+          </div>
+
+          <!-- Two-Way Dual Sliders Container -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.78rem;">
+              <span style="width: 68px; color: #64748b; font-weight: 600;" id="lbl-min-slider">Min Price:</span>
+              <input type="range" id="market-min-slider" min="0" max="1000" step="10" value="0" style="flex: 1; accent-color: #166534; cursor: pointer;">
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.78rem;">
+              <span style="width: 68px; color: #64748b; font-weight: 600;" id="lbl-max-slider">Max Price:</span>
+              <input type="range" id="market-max-slider" min="0" max="1000" step="10" value="1000" style="flex: 1; accent-color: #166534; cursor: pointer;">
+            </div>
           </div>
         </div>
 
@@ -316,6 +358,50 @@
         </div>
       </section>
 
+      <!-- SCREEN 5: FARMER PROFILE PAGE -->
+      <section id="screen-profile" class="app-screen">
+        <div class="screen-header">
+          <h1 id="txt-profile-title">Farmer Profile</h1>
+          <p class="subtitle" id="txt-profile-sub">Manage your farmer account, scan diagnostics stats, and marketplace listings.</p>
+        </div>
+
+        <div class="card profile-card" style="max-width: 480px; margin: 0 auto; padding: 24px; text-align: center;">
+          <div style="width: 72px; height: 72px; border-radius: 50%; background: #dcfce7; color: #15803d; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; font-size: 1.8rem; font-weight: 800; border: 2px solid #86efac;">
+            <i data-lucide="user" style="width: 36px; height: 36px;"></i>
+          </div>
+          <h2 id="profile-full-name" style="font-size: 1.3rem; font-weight: 800; color: #0f172a; margin-bottom: 2px;">Farmer Name</h2>
+          <p id="profile-username" style="font-size: 0.84rem; color: #64748b; margin-bottom: 16px;">@username</p>
+
+          <!-- Stats Grid -->
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+            <div style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;">
+              <span style="display: block; font-size: 0.76rem; color: #64748b; margin-bottom: 4px;" id="txt-stat-scans-lbl">Total Scans</span>
+              <strong id="profile-stat-scans" style="font-size: 1.3rem; color: #166534;">0</strong>
+            </div>
+            <div style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;">
+              <span style="display: block; font-size: 0.76rem; color: #64748b; margin-bottom: 4px;" id="txt-stat-listings-lbl">Your Listings</span>
+              <strong id="profile-stat-listings" style="font-size: 1.3rem; color: #166534;">0</strong>
+            </div>
+          </div>
+
+          <!-- User Info List -->
+          <div style="text-align: left; background: #f1f5f9; padding: 16px; border-radius: 12px; margin-bottom: 20px; font-size: 0.84rem;">
+            <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #e2e8f0;">
+              <span style="color: #64748b;" id="lbl-profile-email">Email Address:</span>
+              <strong id="profile-email-val" style="color: #0f172a;">-</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+              <span style="color: #64748b;" id="lbl-profile-status">Account Status:</span>
+              <span style="color: #166534; font-weight: 700;">Active Farmer</span>
+            </div>
+          </div>
+
+          <button id="profile-logout-btn" class="btn btn-outline" style="width: 100%; border-color: #fca5a5; color: #dc2626; font-weight: 700; padding: 10px;">
+            <i data-lucide="log-out"></i> <span id="txt-profile-logout">Sign Out of Account</span>
+          </button>
+        </div>
+      </section>
+
     </main>
 
     <!-- Bottom Navigation Bar -->
@@ -335,6 +421,10 @@
       <button class="nav-item" data-target="screen-history">
         <i data-lucide="history"></i>
         <span class="nav-label" id="nav-history-lbl">History</span>
+      </button>
+      <button class="nav-item" data-target="screen-profile">
+        <i data-lucide="user"></i>
+        <span class="nav-label" id="nav-profile-lbl">Profile</span>
       </button>
     </nav>
 

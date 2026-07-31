@@ -17,6 +17,7 @@ class CropListingCreate(BaseModel):
 class CropListingResponse(CropListingCreate):
     id: int
     image_url: Optional[str] = None
+    user_id: Optional[int] = None
     created_at: datetime
 
     @computed_field

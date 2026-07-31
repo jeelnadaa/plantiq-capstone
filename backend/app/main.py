@@ -116,8 +116,8 @@ async def predict_and_advise(
         if not contents:
             raise HTTPException(status_code=400, detail="Uploaded file is empty.")
 
-        # Step 1: Deduplication Check via Composite Hash (image + question + language)
-        image_hash = compute_image_hash(contents, user_question=user_question, language=language)
+        # Step 1: Deduplication Check via Composite Hash (image + user_id + question + language)
+        image_hash = compute_image_hash(contents, user_id=current_user.id, user_question=user_question, language=language)
         cached_result = get_cached_image_result(db, image_hash)
         if cached_result:
             print(f"[Cache HIT] Found cached analysis for hash={image_hash[:10]}...")

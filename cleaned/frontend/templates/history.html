@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PlantIQ — Scan History</title>
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/navbar.css">
+  <link rel="stylesheet" href="/static/css/profile.css">
+  <link rel="stylesheet" href="/static/css/scanner.css">
+  <script src="/static/js/api.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="page-header">
+      <div class="brand">
+        <div class="brand-icon"><i data-lucide="leaf"></i></div>
+        <span class="brand-name">PlantIQ</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn-theme btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i data-lucide="moon"></i>
+        </button>
+        <button class="btn-lang" id="btn-lang-toggle">
+          <i data-lucide="globe"></i> <span id="current-lang-indicator">EN</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <h1 class="section-title" data-i18n="historyTitle" style="margin:0;">Scan History</h1>
+        <button class="btn btn-sm btn-outline hidden" id="btn-clear-all-history" onclick="handleClearAllHistory()" style="color:var(--danger); border-color:var(--danger); padding:4px 8px; font-size:0.75rem;" data-i18n="btnClearAllHistory">
+          Clear All
+        </button>
+      </div>
+      <p class="section-subtitle" data-i18n="historySubtitle">Saved deduplicated scans stored in your local image cache.</p>
+
+      <!-- History Feed -->
+      <div id="history-feed-container"></div>
+
+      <!-- 3-Second Undo Toast Notification Bar -->
+      <div class="undo-toast hidden" id="undo-toast">
+        <span id="undo-toast-msg" style="font-size:0.85rem; font-weight:600;">Scan deleted</span>
+        <button type="button" class="btn btn-sm btn-primary" id="btn-undo-action" style="padding:4px 12px; font-size:0.75rem; background:var(--primary); color:#ffffff;">
+          Undo (3s)
+        </button>
+        <div class="undo-toast-timer-bar" id="undo-toast-timer-bar"></div>
+      </div>
+
+      <!-- Complete Diagnostic Report Modal -->
+      <div class="modal-overlay hidden" id="scan-details-modal">
+        <div class="modal-container" style="max-width:440px; width:92%; padding:22px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="font-size:1.1rem; font-weight:800; margin:0;" data-i18n="detailsModalTitle">Complete Diagnostic Report</h3>
+            <button class="btn-icon" id="btn-close-details-modal" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
+          </div>
+
+          <div id="scan-details-body"></div>
+
+          <div style="display:flex; gap:8px; margin-top:16px;">
+            <button type="button" class="btn btn-primary" id="btn-details-ask-chat" style="flex:1;">
+              <i data-lucide="message-square"></i> <span data-i18n="btnAskInChat">Ask Follow-Up in Chat</span>
+            </button>
+            <button type="button" class="btn btn-outline" id="btn-details-delete-scan" style="color:var(--danger); border-color:var(--danger);" title="Delete Scan">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="/" class="nav-tab">
+        <i data-lucide="scan"></i>
+        <span data-i18n="navScanner">Scanner</span>
+      </a>
+      <a href="/chat" class="nav-tab">
+        <i data-lucide="message-square"></i>
+        <span data-i18n="navChat">Chatbot</span>
+      </a>
+      <a href="/marketplace" class="nav-tab">
+        <i data-lucide="shopping-bag"></i>
+        <span data-i18n="navMarket">Market</span>
+      </a>
+      <a href="/history" class="nav-tab active">
+        <i data-lucide="clock"></i>
+        <span data-i18n="navHistory">History</span>
+      </a>
+      <a href="/profile" class="nav-tab">
+        <i data-lucide="user"></i>
+        <span data-i18n="navProfile">Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="/static/js/i18n.js"></script>
+  <script src="/static/js/profile.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

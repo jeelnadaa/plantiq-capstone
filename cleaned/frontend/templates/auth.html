@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PlantIQ — Sign In / Register</title>
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/navbar.css">
+  <link rel="stylesheet" href="/static/css/auth.css">
+  <script src="/static/js/api.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="page-header">
+      <div class="brand">
+        <div class="brand-icon"><i data-lucide="leaf"></i></div>
+        <span class="brand-name">PlantIQ</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn-theme btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i data-lucide="moon"></i>
+        </button>
+        <button class="btn-lang" id="btn-lang-toggle">
+          <i data-lucide="globe"></i> <span id="current-lang-indicator">EN</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tab-btn-login">Sign In</button>
+        <button class="auth-tab-btn" id="tab-btn-register">Register</button>
+      </div>
+
+      <form id="form-login" class="card" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Username or Email</label>
+          <input type="text" id="login-username" class="form-control" placeholder="e.g. jeel_nada" required>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:6px; padding:12px;">Sign In</button>
+      </form>
+
+      <form id="form-register" class="card hidden" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Full Name</label>
+          <input type="text" id="reg-fullname" class="form-control" placeholder="Your Name" required>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Username</label>
+          <input type="text" id="reg-username" class="form-control" placeholder="username" required>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Email Address</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="farmer@example.com" required>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Password</label>
+          <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:6px; padding:12px;">Create Account</button>
+      </form>
+    </main>
+  </div>
+  <script src="/static/js/i18n.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

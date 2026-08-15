@@ -151,12 +151,36 @@ python build_apk.py
 
 It automatically syncs all frontend files, updates Capacitor, recompiles Gradle, and puts the fresh **`PlantIQ.apk`** right in `cleaned/mobile/PlantIQ.apk`!
 
-#### Step 4: Install & Test on Your Mobile Phone
-1. Transfer `app-debug.apk` to your Android phone via USB cable, WhatsApp, or Google Drive.
-2. Tap the `.apk` file on your phone and choose **Install**.
-3. Ensure your phone and laptop are connected to the same Wi-Fi (or your phone's Mobile Hotspot).
-4. Make sure your backend server is running (`python run.py`).
-5. Open **PlantIQ** on your phone $\rightarrow$ Tap the **Server icon** $\rightarrow$ Enter your laptop's IP $\rightarrow$ Tap **Save & Connect**!
+#### Step 4: Testing with Friends Remotely (3 Methods)
+
+##### Method A: Cloudflare Tunnel (Zero Password, 100% Free — Recommended)
+To let friends test from their phones anywhere with zero verification screens:
+1. Keep the backend running in Terminal 1:
+   ```bash
+   cd d:\end-capstone-project\cleaned\backend
+   python run.py
+   ```
+2. Open a **new terminal window** and run:
+   ```bash
+   npx.cmd cloudflared tunnel --url http://127.0.0.1:8000
+   ```
+3. It prints a free direct HTTPS URL (e.g. `https://random-words.trycloudflare.com`).
+4. Share `PlantIQ.apk` with your friends on WhatsApp along with that link.
+5. In the app on their phone, they tap the **Server icon** $\rightarrow$ enter `https://random-words.trycloudflare.com` $\rightarrow$ tap **Save & Connect**!
+
+##### Method B: Localtunnel
+```bash
+npx.cmd localtunnel --port 8000
+```
+*Note: PlantIQ APK automatically passes the `Bypass-Tunnel-Reminder` header to bypass the HTTP 511 interstitial screen.*
+
+##### Method C: 24/7 Free Cloud Hosting on Render.com
+For permanent 24/7 testing without needing your laptop turned on:
+1. Push `cleaned/backend` to GitHub.
+2. Create a free **Web Service** on [Render.com](https://render.com).
+3. Set **Build Command**: `pip install -r requirements.txt` and **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
+4. Add environment variables (`GEMINI_API_KEY`, `GROQ_API_KEY`, `SECRET_KEY`).
+5. Render generates a permanent URL (e.g. `https://plantiq-api.onrender.com`) for all your evaluators and friends to use 24/7!
 
 ---
 

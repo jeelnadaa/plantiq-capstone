@@ -59,7 +59,10 @@ function clearAuthToken() {
 
 function getAuthHeaders() {
   const token = getAuthToken();
-  const headers = {};
+  const headers = {
+    "bypass-tunnel-reminder": "true",
+    "Bypass-Tunnel-Reminder": "1"
+  };
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -118,7 +121,11 @@ async function checkAuthGuard() {
   try {
     const base = getApiBase();
     const res = await fetch(`${base}/api/auth/me`, {
-      headers: { "Authorization": `Bearer ${token}` }
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "bypass-tunnel-reminder": "true",
+        "Bypass-Tunnel-Reminder": "1"
+      }
     });
     if (!res.ok) {
       clearAuthToken();
@@ -177,7 +184,10 @@ function initServerSettings() {
       try {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 4000);
-        const res = await fetch(`${targetUrl}/health`, { signal: controller.signal });
+        const res = await fetch(`${targetUrl}/health`, {
+          signal: controller.signal,
+          headers: { "bypass-tunnel-reminder": "true", "Bypass-Tunnel-Reminder": "1" }
+        });
         clearTimeout(timeout);
         const latency = Date.now() - startTime;
         if (res.ok) {
@@ -220,7 +230,10 @@ async function updateServerStatusIndicator() {
 
   const base = getApiBase();
   try {
-    const res = await fetch(`${base}/health`, { signal: AbortSignal.timeout(2500) });
+    const res = await fetch(`${base}/health`, {
+      signal: AbortSignal.timeout(2500),
+      headers: { "bypass-tunnel-reminder": "true", "Bypass-Tunnel-Reminder": "1" }
+    });
     if (res.ok) {
       dot.forEach(d => {
         d.style.background = "#22c55e";

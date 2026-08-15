@@ -314,10 +314,10 @@ A complete standalone native Android project is available in `cleaned/mobile/`:
 cd cleaned/mobile
 npx.cmd cap open android
 ```
-In **Android Studio**:
-1. Go to **Build** $\rightarrow$ **Build Bundle(s) / APK(s)** $\rightarrow$ **Build APK(s)**.
-2. Locate `app-debug.apk` in `cleaned/mobile/android/app/build/outputs/apk/debug/`.
-3. Transfer to your phone and install!
+### 3. Remote Testing with Friends & 24/7 Cloud Hosting
+- **Zero-Password Live Tunnel (Cloudflare)**: Run `npx.cmd cloudflared tunnel --url http://127.0.0.1:8000`. Share the generated `trycloudflare.com` link with friends!
+- **Localtunnel**: Run `npx.cmd localtunnel --port 8000` (Bypass headers are pre-configured in the app).
+- **24/7 Cloud (Render.com)**: Deploy `cleaned/backend` on Render as a Python Web Service with `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
 
 ---
 

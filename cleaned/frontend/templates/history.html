@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>PlantIQ — Scan History</title>
   <link rel="stylesheet" href="/static/css/base.css">
   <link rel="stylesheet" href="/static/css/navbar.css">
@@ -19,6 +19,10 @@
         <span class="brand-name">PlantIQ</span>
       </div>
       <div class="header-actions">
+                <button class="btn-theme btn-open-server-settings" title="Backend Server Settings" style="position:relative;">
+          <i data-lucide="server"></i>
+          <span class="server-status-dot" style="position:absolute; top:4px; right:4px; width:8px; height:8px; border-radius:50%; background:#22c55e; border:1px solid #ffffff;"></span>
+        </button>
         <button class="btn-theme btn-theme-toggle" title="Toggle Dark/Light Mode">
           <i data-lucide="moon"></i>
         </button>
@@ -70,6 +74,44 @@
         </div>
       </div>
     </main>
+
+    <!-- Dynamic Server Backend IP / URL Configuration Modal -->
+    <div class="modal-overlay hidden" id="server-settings-modal" style="z-index:2600;">
+      <div class="modal-container" style="max-width:420px; width:92%; padding:22px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="server" style="color:var(--primary); width:22px; height:22px;"></i>
+            <h3 style="font-size:1.1rem; font-weight:800; margin:0;">Backend Server Connection</h3>
+          </div>
+          <button class="btn-icon" id="btn-close-server-settings" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
+        </div>
+
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.4;">
+          Connect your mobile app to your laptop or cloud server. If your Wi-Fi IP changes, simply update it below.
+        </p>
+
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">Server IP / URL</label>
+          <input type="text" id="server-ip-input" class="form-control" placeholder="e.g. 192.168.1.15:8000 or https://api.plantiq.ai">
+          <small style="font-size:0.68rem; color:var(--text-muted); margin-top:3px; display:block;">Enter your laptop's Wi-Fi IP (from <code>ipconfig</code>) with port 8000</small>
+        </div>
+
+        <div id="server-test-result" style="font-size:0.75rem; margin-bottom:14px; min-height:18px;"></div>
+
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <button type="button" class="btn btn-secondary" id="btn-test-server-connection" style="flex:1;">
+            <i data-lucide="activity"></i> Test Ping
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-save-server-settings" style="flex:1;">
+            <i data-lucide="save"></i> Save & Connect
+          </button>
+        </div>
+        <button type="button" class="btn btn-text" id="btn-reset-server-settings" style="width:100%; font-size:0.75rem; color:var(--text-muted);">
+          Reset to Default
+        </button>
+      </div>
+    </div>
+
 
     <nav class="bottom-nav">
       <a href="/" class="nav-tab">

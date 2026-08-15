@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PlantIQ — Coffee Crop Marketplace</title>
+  <link rel="stylesheet" href="./static/css/base.css">
+  <link rel="stylesheet" href="./static/css/navbar.css">
+  <link rel="stylesheet" href="./static/css/marketplace.css">
+  <script src="./static/js/api.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="page-header">
+      <div class="brand">
+        <div class="brand-icon"><i data-lucide="leaf"></i></div>
+        <span class="brand-name">PlantIQ</span>
+      </div>
+      <div class="header-actions">
+                <button class="btn-theme btn-open-server-settings" title="Backend Server Settings" style="position:relative;">
+          <i data-lucide="server"></i>
+          <span class="server-status-dot" style="position:absolute; top:4px; right:4px; width:8px; height:8px; border-radius:50%; background:#22c55e; border:1px solid #ffffff;"></span>
+        </button>
+        <button class="btn-theme btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i data-lucide="moon"></i>
+        </button>
+        <button class="btn-lang" id="btn-lang-toggle">
+          <i data-lucide="globe"></i> <span id="current-lang-indicator">EN</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <h1 class="section-title" data-i18n="marketTitle" style="margin:0;">Coffee Crop Marketplace</h1>
+        <button class="btn btn-sm btn-primary" id="btn-open-sell-modal" data-i18n="btnSellCrop">+ Sell Crop</button>
+      </div>
+      <p class="section-subtitle" data-i18n="marketSubtitle">Browse coffee bean lots from local growers with 1-tap Google Maps estate directions.</p>
+
+      <!-- Tabs: All Listings vs Your Listings -->
+      <div class="market-tabs">
+        <button type="button" class="market-tab-btn active" id="tab-market-all">
+          <i data-lucide="layers" style="width:16px; height:16px;"></i> <span data-i18n="tabAllListings">All Listings</span>
+        </button>
+        <button type="button" class="market-tab-btn" id="tab-market-mine">
+          <i data-lucide="user-check" style="width:16px; height:16px;"></i> <span data-i18n="tabMyListings">Your Listings</span>
+        </button>
+      </div>
+
+      <!-- Search & Dual Price Filters -->
+      <div class="market-filters">
+        <input type="text" id="market-search-input" class="form-control" placeholder="Search by crop title, variety, location, farmer..." data-i18n-placeholder="searchPlaceholder">
+        
+        <div class="dual-slider-container">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">
+            <span data-i18n="filterPriceRange">Price Filter (₹/kg)</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <input type="range" id="price-min-slider" min="0" max="1000" step="10" value="0">
+            <input type="range" id="price-max-slider" min="0" max="1000" step="10" value="1000">
+          </div>
+          <div class="price-inputs-row">
+            <input type="number" id="price-min-input" class="form-control" value="0" placeholder="Min ₹">
+            <input type="number" id="price-max-input" class="form-control" value="1000" placeholder="Max ₹">
+          </div>
+        </div>
+      </div>
+
+      <!-- Listings Stream -->
+      <div id="marketplace-listings-container">
+        <div style="text-align:center; padding:30px;"><i data-lucide="loader-2" class="spin"></i> Loading listings...</div>
+      </div>
+
+      <!-- Sell Modal with Inline GPS/Coordinates & Multi-Photo Upload with Captions -->
+      <div class="card modal-overlay hidden" id="sell-crop-modal" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); z-index:1300; display:flex; align-items:center; justify-content:center;">
+        <div class="modal-container" style="border-radius:18px; max-width:440px; width:92%; max-height:88vh; overflow-y:auto; padding:22px; box-shadow:var(--shadow-lg);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="font-size:1.1rem; font-weight:800; margin:0;" data-i18n="sellModalTitle">List Coffee Crop for Sale</h3>
+            <button class="btn-icon" id="btn-close-sell-modal" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
+          </div>
+          <form id="sell-crop-form" style="display:flex; flex-direction:column; gap:10px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblCropTitle">Crop Title</label>
+              <input type="text" id="sell-title" class="form-control" placeholder="e.g. Premium Arabica Parchment" required>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              <div>
+                <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblVariety">Variety</label>
+                <input type="text" id="sell-variety" class="form-control" placeholder="Arabica / Robusta" required>
+              </div>
+              <div>
+                <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblQuantity">Quantity (kg)</label>
+                <input type="number" id="sell-qty" class="form-control" placeholder="500" required>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblPricePerKg">Price per Kg (₹)</label>
+              <input type="number" id="sell-price" class="form-control" placeholder="420" required>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              <div>
+                <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblFarmerName">Farmer Name</label>
+                <input type="text" id="sell-farmer" class="form-control" placeholder="Your Name" required>
+              </div>
+              <div>
+                <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblPhone">Phone / WhatsApp</label>
+                <input type="text" id="sell-phone" class="form-control" placeholder="+919876543210" required>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblAddress">Estate Address</label>
+              <input type="text" id="sell-address" class="form-control" placeholder="Chikmagalur, Karnataka" required>
+            </div>
+
+            <!-- Inline Estate GPS & Manual Coordinate Section -->
+            <div style="background:var(--bg-card-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-size:0.76rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:4px;">
+                  <i data-lucide="map-pin" style="width:14px; height:14px; color:var(--primary);"></i>
+                  <span data-i18n="lblEstateLocation">Estate GPS / Coordinates</span>
+                </span>
+                <button type="button" class="btn btn-sm btn-outline btn-open-gmaps-guide" style="padding:2px 6px; font-size:0.68rem;" data-i18n="btnGmapsGuide">GMaps Guide</button>
+              </div>
+              <div id="sell-loc-status-text" style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px;">13.3161, 75.7720 (Auto GPS)</div>
+              <div style="display:flex; gap:6px;">
+                <button type="button" id="btn-sell-gps" class="btn btn-sm btn-primary" style="flex:1;"><i data-lucide="crosshair"></i> <span data-i18n="btnAutoGps">Auto GPS</span></button>
+                <button type="button" id="btn-sell-manual" class="btn btn-sm btn-secondary" style="flex:1;"><i data-lucide="edit-3"></i> <span data-i18n="btnManualEntry">Manual Entry</span></button>
+              </div>
+              <div id="sell-manual-latlng-box" class="hidden" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px;">
+                <div>
+                  <label style="font-size:0.68rem; font-weight:600;" data-i18n="lblLat">Latitude (°N)</label>
+                  <input type="number" step="0.0001" id="sell-lat" class="form-control" style="padding:6px 8px; font-size:0.8rem;" placeholder="13.3161">
+                </div>
+                <div>
+                  <label style="font-size:0.68rem; font-weight:600;" data-i18n="lblLng">Longitude (°E)</label>
+                  <input type="number" step="0.0001" id="sell-lng" class="form-control" style="padding:6px 8px; font-size:0.8rem;" placeholder="75.7720">
+                </div>
+              </div>
+            </div>
+
+            <!-- Multi-Photo Upload with Individual Captions -->
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;" data-i18n="btnAddPhotos">Add Crop Photos</label>
+              <div class="photo-uploader-box" id="sell-photo-dropzone">
+                <input type="file" id="sell-photo-input" accept="image/*" multiple hidden>
+                <i data-lucide="camera" style="width:22px; height:22px; color:var(--primary); margin-bottom:4px;"></i>
+                <div style="font-size:0.78rem; font-weight:700;">+ Click to select 1 or multiple photos</div>
+                <div style="font-size:0.7rem; color:var(--text-muted);">Add lots, drying yards, parchment images</div>
+              </div>
+              <div id="sell-photos-preview-list"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top:8px; padding:12px;" data-i18n="btnPublishListing">Publish Listing</button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Dynamic Server Backend IP / URL Configuration Modal -->
+    <div class="modal-overlay hidden" id="server-settings-modal" style="z-index:2600;">
+      <div class="modal-container" style="max-width:420px; width:92%; padding:22px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="server" style="color:var(--primary); width:22px; height:22px;"></i>
+            <h3 style="font-size:1.1rem; font-weight:800; margin:0;">Backend Server Connection</h3>
+          </div>
+          <button class="btn-icon" id="btn-close-server-settings" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
+        </div>
+
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.4;">
+          Connect your mobile app to your laptop or cloud server. If your Wi-Fi IP changes, simply update it below.
+        </p>
+
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">Server IP / URL</label>
+          <input type="text" id="server-ip-input" class="form-control" placeholder="e.g. 192.168.1.15:8000 or https://api.plantiq.ai">
+          <small style="font-size:0.68rem; color:var(--text-muted); margin-top:3px; display:block;">Enter your laptop's Wi-Fi IP (from <code>ipconfig</code>) with port 8000</small>
+        </div>
+
+        <div id="server-test-result" style="font-size:0.75rem; margin-bottom:14px; min-height:18px;"></div>
+
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <button type="button" class="btn btn-secondary" id="btn-test-server-connection" style="flex:1;">
+            <i data-lucide="activity"></i> Test Ping
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-save-server-settings" style="flex:1;">
+            <i data-lucide="save"></i> Save & Connect
+          </button>
+        </div>
+        <button type="button" class="btn btn-text" id="btn-reset-server-settings" style="width:100%; font-size:0.75rem; color:var(--text-muted);">
+          Reset to Default
+        </button>
+      </div>
+    </div>
+
+
+    <!-- Google Maps Guide Modal -->
+    <div class="card modal-overlay hidden" id="gmaps-guide-modal" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); z-index:1400; display:flex; align-items:center; justify-content:center;">
+      <div class="modal-container" style="border-radius:18px; max-width:440px; width:92%; max-height:85vh; overflow-y:auto; padding:22px; box-shadow:var(--shadow-lg);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="map-pin" style="color:var(--primary); width:22px; height:22px;"></i>
+            <h3 style="font-size:1.05rem; font-weight:800; margin:0;">Google Maps Coordinates Guide</h3>
+          </div>
+          <button class="btn-icon" id="btn-close-gmaps-guide" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
+        </div>
+        <div style="background:var(--bg-card-subtle); border:1px solid var(--border-subtle); border-radius:10px; padding:12px; margin-bottom:12px;">
+          <strong style="color:var(--primary); font-size:0.85rem; display:block; margin-bottom:6px;">📍 English Instructions:</strong>
+          <ol style="font-size:0.8rem; line-height:1.5; color:var(--text-main); padding-left:18px; margin:0;">
+            <li>Open the <strong>Google Maps</strong> app on your mobile.</li>
+            <li>Zoom in and <strong>long press</strong> on your coffee estate plot to drop a red pin.</li>
+            <li>Look at the top search bar for coordinates like <code>13.3161, 75.7720</code>.</li>
+            <li>Enter the first number as <strong>Latitude</strong> and second as <strong>Longitude</strong>.</li>
+          </ol>
+        </div>
+        <div style="background:var(--primary-light); border:1px solid var(--primary-border); border-radius:10px; padding:12px; margin-bottom:16px;">
+          <strong style="color:var(--primary); font-size:0.85rem; display:block; margin-bottom:6px;">📍 ಕನ್ನಡ ಮಾರ್ಗದರ್ಶಿ (Kannada):</strong>
+          <ol style="font-size:0.8rem; line-height:1.5; color:var(--text-main); padding-left:18px; margin:0;">
+            <li>ನಿಮ್ಮ ಮೊಬೈಲ್‌ನಲ್ಲಿ <strong>ಗೂಗಲ್ ಮ್ಯಾಪ್ಸ್</strong> ಆಪ್ ತೆರೆಯಿರಿ.</li>
+            <li>ನಿಮ್ಮ ಕಾಫಿ ತೋಟದ ಮೇಲೆ <strong>ದೀರ್ಘವಾಗಿ ಒತ್ತಿ ಹಿಡಿಯಿರಿ (Long Press)</strong>, ಕೆಂಪು ಪಿನ್ ಬೀಳುತ್ತದೆ.</li>
+            <li>ಸರ್ಚ್ ಬಾರ್‌ನಲ್ಲಿ <code>13.3161, 75.7720</code> ಸಂಖ್ಯೆಗಳು ಕಾಣಿಸುತ್ತವೆ.</li>
+            <li>ಮೊದಲ ಸಂಖ್ಯೆ <strong>ಅಕ್ಷಾಂಶ (Latitude)</strong> ಮತ್ತು ಎರಡನೇ ಸಂಖ್ಯೆ <strong>ರೇಖಾಂಶ (Longitude)</strong> ಆಗಿದೆ.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="./index.html" class="nav-tab">
+        <i data-lucide="scan"></i>
+        <span data-i18n="navScanner">Scanner</span>
+      </a>
+      <a href="./chat.html" class="nav-tab">
+        <i data-lucide="message-square"></i>
+        <span data-i18n="navChat">Chatbot</span>
+      </a>
+      <a href="./marketplace.html" class="nav-tab active">
+        <i data-lucide="shopping-bag"></i>
+        <span data-i18n="navMarket">Market</span>
+      </a>
+      <a href="./history.html" class="nav-tab">
+        <i data-lucide="clock"></i>
+        <span data-i18n="navHistory">History</span>
+      </a>
+      <a href="./profile.html" class="nav-tab">
+        <i data-lucide="user"></i>
+        <span data-i18n="navProfile">Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="./static/js/i18n.js"></script>
+  <script src="./static/js/location.js"></script>
+  <script src="./static/js/marketplace.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

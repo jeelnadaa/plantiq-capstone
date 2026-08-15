@@ -301,14 +301,23 @@ FastAPI serves the **REST API** and the **Mobile Client** simultaneously at `htt
 
 ---
 
-## 📱 Mobile Device Access (PWA)
+## 📱 Mobile Device Access & Android APK Build
 
-1. **Connect to Same Network**: Connect your smartphone and PC to the same Wi-Fi.
-2. **Find Your IP**: Run `ipconfig` (Windows) and note your `IPv4 Address` (e.g. `192.168.1.5`).
-3. **Open in Mobile Browser**:
-   Navigate to `http://192.168.1.5:8000` in Chrome or Safari.
-4. **Install App**:
-   Tap **"Add to Home Screen"** in your mobile browser to run PlantIQ as a native fullscreen app with camera, microphone, and GPS permissions!
+### 1. In-App Dynamic Server IP Switcher
+The app features an in-app server configuration modal accessible from the top header Server icon (`<i data-lucide="server"></i>` with live 🟢/🔴 status indicator):
+- Allows entering any laptop IP (e.g. `192.168.1.15:8000`), hotspot IP, or cloud URL (e.g. `https://plantiq.onrender.com`).
+- Includes a **"Test Ping"** button to verify latency and connectivity in real time.
+
+### 2. Building the Native Android APK (Capacitor 7)
+A complete standalone native Android project is available in `cleaned/mobile/`:
+```bash
+cd cleaned/mobile
+npx.cmd cap open android
+```
+In **Android Studio**:
+1. Go to **Build** $\rightarrow$ **Build Bundle(s) / APK(s)** $\rightarrow$ **Build APK(s)**.
+2. Locate `app-debug.apk` in `cleaned/mobile/android/app/build/outputs/apk/debug/`.
+3. Transfer to your phone and install!
 
 ---
 

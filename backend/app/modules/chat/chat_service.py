@@ -117,14 +117,21 @@ def process_chat_message(
         rag_context = "\n\n".join([f"[{i+1}] {c.source} p.{c.page}: {c.text}" for i, c in enumerate(chunks)])
         sources = list(set([f"{c.source} (p.{c.page})" for c in chunks]))
 
-    # 4. Construct Prompt with Language Directives
+    # 4. Extract existing message history for multi-turn conversational memory
+    history = [
+        {"role": m.role, "content": m.content}
+        for m in thread.messages
+    ]
+
+    # Construct Prompt with Language Directives and Multi-Turn History
     prompt = build_chat_prompt(
         user_question=user_message,
         rag_context=rag_context,
         attached_image_info=attached_image_info,
         env_data=env_data,
         language=language,
-        detected_lang=detected_lang
+        detected_lang=detected_lang,
+        history=history
     )
 
     # 5. Query LLM

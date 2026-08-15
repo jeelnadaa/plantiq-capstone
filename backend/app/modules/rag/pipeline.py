@@ -6,6 +6,7 @@ from groq import Groq
 from app.core.config import settings
 from app.modules.rag.vector_store import get_vector_store, Chunk
 from app.modules.rag.blender import evaluate_confidence, construct_advisory_prompt
+from app.modules.rag.language_router import detect_language_and_script, translate_query_for_rag_retrieval
 
 log = logging.getLogger(__name__)
 
@@ -59,13 +60,20 @@ def generate_disease_advisory(
     language: str = "en",
     provider: str = "gemini"
 ) -> AdvisoryResult:
-    """Runs the full CNN -> RAG -> LLM flow with confidence-aware blending."""
+    """Runs the full CNN -> RAG -> LLM flow with confidence-aware blending and language routing."""
     if env_data is None:
         env_data = {}
 
+    detected_lang = "english"
+    if user_question:
+        detected_lang = detect_language_and_script(user_question, ui_lang_hint=language)
+    elif language == "kn":
+        detected_lang = "kannada_script"
+
     if is_healthy or disease == "Healthy":
         healthy_msg = (
-            "ಉತ್ತಮ ಉದ್ಯಾನವನ! ನಿಮ್ಮ ಕಾಫಿ ಎಲೆ ಆರೋಗ್ಯಕರವಾಗಿದೆ." if language == "kn" else
+            "ಉತ್ತಮ ಉದ್ಯಾನವನ! ನಿಮ್ಮ ಕಾಫಿ ಎಲೆ ಆರೋಗ್ಯಕರವಾಗಿದೆ ಮತ್ತು ಯಾವುದೇ ರೋಗದ ಲಕ್ಷಣಗಳು ಕಂಡುಬಂದಿಲ್ಲ. ನಿಯಮಿತ ನೀರಾವರಿ, ಕಳೆ ನಿಯಂತ್ರಣ ಮತ್ತು ಮಣ್ಣಿನ ನಿರ್ವಹಣೆಯನ್ನು ಮುಂದುವರಿಸಿ." 
+            if (detected_lang in ["kannada_script", "kanglish"] or language == "kn") else
             "Great news! Your coffee leaf appears healthy and free of detected diseases. Maintain normal irrigation, weed control, and soil management."
         )
         return AdvisoryResult(
@@ -77,11 +85,12 @@ def generate_disease_advisory(
             sources=[]
         )
 
-    # 1. Perform FAISS vector retrieval
+    # 1. Perform FAISS vector retrieval with English normalized search terms
     store = get_vector_store()
     search_query = f"{disease} treatment coffee symptoms prevention"
     if user_question:
-        search_query = f"{disease} {user_question}"
+        translated_q = translate_query_for_rag_retrieval(user_question, detected_lang)
+        search_query = f"{disease} {translated_q}"
     if env_data:
         search_query += " " + " ".join(str(v) for v in env_data.values())
 
@@ -95,10 +104,9 @@ def generate_disease_advisory(
     ) if chunks else "No specific document context found in local knowledge base."
 
     # 2. Evaluate confidence thresholds
-    # Convert CNN confidence from 0-100 to percentage comparison
     eval_res = evaluate_confidence(cnn_confidence, best_rag_score)
 
-    # 3. Construct prompt
+    # 3. Construct prompt with language directives
     prompt = construct_advisory_prompt(
         disease=disease,
         cnn_confidence=cnn_confidence,
@@ -106,7 +114,8 @@ def generate_disease_advisory(
         user_question=user_question,
         rag_context=formatted_context,
         confidence_eval=eval_res,
-        language=language
+        language=language,
+        detected_lang=detected_lang
     )
 
     # 4. Generate response via LLM

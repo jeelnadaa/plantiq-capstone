@@ -1983,38 +1983,249 @@ function updateLanguageUI() {
   renderProfileStats();
 }
 
-function initSpeech() {
-  const micBtn = document.getElementById("voice-mic-btn");
-  const textInput = document.getElementById("chat-text-input");
+// Global Audio Recorder State
+let activeVoiceRecorder = null;
+let activeVoiceStream = null;
+let activeVoiceChunks = [];
+let activeRecordingBtn = null;
+let pendingVoiceTarget = null;
+let activeVoiceLang = "kn";
 
+function initSpeech() {
+  const chatMicBtn = document.getElementById("voice-mic-btn");
+  const chatInput = document.getElementById("chat-text-input");
+  const scanMicBtn = document.getElementById("scan-voice-mic-btn");
+  const scanInput = document.getElementById("scan-question-input");
+
+  const voiceModal = document.getElementById("voice-lang-modal");
+  const btnLangKn = document.getElementById("btn-voice-lang-kn");
+  const btnLangEn = document.getElementById("btn-voice-lang-en");
+  const closeVoiceModalBtn = document.getElementById("close-voice-modal-btn");
+
+  if (chatMicBtn && chatInput) {
+    chatMicBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleMicClick(chatMicBtn, chatInput);
+    };
+  }
+  if (scanMicBtn && scanInput) {
+    scanMicBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleMicClick(scanMicBtn, scanInput);
+    };
+  }
+
+  if (btnLangKn) {
+    btnLangKn.onclick = () => {
+      if (voiceModal) voiceModal.classList.add("hidden");
+      if (pendingVoiceTarget) {
+        startVoiceRecording(pendingVoiceTarget.micBtn, pendingVoiceTarget.textInput, "kn");
+      }
+    };
+  }
+
+  if (btnLangEn) {
+    btnLangEn.onclick = () => {
+      if (voiceModal) voiceModal.classList.add("hidden");
+      if (pendingVoiceTarget) {
+        startVoiceRecording(pendingVoiceTarget.micBtn, pendingVoiceTarget.textInput, "en");
+      }
+    };
+  }
+
+  if (closeVoiceModalBtn) {
+    closeVoiceModalBtn.onclick = () => {
+      if (voiceModal) voiceModal.classList.add("hidden");
+      pendingVoiceTarget = null;
+    };
+  }
+}
+
+function handleMicClick(micBtn, textInput) {
+  // If currently recording with this button, stop it
+  if (activeVoiceRecorder && activeVoiceRecorder.state === "recording") {
+    activeVoiceRecorder.stop();
+    return;
+  }
+
+  // If another button is active, stop it
+  if (activeVoiceRecorder) {
+    try { activeVoiceRecorder.stop(); } catch(e){}
+  }
+
+  // Prompt language selection modal
+  pendingVoiceTarget = { micBtn, textInput };
+  const voiceModal = document.getElementById("voice-lang-modal");
+  if (voiceModal) {
+    voiceModal.classList.remove("hidden");
+    lucide.createIcons();
+  } else {
+    startVoiceRecording(micBtn, textInput, currentLang);
+  }
+}
+
+async function startVoiceRecording(micBtn, textInput, voiceLang) {
+  activeVoiceLang = voiceLang;
+
+  // Check MediaDevices support
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    fallbackWebSpeech(micBtn, textInput, voiceLang);
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    activeVoiceStream = stream;
+    activeVoiceChunks = [];
+    activeRecordingBtn = micBtn;
+
+    let mimeType = "audio/webm";
+    if (typeof MediaRecorder.isTypeSupported === "function") {
+      if (MediaRecorder.isTypeSupported("audio/webm")) mimeType = "audio/webm";
+      else if (MediaRecorder.isTypeSupported("audio/mp4")) mimeType = "audio/mp4";
+      else if (MediaRecorder.isTypeSupported("audio/ogg")) mimeType = "audio/ogg";
+      else mimeType = "";
+    }
+
+    const options = mimeType ? { mimeType } : {};
+    activeVoiceRecorder = new MediaRecorder(stream, options);
+
+    activeVoiceRecorder.ondataavailable = (event) => {
+      if (event.data && event.data.size > 0) {
+        activeVoiceChunks.push(event.data);
+      }
+    };
+
+    activeVoiceRecorder.onstart = () => {
+      micBtn.classList.add("recording");
+      const langName = voiceLang === "kn" ? "ಕನ್ನಡ" : "English";
+      micBtn.title = `Recording in ${langName}... Tap to stop`;
+      micBtn.innerHTML = `<i data-lucide="square" style="width:16px; height:16px; color:#ffffff; fill:#ffffff;"></i>`;
+      lucide.createIcons();
+    };
+
+    activeVoiceRecorder.onstop = async () => {
+      micBtn.classList.remove("recording");
+      micBtn.innerHTML = `<i data-lucide="loader" class="spin" style="width:16px; height:16px;"></i>`;
+      lucide.createIcons();
+
+      // Release microphone hardware
+      if (activeVoiceStream) {
+        activeVoiceStream.getTracks().forEach(track => track.stop());
+        activeVoiceStream = null;
+      }
+
+      const chunksToSend = [...activeVoiceChunks];
+      activeVoiceChunks = [];
+      activeVoiceRecorder = null;
+      activeRecordingBtn = null;
+
+      if (chunksToSend.length > 0) {
+        const audioBlob = new Blob(chunksToSend, { type: mimeType || "audio/webm" });
+        await sendAudioToBackend(audioBlob, textInput, micBtn, voiceLang);
+      } else {
+        restoreMicButton(micBtn);
+      }
+    };
+
+    // Start with 250ms timeslice to ensure continuous chunk capture
+    activeVoiceRecorder.start(250);
+
+  } catch (err) {
+    console.warn("Microphone access failed:", err);
+    restoreMicButton(micBtn);
+    if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError" || err.message.includes("dismissed")) {
+      const msg = currentLang === "kn"
+        ? "ಮೈಕ್ರೊಫೋನ್ ಅನುಮತಿ ನಿಷ್ಕ್ರಿಯಗೊಂಡಿದೆ! ದಯವಿಟ್ಟು ಬ್ರೌಸರ್ ವಿಳಾಸ ಪಟ್ಟಿಯಲ್ಲಿರುವ ಲಾಕ್ (🔒) ಐಕಾನ್ ಕ್ಲಿಕ್ ಮಾಡಿ ಮೈಕ್ರೊಫೋನ್ ಅನುಮತಿಯನ್ನು 'Allow' ಮಾಡಿ."
+        : "Microphone permission is blocked in your browser! Please click the Lock/Sliders icon (🔒) in your Chrome address bar and set Microphone to 'Allow', then try again.";
+      alert(msg);
+    } else {
+      fallbackWebSpeech(micBtn, textInput, voiceLang);
+    }
+  }
+}
+
+async function sendAudioToBackend(audioBlob, textInput, micBtn, voiceLang) {
+  const formData = new FormData();
+  formData.append("file", audioBlob, "speech_audio.webm");
+  formData.append("language", voiceLang || currentLang);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/voice/transcribe`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: formData
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.transcript && data.transcript.trim()) {
+        const transcribedText = data.transcript.trim();
+        const existing = textInput.value.trim();
+        textInput.value = existing ? `${existing} ${transcribedText}` : transcribedText;
+        textInput.focus();
+      } else {
+        console.warn("Empty transcript returned by speech service.");
+      }
+    } else {
+      console.warn("Server transcription returned status:", res.status);
+    }
+  } catch (err) {
+    console.error("Backend voice transcription error:", err);
+  } finally {
+    restoreMicButton(micBtn);
+  }
+}
+
+function restoreMicButton(micBtn) {
+  micBtn.classList.remove("recording");
+  micBtn.title = currentLang === "kn" ? "ಧ್ವನಿ ಇನ್ಪುಟ್" : "Voice Input";
+  micBtn.innerHTML = `<i data-lucide="mic"></i>`;
+  lucide.createIcons();
+}
+
+function fallbackWebSpeech(micBtn, textInput, voiceLang) {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    micBtn.style.display = "none";
+    alert(currentLang === "kn" ? "ಧ್ವನಿ ರೆಕಾರ್ಡಿಂಗ್ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ." : "Voice input is not supported on this device/browser.");
+    restoreMicButton(micBtn);
     return;
   }
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = new SpeechRecognition();
-
   recognition.continuous = false;
   recognition.interimResults = false;
+  recognition.lang = (voiceLang === "kn" || currentLang === "kn") ? "kn-IN" : "en-US";
 
-  micBtn.addEventListener("click", () => {
-    recognition.lang = currentLang === "kn" ? "kn-IN" : "en-US";
-    micBtn.classList.add("recording");
-    recognition.start();
-  });
+  micBtn.classList.add("recording");
+  micBtn.innerHTML = `<i data-lucide="square" style="width:16px; height:16px; color:#ffffff; fill:#ffffff;"></i>`;
+  lucide.createIcons();
+
+  recognition.start();
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
-    textInput.value = transcript;
-    micBtn.classList.remove("recording");
+    if (transcript) {
+      const existing = textInput.value.trim();
+      textInput.value = existing ? `${existing} ${transcript.trim()}` : transcript.trim();
+      textInput.focus();
+    }
+    restoreMicButton(micBtn);
   };
 
-  recognition.onerror = () => {
-    micBtn.classList.remove("recording");
+  recognition.onerror = (e) => {
+    console.warn("SpeechRecognition error:", e.error);
+    restoreMicButton(micBtn);
+    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+      alert(currentLang === "kn"
+        ? "ಮೈಕ್ರೊಫೋನ್ ಅನುಮತಿ ನಿಷ್ಕ್ರಿಯಗೊಂಡಿದೆ! ದಯವಿಟ್ಟು ಬ್ರೌಸರ್ ವಿಳಾಸ ಪಟ್ಟಿಯಲ್ಲಿ ಮೈಕ್ರೊಫೋನ್ ಅನುಮತಿ ನೀಡಿ."
+        : "Microphone access is blocked! Please click the lock icon in your address bar and allow microphone permissions.");
+    }
   };
 
   recognition.onend = () => {
-    micBtn.classList.remove("recording");
+    restoreMicButton(micBtn);
   };
 }

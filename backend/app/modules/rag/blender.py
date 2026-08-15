@@ -31,10 +31,12 @@ def construct_advisory_prompt(
     user_question: str | None,
     rag_context: str,
     confidence_eval: Dict[str, Any],
-    language: str = "en"
+    language: str = "en",
+    detected_lang: str = "english"
 ) -> str:
     """
     Constructs an LLM prompt. If confidence is low, uses a Blended Prompt format.
+    Supports Kannada script, Kanglish, and English output directives.
     """
     env_str = ""
     if env_data:
@@ -43,8 +45,14 @@ def construct_advisory_prompt(
             env_str += f"- {k}: {v}\n"
 
     lang_instruction = ""
-    if language == "kn":
-        lang_instruction = "\nIMPORTANT: Provide the final answer in Kannada (ಕನ್ನಡ) language with clear, practical steps for a coffee farmer."
+    if detected_lang in ["kannada_script", "kanglish"] or language == "kn":
+        lang_instruction = (
+            "\nLANGUAGE DIRECTIVE (MANDATORY):\n"
+            "- Provide the entire response in fluent, respectful Kannada written in native Kannada script (ಕನ್ನಡ ಲಿಪಿ).\n"
+            "- Mention chemical or fertilizer names with English terms in parentheses where helpful (e.g., ಬೋರ್ಡೋ ಮಿಶ್ರಣ (Bordeaux Mixture 1%))."
+        )
+    else:
+        lang_instruction = "\nLANGUAGE DIRECTIVE: Provide the response in clear, encouraging English suitable for coffee planters."
 
     if confidence_eval["is_low_confidence"]:
         # BLENDED PROMPT
@@ -52,7 +60,7 @@ def construct_advisory_prompt(
         prompt = f"""\
 You are an expert agronomist providing assistance to a coffee farmer.
 
-[NOTICE - LOW CONFIDENCE DIAGNOSIS]
+[NOTICE - LOW CERTAINTY SAFEGUARD]
 {reasons_text}
 Because of potential uncertainty in the initial diagnosis or knowledge retrieval, please generate a BLENDED response combining retrieved knowledge base insights with your core pre-trained agricultural expertise.
 
@@ -64,10 +72,10 @@ Retrieved Knowledge Base Context:
 {rag_context}
 
 Please structure your response with:
-1. **Diagnosis & Caution Note**: Clearly state the diagnosis ({disease}) but advise verifying symptoms (mention key visual indicators).
-2. **Environmental Assessment**: How current site conditions (temperature, humidity, soil pH) affect disease progression.
+1. **Diagnosis & Caution Note**: Clearly state the diagnosis ({disease}) but advise verifying symptoms.
+2. **Environmental Assessment**: How current site conditions affect disease progression.
 3. **Immediate Action Steps**: Safe, effective organic/chemical treatments.
-4. **General Preventive Advice**: Soil health, pruning, and monitoring guidelines based on standard coffee farming practices.
+4. **General Preventive Advice**: Soil health, pruning, and shade management.
 5. **Clear Guidance**: Concise, actionable steps spoken directly to the farmer.
 {lang_instruction}"""
     else:

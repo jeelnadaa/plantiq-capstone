@@ -139,10 +139,15 @@
             </label>
           </div>
 
-          <!-- Question Input (Optional) -->
+          <!-- Question Input (Optional with Voice Mic) -->
           <div class="input-group">
             <label id="txt-lbl-question">Specific Question (Optional)</label>
-            <input type="text" id="scan-question-input" placeholder="e.g., Which fungicide is safe near a stream?">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="text" id="scan-question-input" placeholder="e.g., Which fungicide is safe near a stream?" style="flex: 1;">
+              <button type="button" class="btn-icon voice-btn" id="scan-voice-mic-btn" title="Voice Input" style="width: 42px; height: 42px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; color: #166534; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
+                <i data-lucide="mic"></i>
+              </button>
+            </div>
           </div>
 
           <button id="analyze-btn" class="btn btn-primary btn-block">
@@ -634,6 +639,32 @@
           </div>
           <button type="submit" class="btn btn-primary" style="width: 100%;"><span id="txt-btn-submit-register">Create Account</span></button>
         </form>
+      </div>
+    </div>
+
+    <!-- Voice Language Selection Modal (Standalone Top-Level) -->
+    <div class="modal-overlay hidden" id="voice-lang-modal" style="z-index: 1200;">
+      <div class="modal-card" style="max-width: 360px; text-align: center; padding: 22px;">
+        <div style="width: 52px; height: 52px; border-radius: 50%; background: #dcfce7; color: #166534; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; border: 2px solid #86efac;">
+          <i data-lucide="mic" style="width: 26px; height: 26px;"></i>
+        </div>
+        <h3 id="txt-voice-modal-title" style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Choose Voice Language</h3>
+        <p id="txt-voice-modal-sub" style="font-size: 0.8rem; color: #64748b; margin-bottom: 18px;">Select the language you want to speak in</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+          <button class="btn btn-primary" id="btn-voice-lang-kn" type="button" style="padding: 12px; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i data-lucide="volume-2" style="width: 18px; height: 18px;"></i>
+            <span>ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಿ (Kannada)</span>
+          </button>
+          <button class="btn btn-outline" id="btn-voice-lang-en" type="button" style="padding: 12px; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; border-color: #cbd5e1; color: #0f172a;">
+            <i data-lucide="volume-2" style="width: 18px; height: 18px;"></i>
+            <span>Speak in English</span>
+          </button>
+        </div>
+
+        <button class="btn btn-sm btn-secondary" id="close-voice-modal-btn" type="button" style="width: 100%;">
+          <span id="txt-btn-close-voice">Cancel / ರದ್ದು</span>
+        </button>
       </div>
     </div>
 

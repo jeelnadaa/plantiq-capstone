@@ -29,6 +29,7 @@ from app.modules.auth.security import get_current_user
 from app.modules.auth.models import User
 from app.modules.marketplace.router import router as marketplace_router
 from app.modules.speech.translator import get_translations
+from app.modules.voice.service import transcribe_audio_snippet
 from sqlalchemy import text
 from app.core.database import engine, Base
 import app.modules.auth.models
@@ -287,6 +288,27 @@ def clear_cache(
     """
     count = clear_all_cached_image_results(db)
     return {"status": "cleared", "deleted_count": count}
+
+@app.post("/api/voice/transcribe")
+async def voice_transcribe(
+    file: UploadFile = File(...),
+    language: Optional[str] = Form(None)
+):
+    """
+    High-accuracy speech-to-text endpoint powered by Gemini 1.5 Flash Audio
+    with Groq Whisper-large-v3 fallback. Transcribes Kannada script and English.
+    """
+    try:
+        audio_bytes = await file.read()
+        if not audio_bytes:
+            raise HTTPException(status_code=400, detail="Empty audio recording.")
+        
+        content_type = file.content_type or "audio/webm"
+        transcript = transcribe_audio_snippet(audio_bytes, content_type=content_type, language_hint=language)
+        return {"transcript": transcript}
+    except Exception as e:
+        print(f"[Voice Transcribe Error] {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Mount Mobile App Frontend at ROOT (MUST BE LAST so /api routes take precedence)
 MOBILE_APP_DIR = settings.BASE_DIR.parent / "mobile_app"

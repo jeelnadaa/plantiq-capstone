@@ -133,7 +133,18 @@ const I18N = {
     lblRegUsername: "Username",
     lblRegPass: "Password",
     btnSubmitRegister: "Create Farmer Account",
-    loginRequiredMsg: "Please log in or register to access PlantIQ features."
+    loginRequiredMsg: "Please log in or register to access PlantIQ features.",
+    btnGmapsGuide: "GMaps Guide",
+    locAutoGps: "Auto GPS",
+    locManualEntry: "Manual Entry",
+    lblLatEntry: "Latitude (°N)",
+    lblLngEntry: "Longitude (°E)",
+    gmapsModalTitle: "How to Get Coordinates from Google Maps",
+    btnGmapsGotIt: "Got It",
+    voiceModalTitle: "Choose Voice Language",
+    voiceModalSub: "Select the language you want to speak in",
+    btnCloseVoice: "Cancel / ರದ್ದು",
+    chatLocLabel: "Location"
   },
   kn: {
     taglineText: "ಕಾಫಿ ಬೆಳೆ ಎಐ ಮತ್ತು ಮಾರುಕಟ್ಟೆ",
@@ -142,7 +153,7 @@ const I18N = {
     uploadBold: "ಫೋಟೋ ತೆಗೆಯಲು ಟ್ಯಾಪ್ ಮಾಡಿ",
     uploadOr: " ಅಥವಾ ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
     fileHint: "JPEG, PNG ಕಾಫಿ ಎಲೆ ಫೋಟೋಗಳನ್ನು ಬೆಂಬಲಿಸುತ್ತದೆ",
-    locTitle: "ಸ್ಥಳೀಯ ವಾತಾವರಣ ವಿವರಗಳು",
+    locTitle: "ಸ್ಥಳ & ಸೂಕ್ಷ್ಮ ವಾತಾವರಣ",
     lblQuestion: "ನಿರ್ದಿಷ್ಟ ಪ್ರಶ್ನೆ (ಐಚ್ಛಿಕ)",
     scanQuestionPlaceholder: "ಉದಾ: ಹಳ್ಳದ ಬಳಿ ಯಾವ ಶಿಲೀಂಧ್ರನಾಶಕ ಸುರಕ್ಷಿತ?",
     btnAnalyze: "ಎಲೆ ವಿಶ್ಲೇಷಿಸಿ",
@@ -239,7 +250,18 @@ const I18N = {
     lblRegUsername: "ಬಳಕೆದಾರ ಹೆಸರು",
     lblRegPass: "ಪಾಸ್‌ವರ್ಡ್",
     btnSubmitRegister: "ರೈತರ ಖಾತೆ ತೆರೆಯಿರಿ",
-    loginRequiredMsg: "PlantIQ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಬಳಸಲು ದಯವಿಟ್ಟು ಲಾಗಿನ್ ಮಾಡಿ."
+    loginRequiredMsg: "PlantIQ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಬಳಸಲು ದಯವಿಟ್ಟು ಲಾಗಿನ್ ಮಾಡಿ.",
+    btnGmapsGuide: "ಮ್ಯಾಪ್ಸ್ ಮಾರ್ಗದರ್ಶಿ",
+    locAutoGps: "ಸ್ವಯಂಚಾಲಿತ ಜಿಪಿಎಸ್",
+    locManualEntry: "ಹಸ್ತಚಾಲಿತ ನಮೂದು",
+    lblLatEntry: "ಅಕ್ಷಾಂಶ (°N)",
+    lblLngEntry: "ರೇಖಾಂಶ (°E)",
+    gmapsModalTitle: "ಗೂಗಲ್ ಮ್ಯಾಪ್ಸ್‌ನಿಂದ ಅಕ್ಷಾಂಶ-ರೇಖಾಂಶ ಪಡೆಯುವುದು ಹೇಗೆ",
+    btnGmapsGotIt: "ಸರಿ, ಅರ್ಥವಾಯಿತು",
+    voiceModalTitle: "ಧ್ವನಿ ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
+    voiceModalSub: "ನೀವು ಮಾತನಾಡಲು ಬಯಸುವ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    btnCloseVoice: "ರದ್ದುಗೊಳಿಸಿ",
+    chatLocLabel: "ಸ್ಥಳ"
   }
 };
 
@@ -606,42 +628,135 @@ function initNavigation() {
  * ------------------------------------------------------------- */
 function initLocation() {
   const locStatusText = document.getElementById("loc-status-text");
-  const gpsToggle = document.getElementById("gps-toggle");
+  const chatLocStatusText = document.getElementById("chat-loc-status-text");
+  const modeGpsBtn = document.getElementById("loc-mode-gps-btn");
+  const modeManualBtn = document.getElementById("loc-mode-manual-btn");
+  const manualInputs = document.getElementById("manual-coords-inputs");
+  const manualLatInput = document.getElementById("manual-lat-input");
+  const manualLngInput = document.getElementById("manual-lng-input");
+  const gmapsHelpModal = document.getElementById("gmaps-help-modal");
+  const closeGmapsModalBtn = document.getElementById("close-gmaps-modal-btn");
+  const btnGmapsGotIt = document.getElementById("btn-gmaps-got-it");
+
+  userCoords.allowed = true;
+
+  function updateLocationDisplay() {
+    const coordStr = `${userCoords.lat.toFixed(4)}, ${userCoords.lng.toFixed(4)}`;
+    const modeLabel = userCoords.mode === "manual" 
+      ? (currentLang === "kn" ? "(ಹಸ್ತಚಾಲಿತ)" : "(Manual)") 
+      : (currentLang === "kn" ? "(ಸ್ವಯಂಚಾಲಿತ ಜಿಪಿಎಸ್)" : "(Auto GPS)");
+
+    if (locStatusText) locStatusText.textContent = `${coordStr} ${modeLabel}`;
+    if (chatLocStatusText) chatLocStatusText.textContent = `${currentLang === "kn" ? "ಸ್ಥಳ" : "Location"}: ${coordStr} ${modeLabel}`;
+    
+    if (manualLatInput && !manualLatInput.value) manualLatInput.value = userCoords.lat.toFixed(4);
+    if (manualLngInput && !manualLngInput.value) manualLngInput.value = userCoords.lng.toFixed(4);
+
+    const formLat = document.getElementById("form-lat");
+    const formLng = document.getElementById("form-lng");
+    if (formLat && !formLat.value) formLat.value = userCoords.lat.toFixed(4);
+    if (formLng && !formLng.value) formLng.value = userCoords.lng.toFixed(4);
+  }
 
   function requestGPS() {
-    if (!gpsToggle.checked) {
-      userCoords.allowed = false;
-      locStatusText.textContent = currentLang === "kn" ? "ಜಿಪಿಎಸ್ ನಿಷ್ಕ್ರಿಯವಾಗಿದೆ (ಸಾಮಾನ್ಯ ವಿವರ)" : "GPS Disallowed (Default Context)";
+    userCoords.allowed = true;
+    if (userCoords.mode === "manual") {
+      updateLocationDisplay();
       return;
     }
 
     if ("geolocation" in navigator) {
-      locStatusText.textContent = currentLang === "kn" ? "ಜಿಪಿಎಸ್ ಪಡೆಯಲಾಗುತ್ತಿದೆ..." : "Acquiring GPS location...";
+      if (locStatusText) locStatusText.textContent = currentLang === "kn" ? "ಜಿಪಿಎಸ್ ಪಡೆಯಲಾಗುತ್ತಿದೆ..." : "Acquiring GPS location...";
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           userCoords.lat = pos.coords.latitude;
           userCoords.lng = pos.coords.longitude;
-          userCoords.allowed = true;
-          locStatusText.textContent = `${userCoords.lat.toFixed(4)}, ${userCoords.lng.toFixed(4)}`;
-          const formLat = document.getElementById("form-lat");
-          const formLng = document.getElementById("form-lng");
-          if (formLat && !formLat.value) formLat.value = userCoords.lat.toFixed(4);
-          if (formLng && !formLng.value) formLng.value = userCoords.lng.toFixed(4);
+          userCoords.mode = "gps";
+          if (manualLatInput) manualLatInput.value = userCoords.lat.toFixed(4);
+          if (manualLngInput) manualLngInput.value = userCoords.lng.toFixed(4);
+          updateLocationDisplay();
         },
         (err) => {
           console.warn("GPS Access Error:", err.message);
-          userCoords.allowed = false;
-          locStatusText.textContent = currentLang === "kn" ? "ನಿಷ್ಕ್ರಿಯವಾಗಿದೆ (ಸಾಮಾನ್ಯ ವಿವರ)" : "Disallowed / Unavailable (Using Defaults)";
+          // Fallback to Chikmagalur default
+          userCoords.lat = 13.3161;
+          userCoords.lng = 75.7720;
+          updateLocationDisplay();
         },
         { timeout: 8000 }
       );
     } else {
-      userCoords.allowed = false;
-      locStatusText.textContent = currentLang === "kn" ? "ಜಿಪಿಎಸ್ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ" : "GPS Not Supported";
+      updateLocationDisplay();
     }
   }
 
-  gpsToggle.addEventListener("change", requestGPS);
+  if (modeGpsBtn && modeManualBtn) {
+    modeGpsBtn.onclick = () => {
+      userCoords.mode = "gps";
+      modeGpsBtn.className = "btn btn-sm btn-primary";
+      modeManualBtn.className = "btn btn-sm btn-secondary";
+      if (manualInputs) manualInputs.classList.add("hidden");
+      requestGPS();
+    };
+
+    modeManualBtn.onclick = () => {
+      userCoords.mode = "manual";
+      modeGpsBtn.className = "btn btn-sm btn-secondary";
+      modeManualBtn.className = "btn btn-sm btn-primary";
+      if (manualInputs) {
+        manualInputs.classList.remove("hidden");
+        if (manualLatInput) manualLatInput.value = userCoords.lat.toFixed(4);
+        if (manualLngInput) manualLngInput.value = userCoords.lng.toFixed(4);
+      }
+      updateLocationDisplay();
+    };
+  }
+
+  if (manualLatInput) {
+    manualLatInput.addEventListener("input", () => {
+      const val = parseFloat(manualLatInput.value);
+      if (!isNaN(val)) {
+        userCoords.lat = val;
+        userCoords.mode = "manual";
+        updateLocationDisplay();
+      }
+    });
+  }
+
+  if (manualLngInput) {
+    manualLngInput.addEventListener("input", () => {
+      const val = parseFloat(manualLngInput.value);
+      if (!isNaN(val)) {
+        userCoords.lng = val;
+        userCoords.mode = "manual";
+        updateLocationDisplay();
+      }
+    });
+  }
+
+  // Google Maps Help Modal Handlers
+  document.querySelectorAll(".open-gmaps-help-btn").forEach(btn => {
+    btn.onclick = (e) => {
+      e.preventDefault();
+      if (gmapsHelpModal) {
+        gmapsHelpModal.classList.remove("hidden");
+        lucide.createIcons();
+      }
+    };
+  });
+
+  if (closeGmapsModalBtn) {
+    closeGmapsModalBtn.onclick = () => {
+      if (gmapsHelpModal) gmapsHelpModal.classList.add("hidden");
+    };
+  }
+
+  if (btnGmapsGotIt) {
+    btnGmapsGotIt.onclick = () => {
+      if (gmapsHelpModal) gmapsHelpModal.classList.add("hidden");
+    };
+  }
+
   requestGPS();
 }
 
@@ -1970,6 +2085,55 @@ function updateLanguageUI() {
   document.getElementById("txt-guide-title").innerHTML = `<i data-lucide="info"></i> ${t.guideTitle}`;
   document.getElementById("txt-guide-body").innerHTML = t.guideBody;
   document.getElementById("txt-btn-publish").textContent = t.btnPublish;
+
+  // Location Controls & GMaps Guide (Scanner & Chatbot)
+  if (document.getElementById("txt-btn-gmaps-guide")) {
+    document.getElementById("txt-btn-gmaps-guide").textContent = t.btnGmapsGuide;
+  }
+  if (document.getElementById("txt-chat-gmaps-btn")) {
+    document.getElementById("txt-chat-gmaps-btn").textContent = t.btnGmapsGuide;
+  }
+  if (document.getElementById("txt-loc-auto-gps")) {
+    document.getElementById("txt-loc-auto-gps").textContent = t.locAutoGps;
+  }
+  if (document.getElementById("txt-loc-manual-entry")) {
+    document.getElementById("txt-loc-manual-entry").textContent = t.locManualEntry;
+  }
+  if (document.getElementById("lbl-lat-entry")) {
+    document.getElementById("lbl-lat-entry").textContent = t.lblLatEntry;
+  }
+  if (document.getElementById("lbl-lng-entry")) {
+    document.getElementById("lbl-lng-entry").textContent = t.lblLngEntry;
+  }
+  if (document.getElementById("txt-gmaps-modal-title")) {
+    document.getElementById("txt-gmaps-modal-title").textContent = t.gmapsModalTitle;
+  }
+  if (document.getElementById("btn-gmaps-got-it")) {
+    const span = document.getElementById("btn-gmaps-got-it").querySelector("span");
+    if (span) span.textContent = t.btnGmapsGotIt;
+  }
+
+  // Voice Language Modal
+  if (document.getElementById("txt-voice-modal-title")) {
+    document.getElementById("txt-voice-modal-title").textContent = t.voiceModalTitle;
+  }
+  if (document.getElementById("txt-voice-modal-sub")) {
+    document.getElementById("txt-voice-modal-sub").textContent = t.voiceModalSub;
+  }
+  if (document.getElementById("txt-btn-close-voice")) {
+    document.getElementById("txt-btn-close-voice").textContent = t.btnCloseVoice;
+  }
+
+  // Update dynamic location labels
+  const coordStr = `${userCoords.lat.toFixed(4)}, ${userCoords.lng.toFixed(4)}`;
+  const modeLabel = userCoords.mode === "manual" 
+    ? (currentLang === "kn" ? "(ಹಸ್ತಚಾಲಿತ)" : "(Manual)") 
+    : (currentLang === "kn" ? "(ಸ್ವಯಂಚಾಲಿತ ಜಿಪಿಎಸ್)" : "(Auto GPS)");
+
+  const locStatusText = document.getElementById("loc-status-text");
+  const chatLocStatusText = document.getElementById("chat-loc-status-text");
+  if (locStatusText) locStatusText.textContent = `${coordStr} ${modeLabel}`;
+  if (chatLocStatusText) chatLocStatusText.textContent = `${t.chatLocLabel}: ${coordStr} ${modeLabel}`;
 
   updateAttachedImageBarUI();
   updateAuthProfileBar();

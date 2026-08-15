@@ -124,19 +124,44 @@
             </div>
           </div>
 
-          <!-- GPS Location Permission Toggle -->
-          <div class="location-bar">
-            <div class="location-info">
-              <i data-lucide="map-pin" class="pin-icon"></i>
-              <div>
-                <span class="loc-title" id="txt-loc-title">Location Factors</span>
-                <span class="loc-status" id="loc-status-text">Fetching GPS...</span>
+          <!-- GPS Location & Manual Coordinates Selector -->
+          <div class="location-box" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-top: 18px; margin-bottom: 18px;">
+            <div class="location-bar" style="margin-bottom: 8px; padding: 0; background: transparent; border: none;">
+              <div class="location-info">
+                <i data-lucide="map-pin" class="pin-icon" style="color: #166534;"></i>
+                <div>
+                  <span class="loc-title" id="txt-loc-title" style="font-weight: 700; color: #0f172a;">Location & Microclimate</span>
+                  <span class="loc-status" id="loc-status-text" style="font-size: 0.76rem; color: #64748b;">Acquiring GPS...</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <button type="button" class="btn btn-sm btn-outline open-gmaps-help-btn" style="padding: 4px 10px; font-size: 0.74rem; border-color: #cbd5e1; color: #166534; display: flex; align-items: center; gap: 4px;">
+                  <i data-lucide="help-circle" style="width: 14px; height: 14px;"></i> <span id="txt-btn-gmaps-guide">GMaps Guide</span>
+                </button>
               </div>
             </div>
-            <label class="switch">
-              <input type="checkbox" id="gps-toggle" checked>
-              <span class="slider round"></span>
-            </label>
+
+            <!-- Mode Selector Tabs: Auto GPS vs Manual Lat/Long -->
+            <div id="location-mode-container" style="display: flex; gap: 8px; margin-top: 6px; border-top: 1px dashed #e2e8f0; padding-top: 8px;">
+              <button type="button" id="loc-mode-gps-btn" class="btn btn-sm btn-primary" style="flex: 1; padding: 6px; font-size: 0.75rem;">
+                <i data-lucide="crosshair" style="width: 13px; height: 13px;"></i> <span id="txt-loc-auto-gps">Auto GPS</span>
+              </button>
+              <button type="button" id="loc-mode-manual-btn" class="btn btn-sm btn-secondary" style="flex: 1; padding: 6px; font-size: 0.75rem;">
+                <i data-lucide="edit-3" style="width: 13px; height: 13px;"></i> <span id="txt-loc-manual-entry">Manual Entry</span>
+              </button>
+            </div>
+
+            <!-- Manual Lat/Long Inputs (Hidden when in Auto GPS mode) -->
+            <div id="manual-coords-inputs" class="hidden" style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="font-size: 0.72rem; font-weight: 600; color: #475569;" id="lbl-lat-entry">Latitude (°N)</label>
+                <input type="number" step="0.0001" id="manual-lat-input" class="form-control" placeholder="e.g. 13.3161" style="padding: 6px 10px; font-size: 0.8rem; background: #ffffff;">
+              </div>
+              <div>
+                <label style="font-size: 0.72rem; font-weight: 600; color: #475569;" id="lbl-lng-entry">Longitude (°E)</label>
+                <input type="number" step="0.0001" id="manual-lng-input" class="form-control" placeholder="e.g. 75.7720" style="padding: 6px 10px; font-size: 0.8rem; background: #ffffff;">
+              </div>
+            </div>
           </div>
 
           <!-- Question Input (Optional with Voice Mic) -->
@@ -232,12 +257,23 @@
         </div>
 
         <!-- Chat Thread Selector & New Chat Bar -->
-        <div class="chat-thread-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px;">
+        <div class="chat-thread-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 10px;">
           <select id="chat-thread-select" class="form-control" style="flex: 1; padding: 6px 12px; font-size: 0.82rem; border-radius: 8px; background: #ffffff;">
             <option value="">+ New Conversation</option>
           </select>
           <button id="new-chat-btn" class="btn btn-sm btn-primary" style="flex-shrink: 0; padding: 6px 12px;">
             <i data-lucide="plus"></i> <span id="txt-btn-new-chat">New Chat</span>
+          </button>
+        </div>
+
+        <!-- Chat Microclimate Location Context Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; font-size: 0.76rem;">
+          <div style="display: flex; align-items: center; gap: 6px; color: #166534; font-weight: 600;">
+            <i data-lucide="map-pin" style="width: 14px; height: 14px;"></i>
+            <span id="chat-loc-status-text">Location: 13.3161, 75.7720</span>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline open-gmaps-help-btn" style="padding: 2px 8px; font-size: 0.7rem; border-color: #cbd5e1; color: #166534;">
+            <i data-lucide="help-circle" style="width: 12px; height: 12px;"></i> <span id="txt-chat-gmaps-btn">GMaps Guide</span>
           </button>
         </div>
 
@@ -664,6 +700,47 @@
 
         <button class="btn btn-sm btn-secondary" id="close-voice-modal-btn" type="button" style="width: 100%;">
           <span id="txt-btn-close-voice">Cancel / ರದ್ದು</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Google Maps Coordinates Instructions Modal (Bilingual) -->
+    <div class="modal-overlay hidden" id="gmaps-help-modal" style="z-index: 1300;">
+      <div class="modal-card" style="max-width: 440px; text-align: left; padding: 22px; max-height: 85vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="map-pin" style="color: #166534; width: 22px; height: 22px;"></i>
+            <h3 id="txt-gmaps-modal-title" style="font-size: 1.05rem; font-weight: 800; color: #0f172a; margin: 0;">How to Get Coordinates from Google Maps</h3>
+          </div>
+          <button class="btn-icon" id="close-gmaps-modal-btn" type="button"><i data-lucide="x"></i></button>
+        </div>
+
+        <!-- English Guide -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 12px;">
+          <strong style="color: #166534; font-size: 0.85rem; display: block; margin-bottom: 6px;">📍 English Instructions:</strong>
+          <ol style="font-size: 0.8rem; line-height: 1.5; color: #334155; padding-left: 18px; margin: 0;">
+            <li>Open the <strong>Google Maps</strong> app on your mobile phone.</li>
+            <li>Zoom in and <strong>touch & hold (long press)</strong> on your exact coffee estate or plantation plot to drop a red pin.</li>
+            <li>In the search box at the top (or info card at bottom), you will see coordinates like <code>13.3161, 75.7720</code>.</li>
+            <li>The first number is your <strong>Latitude</strong> (e.g. <code>13.3161</code>) and the second is your <strong>Longitude</strong> (e.g. <code>75.7720</code>).</li>
+            <li>Enter these into the Manual Entry boxes in PlantIQ.</li>
+          </ol>
+        </div>
+
+        <!-- Kannada Guide -->
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; margin-bottom: 16px;">
+          <strong style="color: #166534; font-size: 0.85rem; display: block; margin-bottom: 6px;">📍 ಕನ್ನಡ ಮಾರ್ಗದರ್ಶಿ (Kannada Instructions):</strong>
+          <ol style="font-size: 0.8rem; line-height: 1.5; color: #14532d; padding-left: 18px; margin: 0;">
+            <li>ನಿಮ್ಮ ಮೊಬೈಲ್‌ನಲ್ಲಿ <strong>ಗೂಗಲ್ ಮ್ಯಾಪ್ಸ್ (Google Maps)</strong> ಆಪ್ ತೆರೆಯಿರಿ.</li>
+            <li>ನಿಮ್ಮ ಕಾಫಿ ತೋಟವಿರುವ ಜಾಗದ ಮೇಲೆ <strong>ದೀರ್ಘವಾಗಿ ಒತ್ತಿ ಹಿಡಿಯಿರಿ (Long Press)</strong>, ಅಲ್ಲಿ ಕೆಂಪು ಗುರುತು (Red Pin) ಬೀಳುತ್ತದೆ.</li>
+            <li>ಮೇಲ್ಭಾಗದ ಸರ್ಚ್ ಬಾರ್‌ನಲ್ಲಿ <code>13.3161, 75.7720</code> ರೀತಿಯ ಎರಡು ಸಂಖ್ಯೆಗಳು ಕಾಣಿಸುತ್ತವೆ.</li>
+            <li>ಮೊದಲ ಸಂಖ್ಯೆ <strong>ಅಕ್ಷಾಂಶ (Latitude)</strong> ಮತ್ತು ಎರಡನೇ ಸಂಖ್ಯೆ <strong>ರೇಖಾಂಶ (Longitude)</strong> ಆಗಿದೆ.</li>
+            <li>ಅವುಗಳನ್ನು PlantIQ ನ Manual Entry ಬಾಕ್ಸ್‌ನಲ್ಲಿ ನಮೂದಿಸಿ.</li>
+          </ol>
+        </div>
+
+        <button class="btn btn-primary" id="btn-gmaps-got-it" type="button" style="width: 100%;">
+          <span>ಸರಿ, ಅರ್ಥವಾಯಿತು / Got It</span>
         </button>
       </div>
     </div>

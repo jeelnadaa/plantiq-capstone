@@ -325,9 +325,9 @@ function renderListingCard(item) {
         <span>👨‍🌾 ${item.farmer_name}</span>
       </div>
       <div class="listing-actions">
-        <a href="tel:${item.phone_number}" class="btn btn-sm btn-secondary" style="flex:1;"><i data-lucide="phone"></i> ${t("btnContactPhone")}</a>
-        <a href="https://wa.me/${item.phone_number.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(item.farmer_name)},%20I%20saw%20your%20listing%20on%20PlantIQ%20for%20${encodeURIComponent(item.title)}" target="_blank" class="btn btn-sm btn-primary" style="flex:1; background:#25D366; box-shadow:none;"><i data-lucide="message-circle"></i> ${t("btnContactWhatsapp")}</a>
-        ${item.google_maps_url ? `<a href="${item.google_maps_url}" target="_blank" class="btn btn-sm btn-outline"><i data-lucide="map-pin"></i> ${t("btnNavMaps")}</a>` : ''}
+        <button type="button" onclick="openExternalApp('tel:${item.phone_number}')" class="btn btn-sm btn-secondary" style="flex:1;"><i data-lucide="phone"></i> ${t("btnContactPhone")}</button>
+        <button type="button" onclick="openExternalApp('https://wa.me/${item.phone_number.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(item.farmer_name)},%20I%20saw%20your%20listing%20on%20PlantIQ%20for%20${encodeURIComponent(item.title)}')" class="btn btn-sm btn-primary" style="flex:1; background:#25D366; box-shadow:none;"><i data-lucide="message-circle"></i> ${t("btnContactWhatsapp")}</button>
+        ${item.google_maps_url ? `<button type="button" onclick="openExternalApp('${item.google_maps_url}')" class="btn btn-sm btn-outline"><i data-lucide="map-pin"></i> ${t("btnNavMaps")}</button>` : ''}
         ${item.is_owner ? `<button onclick="deleteListing(${item.id})" class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger);"><i data-lucide="trash-2"></i></button>` : ''}
       </div>
     </div>

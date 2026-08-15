@@ -268,3 +268,46 @@ document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initServerSettings();
 });
+
+// Global External App / Intent Opener (WhatsApp, Maps, Calls)
+function openExternalApp(url) {
+  if (!url) return;
+  try {
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser && !url.startsWith("tel:") && !url.startsWith("whatsapp:")) {
+      window.Capacitor.Plugins.Browser.open({ url: url });
+    } else {
+      window.open(url, "_system") || (window.location.href = url);
+    }
+  } catch(e) {
+    window.location.href = url;
+  }
+}
+window.openExternalApp = openExternalApp;
+
+// Global Native Back Button & Modal Dismiss Listener
+function initNativeBackButton() {
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+    window.Capacitor.Plugins.App.addListener("backButton", (data) => {
+      // 1. Dismiss any open modal
+      const openModals = document.querySelectorAll(".modal-overlay:not(.hidden)");
+      if (openModals.length > 0) {
+        openModals.forEach(m => m.classList.add("hidden"));
+        return;
+      }
+
+      // 2. If on subpage (chat, marketplace, history, profile, auth), return to Scanner Home
+      const path = window.location.pathname;
+      if (!path.endsWith("index.html") && !path.endsWith("/")) {
+        navigateTo("/");
+        return;
+      }
+
+      // 3. On Home -> exit app
+      window.Capacitor.Plugins.App.exitApp();
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initNativeBackButton();
+});

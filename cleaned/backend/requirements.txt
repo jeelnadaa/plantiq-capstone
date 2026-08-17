@@ -8,9 +8,11 @@ pillow
 numpy
 faiss-cpu
 sentence-transformers
+rank_bm25
 google-generativeai
 groq
 python-dotenv
 pymupdf
 sqlalchemy
 requests
+passlib[bcrypt]

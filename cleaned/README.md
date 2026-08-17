@@ -37,7 +37,8 @@ d:\end-capstone-project\cleaned\
 │   │   └── services\                 # Decoupled AI & Business Logic
 │   │       ├── cnn_service.py         # PyTorch ResNet50 Classifier (20ms local inference)
 │   │       ├── cache_service.py       # SHA-256 composite deduplication hashing
-│   │       ├── rag_service.py         # FAISS vector search & Gemini 2.5 Flash / Groq RAG
+│   │       ├── rag_service.py         # 3-Stage Hybrid RAG (BGE-Base + BM25 + Cross-Encoder Reranker)
+│   │       ├── build_index.py         # Semantic Section Chunker & Multi-Threaded Ingestion Engine
 │   │       ├── router_service.py      # Linguistic Pre-Router (Kannada/Kanglish/English)
 │   │       ├── chat_service.py        # Multi-turn context & past scan metadata ingestion
 │   │       ├── voice_service.py       # Gemini 1.5 Audio & Groq Whisper STT
@@ -206,3 +207,18 @@ For permanent 24/7 testing without needing your laptop turned on:
 ### 4. 📜 Diagnostic History
 * **Complete Diagnostic Report Modal**: View high-res photo, confidence ratings, class probabilities, weather factors, and CCRI advisories.
 * **3-Second Animated Undo Toast**: Safely delete single scans or clear history with a 3-second instant restoration timer.
+
+---
+
+## 🏛️ Comprehensive Technical Architecture & Defense Documentation
+
+For academic defense, capstone evaluations, and in-depth engineering documentation, refer to the module specifications in [`docs/architecture/`](file:///d:/end-capstone-project/cleaned/docs/architecture/):
+
+1. 🏛️ [**`00_SYSTEM_ARCHITECTURE_OVERVIEW.md`**](file:///d:/end-capstone-project/cleaned/docs/architecture/00_SYSTEM_ARCHITECTURE_OVERVIEW.md) — System Topology & Data Flow
+2. 🔬 [**`01_CNN_DIAGNOSTICS_MODULE.md`**](file:///d:/end-capstone-project/cleaned/docs/architecture/01_CNN_DIAGNOSTICS_MODULE.md) — ResNet-50 Deep Residual Learning & Loss Functions
+3. 📚 [**`02_ADVANCED_HYBRID_RAG_MODULE.md`**](file:///d:/end-capstone-project/cleaned/docs/architecture/02_ADVANCED_HYBRID_RAG_MODULE.md) — BGE-Base Dense + BM25 Lexical + Cross-Encoder Reranker
+4. 💬 [**`03_MULTIMODAL_CHATBOT_AND_ROUTING.md`**](file:///d:/end-capstone-project/cleaned/docs/architecture/03_MULTIMODAL_CHATBOT_AND_ROUTING.md) — Kanglish/Kannada Linguistic Router & LLM Failover
+5. ⛅ [**`04_MICROCLIMATE_RISK_ENGINE.md`**](file:///d:/end-capstone-project/cleaned/docs/architecture/04_MICROCLIMATE_RISK_ENGINE.md) — Open-Meteo NWP Reanalysis & Disease Risk Indices
+6. 🛒 [**`05_MARKETPLACE_AND_SPATIAL_DISCOVERY.md`**](file:///d:/end-capstone-project/cleaned/docs/architecture/05_MARKETPLACE_AND_SPATIAL_DISCOVERY.md) — Spatial Haversine Routing & Intent Dispatch
+7. 📱 [**`06_MOBILE_EDGE_AND_SYSTEM_SECURITY.md`**](file:///d:/end-capstone-project/cleaned/docs/architecture/06_MOBILE_EDGE_AND_SYSTEM_SECURITY.md) — Capacitor 7 Native Container & PBKDF2/JWT Cryptography
+8. 🎓 [**`07_PROFESSOR_DEFENSE_AND_CROSS_EXAMINATION_GUIDE.md`**](file:///d:/end-capstone-project/cleaned/docs/architecture/07_PROFESSOR_DEFENSE_AND_CROSS_EXAMINATION_GUIDE.md) — Strict Technical Defense Q&A, Mathematical Proofs & Architectural Tradeoffs

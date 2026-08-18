@@ -312,7 +312,7 @@ Generate an actionable, scientifically accurate disease advisory.
                 from groq import Groq
                 g_client = Groq(api_key=settings.GROQ_API_KEY)
                 comp = g_client.chat.completions.create(
-                    model='llama-3.3-70b-versatile',
+                    model=settings.GROQ_MODEL,
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.2,
                     max_tokens=600

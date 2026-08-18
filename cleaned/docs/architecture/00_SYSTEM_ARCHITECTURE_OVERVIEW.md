@@ -44,7 +44,7 @@ The system addresses the three fundamental bottlenecks of tropical coffee cultiv
 │   │   [ Module 3: Multimodal Chatbot ]         [ Module 4: Microclimate Engine ]    │   │
 │   │   - Bilingual Linguistic Pre-Router        - Open-Meteo High-Resolution NWP     │   │
 │   │   - Sequential Diagnostic Context Fusion   - Elevation & DEM Topography         │   │
-│   │   - Gemini 2.5 Flash / Groq LLaMA Failover - Fungal Spore Germination Risk Idx  │   │
+│   │   - Gemini 2.5 Flash / Groq GPT-OSS Failover - Fungal Spore Germination Risk Idx │   │
 │   │   - Persistent Base64 Image History        - Spray Window Optimization          │   │
 │   │                                                                                 │   │
 │   │   [ Module 5: Spatial Marketplace ]        [ Module 6: Mobile Edge Bridge ]     │   │
@@ -63,7 +63,7 @@ The system addresses the three fundamental bottlenecks of tropical coffee cultiv
 | :--- | :--- | :--- |
 | **Module 1: Leaf Pathology CNN** | [01_CNN_DIAGNOSTICS_MODULE.md](file:///d:/end-capstone-project/cleaned/docs/architecture/01_CNN_DIAGNOSTICS_MODULE.md) | PyTorch, ResNet-50, AdamW, Cosine Annealing, SHA-256 Caching |
 | **Module 2: Advanced Hybrid RAG** | [02_ADVANCED_HYBRID_RAG_MODULE.md](file:///d:/end-capstone-project/cleaned/docs/architecture/02_ADVANCED_HYBRID_RAG_MODULE.md) | `bge-base-en-v1.5`, FAISS IndexFlatIP, BM25Okapi, Cross-Encoder, Sigmoid Normalization |
-| **Module 3: Multimodal Chatbot** | [03_MULTIMODAL_CHATBOT_AND_ROUTING.md](file:///d:/end-capstone-project/cleaned/docs/architecture/03_MULTIMODAL_CHATBOT_AND_ROUTING.md) | Linguistic Router, Kanglish Translation, Gemini 2.5 Flash, Groq LLaMA-3.3-70B, SQLite Image Storage |
+| **Module 3: Multimodal Chatbot** | [03_MULTIMODAL_CHATBOT_AND_ROUTING.md](file:///d:/end-capstone-project/cleaned/docs/architecture/03_MULTIMODAL_CHATBOT_AND_ROUTING.md) | Linguistic Router, Kanglish Translation, Gemini 2.5 Flash, Groq GPT-OSS 120B, SQLite Image Storage |
 | **Module 4: Microclimate Risk Engine** | [04_MICROCLIMATE_RISK_ENGINE.md](file:///d:/end-capstone-project/cleaned/docs/architecture/04_MICROCLIMATE_RISK_ENGINE.md) | Open-Meteo API, ERA5 Reanalysis, DEM Elevation, Epidemiological Risk Formulation |
 | **Module 5: Spatial Marketplace** | [05_MARKETPLACE_AND_SPATIAL_DISCOVERY.md](file:///d:/end-capstone-project/cleaned/docs/architecture/05_MARKETPLACE_AND_SPATIAL_DISCOVERY.md) | Haversine Distance, Native Intents, Google Maps, Multi-Photo Storage |
 | **Module 6: Mobile Edge & Security** | [06_MOBILE_EDGE_AND_SYSTEM_SECURITY.md](file:///d:/end-capstone-project/cleaned/docs/architecture/06_MOBILE_EDGE_AND_SYSTEM_SECURITY.md) | Capacitor 7, PBKDF2 Password Hashing, JWT Bearer Tokens, Dynamic Server Switching |

@@ -207,7 +207,7 @@ CROSS-ENCODER (Reranking):
 
 ---
 
-### Q3.2: Why Dual LLM Orchestration (Gemini 2.5 Flash + Groq LLaMA-3.3-70B)?
+### Q3.2: Why Dual LLM Orchestration (Gemini 2.5 Flash + Groq GPT-OSS 120B)?
 **Examiner's Angle**: *Why use two separate LLM providers instead of just one?*
 
 **Definitive Technical Answer**:
@@ -215,8 +215,8 @@ CROSS-ENCODER (Reranking):
 * **Gemini 2.5 Flash (Primary)**:
   * Native multimodal image comprehension (can interpret raw leaf photos directly alongside text).
   * Industry-leading Kannada script coherence and low grammatical hallucination rate.
-* **Groq LLaMA-3.3-70B Versatile (Instant Fallback)**:
-  * Powered by Groq LPUs (Language Processing Units) delivering $> 300\text{ tokens/sec}$ with Time-To-First-Token (TTFT) $< 450\text{ ms}$.
+* **Groq GPT-OSS 120B (`openai/gpt-oss-120b`) (Instant Fallback)**:
+  * Powered by Groq LPUs (Language Processing Units) delivering high-throughput 120B parameter reasoning with Time-To-First-Token (TTFT) $< 450\text{ ms}$.
   * If Gemini fails or times out after $3.5\text{ seconds}$, the system automatically routes the payload to Groq without user intervention.
 
 ---

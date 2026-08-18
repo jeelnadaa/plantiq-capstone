@@ -82,7 +82,7 @@ It integrates **Deep Learning Computer Vision (ResNet50)** for leaf disease clas
 - JWT Authentication (`/api/auth/register`, `/api/auth/login`, `/api/auth/me`).
 - Farmer Profile Dashboard with real-time stats (Total Scans & Your Listings counters).
 - Full English and Kannada bilingual UI toggle with strict `"PlantIQ"` brand name invariance.
-- **Automatic Groq Failover**: Transparently reroutes requests to Groq `llama-3.3-70b-versatile` if Gemini encounters quota limits (`429`).
+- **Automatic Groq Failover**: Transparently reroutes requests to Groq `openai/gpt-oss-120b` if Gemini encounters quota limits (`429`).
 
 ---
 
@@ -246,7 +246,7 @@ d:\end-capstone-project\
 | **Backend Framework** | **FastAPI** (Python 3.11), **Uvicorn**, **Pydantic v2** |
 | **Computer Vision (CNN)** | **PyTorch**, **Torchvision**, **ResNet50** |
 | **Vector Search & RAG** | **FAISS** (`IndexFlatIP`), **Sentence-Transformers** (`all-MiniLM-L6-v2`) |
-| **LLM Reasoning & STT** | **Google Gemini 1.5 Flash / 2.5 Flash Lite** + **Groq Llama 3.3 70B Versatile** + **Groq Whisper** |
+| **LLM Reasoning & STT** | **Google Gemini 1.5 Flash / 2.5 Flash Lite** + **Groq GPT-OSS 120B (`openai/gpt-oss-120b`)** + **Groq Whisper** |
 | **Database & Cache** | **SQLite**, **SQLAlchemy ORM**, **SHA-256 Cryptographic Hashing** |
 | **Microclimate Weather** | **Open-Meteo Live API** (Satellite & Ground Station Models) |
 | **Frontend Client** | **HTML5**, **Vanilla CSS3** (Custom Design Tokens), **JavaScript (ES6+)**, **Lucide Icons** |

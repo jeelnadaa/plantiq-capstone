@@ -10,7 +10,7 @@ Furthermore, farmers need to ask follow-up questions about leaf photos taken day
 
 The **Multimodal Chatbot & Linguistic Routing Module** orchestrates:
 1. **Zero-Latency Linguistic Script & Intent Pre-Routing**
-2. **Multimodal CNN Vision Injection into Gemini 2.5 Flash / Groq LLaMA-3.3-70B**
+2. **Multimodal CNN Vision Injection into Gemini 2.5 Flash / Groq GPT-OSS 120B**
 3. **Sequential Context Ingestion** (CNN Pathology + Microclimate Weather + CCRI Treatment History)
 4. **Persistent Image Data URIs & Multi-Turn Conversation Memory** in SQLite.
 
@@ -67,8 +67,8 @@ To generate actionable agronomic advice, the chatbot constructs a dense context 
 ### 3.1 LLM Fallback & Orchestration Architecture
 1. **Primary LLM**: **Google Gemini 2.5 Flash**
    * *Rationale*: Native multimodal vision processing, large context window (1M tokens), high reasoning speed, superior Kannada script generation.
-2. **Failover LLM**: **Groq LLaMA-3.3-70B Versatile**
-   * *Rationale*: Ultra-low latency ($< 450 \text{ ms}$ TTFT), high open-weights reasoning capability when external API rate limits or network latency spikes occur.
+2. **Failover LLM**: **Groq GPT-OSS 120B (`openai/gpt-oss-120b`)**
+   * *Rationale*: Massive 120B parameter frontier open-weights reasoning capability on Groq LPUs ($< 450 \text{ ms}$ TTFT) when external API rate limits or network latency spikes occur.
 
 ---
 

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command \"Get-ChildItem -Recurse -File | Select-Object -ExpandProperty FullName\")",
+      "Bash(grep -viE \"knowledge_base|\\\\.pdf$|static|templates\")",
+      "Bash(powershell -Command 'Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [System.IO.Compression.ZipFile]::OpenRead\\('\\\\''files \\(1\\).zip'\\\\''\\); $zip.Entries | Select-Object -ExpandProperty FullName; $zip.Dispose\\(\\)')",
+      "Bash(where python *)",
+      "Bash(python -m pip install -r requirements.txt)"
+    ]
+  }
+}

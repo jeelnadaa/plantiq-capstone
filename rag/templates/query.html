@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="query-box">
+    <section class="hero">
+        <h1>Normal Query</h1>
+        <p>Expert agriculture advice at your fingertips.</p>
+    </section>
+
+    <div class="card">
+        <form id="query-form">
+            <input type="text" id="query-input" placeholder="Ask about coffee diseases, fertilizers, or soil pH..." required>
+            <div style="display: flex; gap: 12px;">
+                <button type="submit" class="btn btn-primary">Get Expert Answer</button>
+                <button type="button" id="btn-clear-query" class="btn btn-secondary">Clear</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="loading" class="loading">
+        <p>Retrieving context and generating response...</p>
+    </div>
+
+    <div id="results"></div>
+</div>
+{% endblock %}

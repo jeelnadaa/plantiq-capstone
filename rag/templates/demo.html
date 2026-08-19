@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="demo-header">
+    <h1>Demo Simulations</h1>
+    <div style="display: flex; gap: 12px;">
+        <button id="btn-run-all" class="btn btn-all" style="margin-bottom: 0;">Run All Scenarios</button>
+        <button id="btn-clear-all" class="btn btn-secondary">Clear All Results</button>
+    </div>
+</div>
+
+<div id="demo-scenarios" style="margin-top: 40px;">
+    <div class="demo-group">
+        <h2>Mode 1: CNN Disease Advisory</h2>
+        <div class="scenario-list">
+            {% for scenario in cnn_scenarios %}
+            <div class="card scenario-card">
+                <h3>Scenario {{ loop.index0 }}: {{ scenario.disease or 'Healthy Leaf' }}</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    {{ (scenario.confidence * 100) | round(0) }}% Confidence Identification
+                </p>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-run-demo" data-mode="cnn" data-index="{{ loop.index0 }}">Run Case Study</button>
+                    <button class="btn btn-secondary btn-clear-scenario">Clear</button>
+                </div>
+                <div class="scenario-result"></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="demo-group" style="margin-top: 60px;">
+        <h2>Mode 2: Plain Farmer Questions</h2>
+        <div class="scenario-list">
+            {% for question in query_scenarios %}
+            <div class="card scenario-card">
+                <h3>Question {{ loop.index }}: {{ question[:40] }}...</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Farmer inquiry simulation.</p>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-run-demo" data-mode="query" data-index="{{ loop.index0 }}">Run Question</button>
+                    <button class="btn btn-secondary btn-clear-scenario">Clear</button>
+                </div>
+                <div class="scenario-result"></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div id="all-results" style="margin-top: 60px;"></div>
+{% endblock %}

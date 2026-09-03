@@ -4,8 +4,8 @@
    PLANTIQ NEO-BRUTALISM DESIGN SYSTEM — HIGH-VOLTAGE FIELD UTILITY
    =================================================================== */
 
-:root {
-  /* High-Voltage Electric Cobalt & Hot Coral Neo-Brutalist Light Palette */
+:root, [data-palette="cobalt"] {
+  /* Theme 1 (Default): Electric Cobalt Blue & Hot Coral */
   --primary: #2d5bff;
   --primary-hover: #1e46e8;
   --primary-light: #e0e7ff;
@@ -40,7 +40,7 @@
 
   --border-color: #000000;
   --border-subtle: #000000;
-  --border-focus: #000000;
+  --border-focus: var(--primary);
 
   --border-width: 2.5px;
   --border-thick: 3.5px;
@@ -61,22 +61,55 @@
   --radius-full: 9999px;
 }
 
+/* Theme 2: Cyber Mint & Solar Yellow */
+[data-palette="mint"] {
+  --primary: #00e575;
+  --primary-hover: #00c965;
+  --primary-light: #d1fae5;
+  --accent: #ffe600;
+  --accent-hover: #ebd300;
+  --accent-light: #fef9c3;
+  --border-focus: var(--primary);
+}
+
+/* Theme 3: Ultraviolet & Sunset Tangerine */
+[data-palette="violet"] {
+  --primary: #7c3aed;
+  --primary-hover: #6d28d9;
+  --primary-light: #ede9fe;
+  --accent: #ff7700;
+  --accent-hover: #e06600;
+  --accent-light: #ffedd5;
+  --border-focus: var(--primary);
+}
+
+/* Theme 4: Hot Crimson & Electric Cyan */
+[data-palette="crimson"] {
+  --primary: #e11d48;
+  --primary-hover: #be123c;
+  --primary-light: #ffe4e6;
+  --accent: #00d2ff;
+  --accent-hover: #00b4db;
+  --accent-light: #e0f9ff;
+  --border-focus: var(--primary);
+}
+
+/* Theme 5: Emerald Velvet & Golden Amber */
+[data-palette="emerald"] {
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-light: #d1fae5;
+  --accent: #f59e0b;
+  --accent-hover: #d97706;
+  --accent-light: #fef3c7;
+  --border-focus: var(--primary);
+}
+
 /* ===================================================================
-   DARK THEME: CYBER COBALT & NEON CORAL
+   DARK THEMES FOR EACH COLOR PALETTE
    =================================================================== */
 
 [data-theme="dark"] {
-  /* High-Voltage Cyber Neo-Brutalism Dark Palette — Electric Cobalt & Neon Coral */
-  --primary: #38bdf8;
-  --primary-hover: #60a5fa;
-  --primary-light: rgba(56, 189, 248, 0.16);
-  --primary-border: #000000;
-
-  --accent: #ff2a6d;
-  --accent-hover: #ff457f;
-  --accent-light: rgba(255, 42, 109, 0.16);
-  --accent-border: #000000;
-
   --cherry: #ff2a6d;
   --cherry-hover: #ff457f;
   --cherry-light: rgba(255, 42, 109, 0.2);
@@ -106,6 +139,14 @@
   --border-neo: 2.5px solid #000000;
   --border-neo-sm: 2px solid #000000;
 
+  /* Theme 1 Dark Default: Cobalt & Coral */
+  --primary: #38bdf8;
+  --primary-hover: #60a5fa;
+  --primary-light: rgba(56, 189, 248, 0.16);
+  --accent: #ff2a6d;
+  --accent-hover: #ff457f;
+  --accent-light: rgba(255, 42, 109, 0.16);
+
   --shadow-offset-sm: 3px 3px 0px var(--primary);
   --shadow-offset: 4px 4px 0px var(--primary);
   --shadow-offset-lg: 6px 6px 0px var(--accent);
@@ -115,6 +156,63 @@
   --shadow-neo: 4px 4px 0px var(--primary);
   --shadow-neo-sm: 3px 3px 0px var(--primary);
   --shadow-neo-lg: 6px 6px 0px var(--accent);
+}
+
+[data-theme="dark"][data-palette="mint"] {
+  --primary: #00ff87;
+  --primary-hover: #1dfda0;
+  --primary-light: rgba(0, 245, 133, 0.16);
+  --accent: #ffea00;
+  --accent-hover: #fff033;
+  --accent-light: rgba(255, 234, 0, 0.16);
+  --bg-desktop-pattern: radial-gradient(rgba(0, 255, 135, 0.2) 1.2px, transparent 1.2px);
+}
+
+[data-theme="dark"][data-palette="violet"] {
+  --primary: #a855f7;
+  --primary-hover: #c084fc;
+  --primary-light: rgba(168, 85, 247, 0.16);
+  --accent: #ff8800;
+  --accent-hover: #ffa033;
+  --accent-light: rgba(255, 136, 0, 0.16);
+  --bg-desktop-pattern: radial-gradient(rgba(168, 85, 247, 0.2) 1.2px, transparent 1.2px);
+}
+
+[data-theme="dark"][data-palette="crimson"] {
+  --primary: #ff2a6d;
+  --primary-hover: #ff4d85;
+  --primary-light: rgba(255, 42, 109, 0.16);
+  --accent: #00f0ff;
+  --accent-hover: #33f3ff;
+  --accent-light: rgba(0, 240, 255, 0.16);
+  --bg-desktop-pattern: radial-gradient(rgba(255, 42, 109, 0.2) 1.2px, transparent 1.2px);
+}
+
+[data-theme="dark"][data-palette="emerald"] {
+  --primary: #10b981;
+  --primary-hover: #34d399;
+  --primary-light: rgba(16, 185, 129, 0.16);
+  --accent: #fbbf24;
+  --accent-hover: #fcd34d;
+  --accent-light: rgba(251, 191, 36, 0.16);
+  --bg-desktop-pattern: radial-gradient(rgba(16, 185, 129, 0.2) 1.2px, transparent 1.2px);
+}
+
+/* ===================================================================
+   FLUID THEME TRANSITION ANIMATION (LIGHT & DARK MODES)
+   =================================================================== */
+html, body, .app-container, .page-header, .brand-icon, .btn-theme, .btn-lang,
+.card, .btn, .nav-tab, .form-control, .diagnosis-card, .upload-dropzone, 
+.stat-box, .market-filters, .listing-card, .modal-container, .bottom-nav,
+.confidence-bar-bg, .confidence-bar-fill, .advisory-box {
+  transition: background-color 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+input[type="range"], input[type="range"]::-webkit-slider-thumb {
+  transition: none !important;
 }
 
 [data-theme="dark"] .app-container {
@@ -636,3 +734,93 @@ body {
 .hidden {
   display: none !important;
 }
+
+/* ===================================================================
+   THEME PALETTE PICKER MODAL & SWATCHES
+   =================================================================== */
+
+.palette-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.palette-option-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: var(--border-neo-sm);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-neo-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+}
+
+.palette-option-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px #000000;
+  background: var(--bg-card-subtle);
+}
+
+.palette-option-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+.palette-option-card.active {
+  border-width: 3px;
+  box-shadow: 4px 4px 0px var(--primary);
+  background: var(--bg-card-subtle);
+}
+
+.palette-card-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.palette-swatches-box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #000000;
+  padding: 3px;
+  border-radius: 4px;
+  border: 1px solid #000000;
+}
+
+.palette-swatch-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+}
+
+.palette-card-name {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.palette-card-badge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  background: var(--primary);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+  text-transform: uppercase;
+}
+
+[data-theme="dark"] .palette-card-badge {
+  color: #000000;
+  box-shadow: 2px 2px 0px var(--accent);
+}
+

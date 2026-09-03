@@ -101,7 +101,24 @@ const I18N_DICTIONARY = {
     voiceModalSub: "Select the language you want to speak in",
     btnVoiceKn: "ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಿ (Kannada)",
     btnVoiceEn: "Speak in English",
-    btnCancel: "Cancel"
+    btnCancel: "Cancel",
+
+    // Auth & Accounts
+    authPageTitle: "Sign In / Register",
+    authPageSubtitle: "Sign in or register to sync coffee disease diagnostics, estate lots, and CCRI advisories.",
+    tabSignIn: "Sign In",
+    tabRegister: "Register",
+    lblUsernameOrEmail: "Username or Email",
+    lblPassword: "Password",
+    lblFullName: "Full Name",
+    lblUsername: "Username",
+    lblEmailAddress: "Email Address",
+    btnSignIn: "Sign In",
+    btnCreateAccount: "Create Account",
+    placeholderUsernameOrEmail: "e.g. jeel_nada",
+    placeholderFullName: "Your Name",
+    placeholderUsername: "username",
+    placeholderEmail: "farmer@example.com"
   },
   kn: {
     brandTagline: "ಕಾಫಿ ಬೆಳೆ ಎಐ ಮತ್ತು ಮಾರುಕಟ್ಟೆ",
@@ -204,7 +221,24 @@ const I18N_DICTIONARY = {
     voiceModalSub: "ನೀವು ಮಾತನಾಡಲು ಬಯಸುವ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
     btnVoiceKn: "ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಿ (Kannada)",
     btnVoiceEn: "Speak in English",
-    btnCancel: "ರದ್ದುಗೊಳಿಸಿ"
+    btnCancel: "ರದ್ದುಗೊಳಿಸಿ",
+
+    // Auth & Accounts
+    authPageTitle: "ಸೈನ್ ಇನ್ / ನೋಂದಣಿ",
+    authPageSubtitle: "ಕಾಫಿ ರೋಗ ಪರಿಶೋಧನೆಗಳು ಮತ್ತು ಮಾರುಕಟ್ಟೆ ವಿವರಗಳನ್ನು ಪಡೆಯಲು ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ನೋಂದಾಯಿಸಿ.",
+    tabSignIn: "ಸೈನ್ ಇನ್",
+    tabRegister: "ನೋಂದಾಯಿಸಿ",
+    lblUsernameOrEmail: "ಬಳಕೆದಾರ ಹೆಸರು ಅಥವಾ ಇಮೇಲ್",
+    lblPassword: "ಪಾಸ್‌ವರ್ಡ್",
+    lblFullName: "ಪೂರ್ಣ ಹೆಸರು",
+    lblUsername: "ಬಳಕೆದಾರ ಹೆಸರು",
+    lblEmailAddress: "ಇಮೇಲ್ ವಿಳಾಸ",
+    btnSignIn: "ಸೈನ್ ಇನ್",
+    btnCreateAccount: "ಖಾತೆ ರಚಿಸಿ",
+    placeholderUsernameOrEmail: "ಉದಾ: jeel_nada",
+    placeholderFullName: "ನಿಮ್ಮ ಹೆಸರು",
+    placeholderUsername: "ಬಳಕೆದಾರ ಹೆಸರು",
+    placeholderEmail: "farmer@example.com"
   }
 };
 
@@ -224,7 +258,11 @@ function updateDOMTranslations() {
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.getAttribute("data-i18n");
     if (key && I18N_DICTIONARY[currentLang]?.[key]) {
-      el.textContent = I18N_DICTIONARY[currentLang][key];
+      if (el.tagName === "INPUT" && (el.type === "button" || el.type === "submit")) {
+        el.value = I18N_DICTIONARY[currentLang][key];
+      } else {
+        el.textContent = I18N_DICTIONARY[currentLang][key];
+      }
     }
   });
 
@@ -249,7 +287,7 @@ function updateDOMTranslations() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function initI18n() {
   const langToggleBtn = document.getElementById("btn-lang-toggle");
   if (langToggleBtn) {
     langToggleBtn.onclick = () => {
@@ -257,4 +295,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
   updateDOMTranslations();
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initI18n);
+} else {
+  initI18n();
+}
+// Execute immediately as well
+updateDOMTranslations();
+

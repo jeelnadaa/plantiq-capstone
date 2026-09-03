@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>PlantIQ — Sign In / Register</title>
-  <link rel="stylesheet" href="/static/css/base.css">
-  <link rel="stylesheet" href="/static/css/navbar.css">
-  <link rel="stylesheet" href="/static/css/auth.css">
-  <script src="/static/js/api.js"></script>
+  <link rel="stylesheet" href="/static/css/base.css?v=3.0">
+  <link rel="stylesheet" href="/static/css/navbar.css?v=3.0">
+  <link rel="stylesheet" href="/static/css/auth.css?v=3.0">
+  <script src="/static/js/api.js?v=3.0"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -32,41 +32,44 @@
     </header>
 
     <main class="page-content">
+      <h1 class="section-title" id="auth-main-title" data-i18n="authPageTitle">Sign In / Register</h1>
+      <p class="section-subtitle" id="auth-main-subtitle" data-i18n="authPageSubtitle">Sign in or register to sync coffee disease diagnostics, estate lots, and CCRI advisories.</p>
+
       <div class="auth-tabs">
-        <button class="auth-tab-btn active" id="tab-btn-login">Sign In</button>
-        <button class="auth-tab-btn" id="tab-btn-register">Register</button>
+        <button class="auth-tab-btn active" id="tab-btn-login" data-i18n="tabSignIn">Sign In</button>
+        <button class="auth-tab-btn" id="tab-btn-register" data-i18n="tabRegister">Register</button>
       </div>
 
       <form id="form-login" class="card" style="display:flex; flex-direction:column; gap:12px;">
         <div>
-          <label style="font-size:0.75rem; font-weight:700;">Username or Email</label>
-          <input type="text" id="login-username" class="form-control" placeholder="e.g. jeel_nada" required>
+          <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblUsernameOrEmail">Username or Email</label>
+          <input type="text" id="login-username" class="form-control" placeholder="e.g. jeel_nada" data-i18n-placeholder="placeholderUsernameOrEmail" required>
         </div>
         <div>
-          <label style="font-size:0.75rem; font-weight:700;">Password</label>
+          <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblPassword">Password</label>
           <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn btn-primary" style="margin-top:6px; padding:12px;">Sign In</button>
+        <button type="submit" class="btn btn-primary" style="margin-top:6px; padding:12px;" data-i18n="btnSignIn">Sign In</button>
       </form>
 
       <form id="form-register" class="card hidden" style="display:flex; flex-direction:column; gap:12px;">
         <div>
-          <label style="font-size:0.75rem; font-weight:700;">Full Name</label>
-          <input type="text" id="reg-fullname" class="form-control" placeholder="Your Name" required>
+          <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblFullName">Full Name</label>
+          <input type="text" id="reg-fullname" class="form-control" placeholder="Your Name" data-i18n-placeholder="placeholderFullName" required>
         </div>
         <div>
-          <label style="font-size:0.75rem; font-weight:700;">Username</label>
-          <input type="text" id="reg-username" class="form-control" placeholder="username" required>
+          <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblUsername">Username</label>
+          <input type="text" id="reg-username" class="form-control" placeholder="username" data-i18n-placeholder="placeholderUsername" required>
         </div>
         <div>
-          <label style="font-size:0.75rem; font-weight:700;">Email Address</label>
-          <input type="email" id="reg-email" class="form-control" placeholder="farmer@example.com" required>
+          <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblEmailAddress">Email Address</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="farmer@example.com" data-i18n-placeholder="placeholderEmail" required>
         </div>
         <div>
-          <label style="font-size:0.75rem; font-weight:700;">Password</label>
+          <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblPassword">Password</label>
           <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn btn-primary" style="margin-top:6px; padding:12px;">Create Account</button>
+        <button type="submit" class="btn btn-primary" style="margin-top:6px; padding:12px;" data-i18n="btnCreateAccount">Create Account</button>
       </form>
     </main>
 
@@ -108,8 +111,8 @@
     </div>
 
   </div>
-  <script src="/static/js/i18n.js"></script>
-  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/i18n.js?v=3.0"></script>
+  <script src="/static/js/auth.js?v=3.0"></script>
   <script>lucide.createIcons();</script>
 </body>
 </html>

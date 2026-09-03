@@ -32,7 +32,7 @@
   height: 68px;
   border-radius: var(--radius-sm);
   background: var(--accent);
-  color: #000000;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,7 +50,7 @@
 .upload-icon-circle svg, .upload-icon-circle i {
   width: 34px;
   height: 34px;
-  stroke: #000000 !important;
+  stroke: #ffffff !important;
   stroke-width: 2.5px;
 }
 

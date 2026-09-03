@@ -1,109 +1,241 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Kannada:wght@500;600;700;800&display=swap');
+
+/* ===================================================================
+   PLANTIQ NEO-BRUTALISM DESIGN SYSTEM — HIGH-VOLTAGE FIELD UTILITY
+   =================================================================== */
 
 :root {
-  --primary: #15803d;
-  --primary-hover: #166534;
-  --primary-light: #f0fdf4;
-  --primary-border: #bbf7d0;
-  --primary-glow: rgba(21, 128, 61, 0.15);
+  /* High-Voltage Electric Cobalt & Hot Coral Neo-Brutalist Light Palette */
+  --primary: #2d5bff;
+  --primary-hover: #1e46e8;
+  --primary-light: #e0e7ff;
+  --primary-border: #000000;
 
-  --accent: #b45309;
-  --accent-light: #fef3c7;
+  --accent: #ff3366;
+  --accent-hover: #e61e53;
+  --accent-light: #ffe4e6;
+  --accent-border: #000000;
 
-  --danger: #b91c1c;
-  --danger-light: #fef2f2;
+  --cherry: #ff2a6d;
+  --cherry-hover: #e51d5c;
+  --cherry-light: #ffe4e6;
 
-  --bg-main: #f8fafc;
+  --cyan: #00d2ff;
+  --purple: #8b5cf6;
+  --orange: #ff7700;
+  --danger: #ff2a6d;
+  --danger-light: #ffe4e6;
+
+  --ink: #000000;
+  --text-main: #000000;
+  --text-muted: #4b5563;
+  --text-light: #6b7280;
+
+  --bg-desktop: #f6f3eb;
+  --bg-desktop-pattern: radial-gradient(#000000 1.2px, transparent 1.2px);
+  --bg-main: #fbf9f4;
   --bg-container: #ffffff;
   --bg-card: #ffffff;
-  --bg-card-subtle: #f8fafc;
-  --bg-card-glass: rgba(255, 255, 255, 0.95);
+  --bg-card-subtle: #f4f0e6;
 
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --text-light: #94a3b8;
+  --border-color: #000000;
+  --border-subtle: #000000;
+  --border-focus: #000000;
 
-  --border-subtle: #e2e8f0;
-  --border-focus: #15803d;
+  --border-width: 2.5px;
+  --border-thick: 3.5px;
+  --border-neo: 3px solid #000000;
+  --border-neo-sm: 2px solid #000000;
 
+  --shadow-offset-sm: 3px 3px 0px #000000;
+  --shadow-offset: 5px 5px 0px #000000;
+  --shadow-offset-lg: 7px 7px 0px #000000;
+  --shadow-sm: var(--shadow-offset-sm);
+  --shadow-md: var(--shadow-offset);
+  --shadow-lg: var(--shadow-offset-lg);
+
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-full: 9999px;
-
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.09);
 }
 
+/* ===================================================================
+   DARK THEME: CYBER COBALT & NEON CORAL
+   =================================================================== */
+
 [data-theme="dark"] {
-  --primary: #10b981;
-  --primary-hover: #059669;
-  --primary-light: rgba(16, 185, 129, 0.14);
-  --primary-border: rgba(16, 185, 129, 0.32);
-  --primary-glow: rgba(16, 185, 129, 0.28);
+  /* High-Voltage Cyber Neo-Brutalism Dark Palette — Electric Cobalt & Neon Coral */
+  --primary: #38bdf8;
+  --primary-hover: #60a5fa;
+  --primary-light: rgba(56, 189, 248, 0.16);
+  --primary-border: #000000;
 
-  --accent: #fbbf24;
-  --accent-light: rgba(251, 191, 36, 0.15);
+  --accent: #ff2a6d;
+  --accent-hover: #ff457f;
+  --accent-light: rgba(255, 42, 109, 0.16);
+  --accent-border: #000000;
 
-  --danger: #f87171;
-  --danger-light: rgba(248, 113, 113, 0.15);
+  --cherry: #ff2a6d;
+  --cherry-hover: #ff457f;
+  --cherry-light: rgba(255, 42, 109, 0.2);
 
-  --bg-main: #090d16;
-  --bg-container: #0f172a;
-  --bg-card: #1e293b;
-  --bg-card-subtle: #141e33;
-  --bg-card-glass: rgba(30, 41, 59, 0.95);
+  --cyan: #00f0ff;
+  --purple: #c084fc;
+  --orange: #ff8800;
+  --danger: #ff2a6d;
+  --danger-light: rgba(255, 42, 109, 0.2);
 
+  --ink: #ffffff;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --text-light: #64748b;
 
-  --border-subtle: #334155;
-  --border-focus: #10b981;
+  --bg-desktop: #0a0e1a;
+  --bg-desktop-pattern: radial-gradient(rgba(56, 189, 248, 0.2) 1.2px, transparent 1.2px);
+  --bg-main: #0e1424;
+  --bg-container: #121a2d;
+  --bg-card: #182236;
+  --bg-card-subtle: #1f2b44;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.6);
+  --border-color: #000000;
+  --border-subtle: #2b3a55;
+  --border-focus: var(--primary);
+
+  --border-neo: 2.5px solid #000000;
+  --border-neo-sm: 2px solid #000000;
+
+  --shadow-offset-sm: 3px 3px 0px var(--primary);
+  --shadow-offset: 4px 4px 0px var(--primary);
+  --shadow-offset-lg: 6px 6px 0px var(--accent);
+  --shadow-sm: 3px 3px 0px var(--primary);
+  --shadow-md: 4px 4px 0px var(--primary);
+  --shadow-lg: 6px 6px 0px var(--accent);
+  --shadow-neo: 4px 4px 0px var(--primary);
+  --shadow-neo-sm: 3px 3px 0px var(--primary);
+  --shadow-neo-lg: 6px 6px 0px var(--accent);
 }
+
+[data-theme="dark"] .app-container {
+  box-shadow: 8px 8px 0px var(--primary), 0 0 35px rgba(56, 189, 248, 0.14);
+}
+
+[data-theme="dark"] .brand-icon {
+  background: var(--primary) !important;
+  color: #000000 !important;
+}
+
+[data-theme="dark"] .btn-primary {
+  background: var(--primary);
+  color: #000000;
+  box-shadow: 4px 4px 0px var(--accent);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  box-shadow: 6px 6px 0px var(--accent);
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: var(--bg-card-subtle);
+  color: var(--text-main);
+  box-shadow: 4px 4px 0px var(--primary);
+}
+
+[data-theme="dark"] .btn-outline {
+  background: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: 3px 3px 0px var(--primary);
+}
+
+[data-theme="dark"] .form-control {
+  background: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: 3px 3px 0px var(--primary);
+}
+
+[data-theme="dark"] .form-control:focus {
+  box-shadow: 5px 5px 0px var(--accent);
+}
+
+[data-theme="dark"] .modal-container {
+  box-shadow: 8px 8px 0px var(--primary) !important;
+}
+
+[data-theme="dark"] .undo-toast {
+  background: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: 5px 5px 0px var(--accent);
+}
+
+[data-theme="dark"] .undo-toast-timer-bar {
+  background: var(--accent);
+}
+
+/* ===================================================================
+   GLOBAL BASE STYLES & RESET
+   =================================================================== */
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Outfit', 'Noto Sans Kannada', sans-serif;
+  font-family: 'Space Grotesk', 'Plus Jakarta Sans', 'Noto Sans Kannada', sans-serif;
   -webkit-tap-highlight-color: transparent;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 body {
-  background: var(--bg-main);
+  background: var(--bg-desktop);
+  background-image: var(--bg-desktop-pattern);
+  background-size: 24px 24px;
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   padding-bottom: max(96px, calc(80px + env(safe-area-inset-bottom, 0px)));
+  overflow-x: hidden;
 }
 
+/* Neo-Brutalist Frame */
 .app-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 490px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
   background: var(--bg-container);
-  box-shadow: var(--shadow-lg);
+  border-left: var(--border-neo);
+  border-right: var(--border-neo);
+  box-shadow: 8px 8px 0px #000000;
 }
+
+@media (min-width: 600px) {
+  body {
+    padding-top: 24px;
+  }
+  .app-container {
+    min-height: 94vh;
+    border-radius: var(--radius-lg);
+    border: var(--border-neo);
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+}
+
+/* ===================================================================
+   NEO-BRUTALIST HEADER
+   =================================================================== */
 
 .page-header {
   padding-top: max(20px, calc(14px + env(safe-area-inset-top, 0px)));
-  padding-bottom: 12px;
-  padding-left: max(16px, env(safe-area-inset-left, 16px));
-  padding-right: max(16px, env(safe-area-inset-right, 16px));
+  padding-bottom: 14px;
+  padding-left: max(18px, env(safe-area-inset-left, 18px));
+  padding-right: max(18px, env(safe-area-inset-right, 18px));
   background: var(--bg-container);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: var(--border-neo);
   position: sticky;
   top: 0;
   z-index: 1500;
@@ -112,7 +244,6 @@ body {
   align-items: center;
 }
 
-/* Standalone / App Mode top padding fallback */
 @media all and (display-mode: standalone) {
   .page-header {
     padding-top: max(28px, calc(16px + env(safe-area-inset-top, 0px)));
@@ -122,25 +253,37 @@ body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  text-decoration: none;
 }
 
 .brand-icon {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   border-radius: var(--radius-sm);
   background: var(--primary);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: var(--border-neo-sm);
+  box-shadow: 3px 3px 0px #000000;
+  font-weight: 900;
+}
+
+.brand-icon i, .brand-icon svg {
+  stroke: #ffffff !important;
+  stroke-width: 2.8px;
+  width: 22px;
+  height: 22px;
 }
 
 .brand-name {
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: -0.8px;
   color: var(--text-main);
-  letter-spacing: -0.5px;
+  text-transform: uppercase;
 }
 
 .header-actions {
@@ -150,161 +293,243 @@ body {
 }
 
 .btn-lang {
-  background: var(--primary-light);
-  color: var(--primary);
-  border: 1px solid var(--primary-border);
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 700;
+  background: var(--accent);
+  color: #ffffff;
+  border: var(--border-neo-sm);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 900;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  box-shadow: 2px 2px 0px #000000;
+  letter-spacing: 0.5px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-lang i, .btn-lang svg {
+  stroke: #ffffff !important;
+}
+
+.btn-lang:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000000;
+}
+
+.btn-lang:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000000;
 }
 
 .btn-theme {
-  background: var(--bg-card-subtle);
+  background: var(--bg-card);
   color: var(--text-main);
-  border: 1px solid var(--border-subtle);
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
+  border: var(--border-neo-sm);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 2px 2px 0px #000000;
+  position: relative;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
+
+.btn-theme:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000000;
+}
+
+.btn-theme:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000000;
+}
+
+/* ===================================================================
+   PAGE CONTENT & TYPOGRAPHY
+   =================================================================== */
 
 .page-content {
   flex: 1;
-  padding: 18px 20px;
+  padding: 20px 18px 28px;
 }
 
 .section-title {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  line-height: 1.2;
+  margin-bottom: 6px;
   color: var(--text-main);
-  margin-bottom: 4px;
+  text-transform: uppercase;
 }
 
 .section-subtitle {
-  font-size: 0.82rem;
+  font-size: 0.86rem;
+  font-weight: 600;
   color: var(--text-muted);
-  margin-bottom: 16px;
-  line-height: 1.4;
+  margin-bottom: 18px;
+  line-height: 1.5;
 }
 
-/* Card */
+/* ===================================================================
+   NEO-BRUTALIST CARDS
+   =================================================================== */
+
 .card {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  border: var(--border-neo);
   border-radius: var(--radius-md);
-  padding: 16px;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow-neo);
+  margin-bottom: 20px;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Buttons */
+.card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px #000000;
+}
+
+/* ===================================================================
+   TACTILE MECHANICAL NEO-BRUTALIST BUTTONS
+   =================================================================== */
+
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 18px;
-  border-radius: var(--radius-md);
-  font-size: 0.88rem;
-  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.3px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
+  border: var(--border-neo);
+  box-shadow: var(--shadow-neo);
   text-decoration: none;
+  text-transform: uppercase;
+  user-select: none;
+  touch-action: manipulation;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px #000000;
+}
+
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px #000000;
 }
 
 .btn-primary {
   background: var(--primary);
   color: #ffffff;
-  box-shadow: 0 2px 8px var(--primary-glow);
-}
-.btn-primary:hover {
-  background: var(--primary-hover);
 }
 
 .btn-secondary {
   background: var(--bg-card-subtle);
   color: var(--text-main);
-  border: 1px solid var(--border-subtle);
-}
-.btn-secondary:hover {
-  filter: brightness(0.95);
 }
 
 .btn-outline {
-  background: transparent;
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
   color: var(--text-main);
-}
-.btn-outline:hover {
-  border-color: var(--primary);
-  color: var(--primary);
 }
 
 .btn-sm {
-  padding: 6px 12px;
-  font-size: 0.78rem;
-  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  border: var(--border-neo-sm);
+  box-shadow: var(--shadow-neo-sm);
+}
+
+.btn-sm:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.btn-sm:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
 }
 
 .btn-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border-subtle);
+  border: var(--border-neo-sm);
   background: var(--bg-card);
   color: var(--text-main);
   cursor: pointer;
+  box-shadow: var(--shadow-neo-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
+
+.btn-icon:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+  background: var(--accent);
+  color: #000000;
+}
+
+.btn-icon:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+/* ===================================================================
+   NEO-BRUTALIST FORM CONTROLS
+   =================================================================== */
 
 .form-control {
   width: 100%;
-  padding: 10px 14px;
+  padding: 12px 14px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
+  border: var(--border-neo-sm);
   background: var(--bg-card);
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   color: var(--text-main);
   outline: none;
-  transition: border-color 0.2s;
+  font-weight: 700;
+  box-shadow: 3px 3px 0px #000000;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
+
 .form-control:focus {
-  border-color: var(--primary);
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0px #000000;
+  background: var(--bg-card);
+  border-color: var(--border-focus);
 }
 
-.modal-container {
-  background: var(--bg-card) !important;
-  color: var(--text-main) !important;
-  border: 1px solid var(--border-subtle) !important;
-}
+/* ===================================================================
+   NEO-BRUTALIST MODAL OVERLAYS
+   =================================================================== */
 
-.hidden { display: none !important; }
-
-/* Modal Overlay System */
 .modal-overlay {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: rgba(0, 0, 0, 0.65) !important;
-  z-index: 2000 !important;
+  background: rgba(0, 0, 0, 0.7) !important;
+  z-index: 2800 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  backdrop-filter: blur(4px) !important;
-  padding: 16px;
+  padding: 20px;
 }
 
 .modal-overlay.hidden {
@@ -314,37 +539,33 @@ body {
 .modal-container {
   background: var(--bg-card) !important;
   color: var(--text-main) !important;
-  border: 1px solid var(--border-subtle) !important;
-  border-radius: 18px !important;
-  box-shadow: var(--shadow-lg) !important;
+  border: var(--border-neo) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 10px 10px 0px #000000 !important;
   max-height: 88vh;
   overflow-y: auto;
+  position: relative;
 }
 
-/* 3-Second Undo Toast Notification */
+/* 3-Second Undo Toast Notification Bar */
 .undo-toast {
   position: fixed;
-  bottom: 80px;
+  bottom: 86px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90%;
-  max-width: 420px;
-  background: #1e293b;
-  color: #ffffff;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 12px 16px;
+  width: 92%;
+  max-width: 440px;
+  background: var(--accent);
+  color: #000000;
+  border: var(--border-neo);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 2500;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  z-index: 2900;
+  box-shadow: 6px 6px 0px #000000;
   overflow: hidden;
-}
-
-[data-theme="dark"] .undo-toast {
-  background: #0f172a;
-  border-color: #1e293b;
 }
 
 .undo-toast.hidden {
@@ -355,7 +576,63 @@ body {
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 3px;
-  background: var(--primary);
+  height: 5px;
+  background: #000000;
   width: 100%;
+}
+
+/* ===================================================================
+   NEO-BRUTALIST STICKERS, BADGES & CHIPS
+   =================================================================== */
+
+.badge-disease {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background: var(--cherry);
+  color: #ffffff;
+  border: var(--border-neo-sm);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.badge-healthy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background: var(--primary);
+  color: #000000;
+  border: var(--border-neo-sm);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.badge-amber {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  background: var(--accent);
+  color: #000000;
+  border: var(--border-neo-sm);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* Utility Hidden */
+.hidden {
+  display: none !important;
 }

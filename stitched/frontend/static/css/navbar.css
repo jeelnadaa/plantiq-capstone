@@ -1,0 +1,87 @@
+/* ===================================================================
+   NEO-BRUTALIST MECHANICAL DOCK NAVIGATION BAR
+   =================================================================== */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 490px;
+  padding-top: 8px;
+  padding-bottom: max(14px, calc(10px + env(safe-area-inset-bottom, 0px)));
+  min-height: calc(66px + env(safe-area-inset-bottom, 0px));
+  height: auto;
+  background: var(--bg-container);
+  border-top: var(--border-neo);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 2400;
+  box-shadow: 0 -4px 0px #000000;
+}
+
+@media (min-width: 600px) {
+  .bottom-nav {
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+    border-left: var(--border-neo);
+    border-right: var(--border-neo);
+  }
+}
+
+.nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  width: 19%;
+  min-height: 48px;
+  position: relative;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  border-radius: var(--radius-sm);
+  transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+.nav-tab i, .nav-tab svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--text-main);
+  stroke-width: 2.5px;
+  pointer-events: none;
+}
+
+.nav-tab:hover {
+  background: var(--bg-card-subtle);
+  transform: translateY(-2px);
+}
+
+/* Active Tab: Bold Neo-Brutalist Sticker */
+.nav-tab.active {
+  background: var(--primary);
+  color: #000000;
+  border: var(--border-neo-sm);
+  box-shadow: 2px 2px 0px #000000;
+  transform: translateY(-3px);
+}
+
+.nav-tab.active i, .nav-tab.active svg {
+  stroke: #000000 !important;
+  stroke-width: 2.8px;
+}
+
+[data-theme="dark"] .nav-tab.active {
+  box-shadow: 2px 2px 0px var(--accent);
+}
+

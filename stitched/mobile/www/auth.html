@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PlantIQ — Sign In / Register</title>
+  <link rel="stylesheet" href="./static/css/base.css">
+  <link rel="stylesheet" href="./static/css/navbar.css">
+  <link rel="stylesheet" href="./static/css/auth.css">
+  <script src="./static/js/api.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="page-header">
+      <div class="brand">
+        <div class="brand-icon"><i data-lucide="leaf"></i></div>
+        <span class="brand-name">PlantIQ</span>
+      </div>
+      <div class="header-actions">
+                <button class="btn-theme btn-open-server-settings" title="Backend Server Settings" style="position:relative;">
+          <i data-lucide="server"></i>
+          <span class="server-status-dot" style="position:absolute; top:4px; right:4px; width:8px; height:8px; border-radius:50%; background:#22c55e; border:1px solid #ffffff;"></span>
+        </button>
+        <button class="btn-theme btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i data-lucide="moon"></i>
+        </button>
+        <button class="btn-lang" id="btn-lang-toggle">
+          <i data-lucide="globe"></i> <span id="current-lang-indicator">EN</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tab-btn-login">Sign In</button>
+        <button class="auth-tab-btn" id="tab-btn-register">Register</button>
+      </div>
+
+      <form id="form-login" class="card" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Username or Email</label>
+          <input type="text" id="login-username" class="form-control" placeholder="e.g. jeel_nada" required>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:6px; padding:12px;">Sign In</button>
+      </form>
+
+      <form id="form-register" class="card hidden" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Full Name</label>
+          <input type="text" id="reg-fullname" class="form-control" placeholder="Your Name" required>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Username</label>
+          <input type="text" id="reg-username" class="form-control" placeholder="username" required>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Email Address</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="farmer@example.com" required>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; font-weight:700;">Password</label>
+          <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:6px; padding:12px;">Create Account</button>
+      </form>
+    </main>
+
+    <!-- Dynamic Server Backend IP / URL Configuration Modal -->
+    <div class="modal-overlay hidden" id="server-settings-modal" style="z-index:2600;">
+      <div class="modal-container" style="max-width:420px; width:92%; padding:22px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="server" style="color:var(--primary); width:22px; height:22px;"></i>
+            <h3 style="font-size:1.1rem; font-weight:800; margin:0;">Backend Server Connection</h3>
+          </div>
+          <button class="btn-icon" id="btn-close-server-settings" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
+        </div>
+
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.4;">
+          Connect your mobile app to your laptop or cloud server. If your Wi-Fi IP changes, simply update it below.
+        </p>
+
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">Server IP / URL</label>
+          <input type="text" id="server-ip-input" class="form-control" placeholder="e.g. 192.168.1.15:8000 or https://api.plantiq.ai">
+          <small style="font-size:0.68rem; color:var(--text-muted); margin-top:3px; display:block;">Enter your laptop's Wi-Fi IP (from <code>ipconfig</code>) with port 8000</small>
+        </div>
+
+        <div id="server-test-result" style="font-size:0.75rem; margin-bottom:14px; min-height:18px;"></div>
+
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <button type="button" class="btn btn-secondary" id="btn-test-server-connection" style="flex:1;">
+            <i data-lucide="activity"></i> Test Ping
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-save-server-settings" style="flex:1;">
+            <i data-lucide="save"></i> Save & Connect
+          </button>
+        </div>
+        <button type="button" class="btn btn-text" id="btn-reset-server-settings" style="width:100%; font-size:0.75rem; color:var(--text-muted);">
+          Reset to Default
+        </button>
+      </div>
+    </div>
+
+  </div>
+  <script src="./static/js/i18n.js"></script>
+  <script src="./static/js/auth.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

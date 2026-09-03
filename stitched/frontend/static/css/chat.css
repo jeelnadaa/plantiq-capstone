@@ -1,0 +1,138 @@
+/* ===================================================================
+   NEO-BRUTALIST AI AGRONOMIST CHATBOT STYLES
+   =================================================================== */
+
+.chat-thread-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.chat-thread-bar select {
+  font-weight: 800;
+  border: var(--border-neo);
+  box-shadow: var(--shadow-neo-sm);
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+}
+
+.chat-box {
+  background: var(--bg-card);
+  border: var(--border-neo);
+  border-radius: var(--radius-md);
+  height: 520px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-neo);
+  position: relative;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 18px 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--bg-card-subtle);
+  scroll-behavior: smooth;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #000000;
+}
+
+.msg-row {
+  display: flex;
+  gap: 8px;
+  max-width: 88%;
+}
+
+.msg-row.user-msg {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.msg-row.assistant-msg {
+  align-self: flex-start;
+}
+
+.msg-bubble {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-weight: 600;
+  position: relative;
+  word-break: break-word;
+  border: var(--border-neo-sm);
+  box-shadow: var(--shadow-neo-sm);
+}
+
+.user-msg .msg-bubble {
+  background: var(--primary);
+  color: #000000;
+  font-weight: 700;
+}
+
+.assistant-msg .msg-bubble {
+  background: var(--bg-card);
+  color: var(--text-main);
+}
+
+/* Attached Image Bar */
+.attached-indicator {
+  padding: 8px 14px;
+  background: var(--accent);
+  color: #000000;
+  border-top: var(--border-neo-sm);
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-input-bar {
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border-top: var(--border-neo);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.chat-input {
+  flex: 1;
+  border: var(--border-neo-sm);
+  background: var(--bg-card);
+  color: var(--text-main);
+  border-radius: var(--radius-sm);
+  padding: 11px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  outline: none;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.chat-input:focus {
+  box-shadow: 4px 4px 0px #000000;
+}
+
+/* Voice Mic Button */
+.voice-btn.recording {
+  background: var(--cherry) !important;
+  color: #ffffff !important;
+  transform: translate(1px, 1px);
+  box-shadow: 0px 0px 0px #000000 !important;
+  animation: neo-flicker 0.6s infinite alternate;
+}
+
+@keyframes neo-flicker {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}

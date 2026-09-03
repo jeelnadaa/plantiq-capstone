@@ -1,0 +1,51 @@
+/* ===================================================================
+   NEO-BRUTALIST AUTHENTICATION & LOGIN/REGISTER STYLES
+   =================================================================== */
+
+.auth-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: var(--border-neo);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-weight: 900;
+  font-size: 0.92rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: var(--shadow-neo-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.auth-tab-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.auth-tab-btn.active {
+  background: var(--primary);
+  color: #000000;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+#form-login, #form-register {
+  padding: 24px 18px;
+}
+
+#form-login label, #form-register label {
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  display: block;
+}

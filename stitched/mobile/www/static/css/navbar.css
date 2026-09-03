@@ -1,0 +1,54 @@
+/* Bottom Navigation Bar with Safe Area Support */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  padding-top: 8px;
+  padding-bottom: max(14px, calc(10px + env(safe-area-inset-bottom, 0px)));
+  min-height: calc(64px + env(safe-area-inset-bottom, 0px));
+  height: auto;
+  background: var(--bg-container);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 2000;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 20%;
+  min-height: 48px;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.nav-tab i, .nav-tab svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2px;
+  pointer-events: none;
+}
+
+.nav-tab.active {
+  color: var(--primary);
+}
+
+.nav-tab.active i, .nav-tab.active svg {
+  stroke-width: 2.5px;
+}

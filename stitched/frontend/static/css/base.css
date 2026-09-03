@@ -1,0 +1,634 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Kannada:wght@500;600;700;800&display=swap');
+
+/* ===================================================================
+   PLANTIQ NEO-BRUTALISM DESIGN SYSTEM — HIGH-VOLTAGE FIELD UTILITY
+   =================================================================== */
+
+:root {
+  /* High-Voltage Neo-Brutalist Light Palette */
+  --primary: #00e575;
+  --primary-hover: #00c965;
+  --primary-light: #d1fae5;
+  --primary-border: #000000;
+
+  --accent: #ffe600;
+  --accent-hover: #ebd300;
+  --accent-light: #fef9c3;
+  --accent-border: #000000;
+
+  --cherry: #ff3366;
+  --cherry-hover: #e62255;
+  --cherry-light: #ffe4e6;
+
+  --cyan: #00e5ff;
+  --purple: #b388ff;
+  --orange: #ff9100;
+  --danger: #ff3344;
+  --danger-light: #fee2e2;
+
+  --ink: #000000;
+  --text-main: #000000;
+  --text-muted: #4b5563;
+  --text-light: #6b7280;
+
+  --bg-desktop: #f4efe4;
+  --bg-desktop-pattern: radial-gradient(#000000 1.2px, transparent 1.2px);
+  --bg-main: #fcf9f2;
+  --bg-container: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #f7f3ea;
+
+  --border-color: #000000;
+  --border-subtle: #000000;
+  --border-focus: #000000;
+
+  --border-width: 2.5px;
+  --border-thick: 3.5px;
+  --border-neo: 3px solid #000000;
+  --border-neo-sm: 2px solid #000000;
+
+  --shadow-offset-sm: 3px 3px 0px #000000;
+  --shadow-offset: 5px 5px 0px #000000;
+  --shadow-offset-lg: 7px 7px 0px #000000;
+  --shadow-sm: var(--shadow-offset-sm);
+  --shadow-md: var(--shadow-offset);
+  --shadow-lg: var(--shadow-offset-lg);
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+}
+
+/* ===================================================================
+   DARK THEME: CYBER NEO-BRUTALISM
+   =================================================================== */
+
+[data-theme="dark"] {
+  /* High-Voltage Cyber Neo-Brutalism Dark Palette — Electric Mint Primary */
+  --primary: #00f585;
+  --primary-hover: #1dfda0;
+  --primary-light: rgba(0, 245, 133, 0.16);
+  --primary-border: #000000;
+
+  --accent: #ffea00;
+  --accent-hover: #fff033;
+  --accent-light: rgba(255, 234, 0, 0.16);
+  --accent-border: #000000;
+
+  --cherry: #ff3366;
+  --cherry-hover: #ff527b;
+  --cherry-light: rgba(255, 51, 102, 0.2);
+
+  --cyan: #00f0ff;
+  --purple: #b388ff;
+  --orange: #ff9100;
+  --danger: #ff4d6d;
+  --danger-light: rgba(255, 77, 109, 0.2);
+
+  --ink: #ffffff;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+
+  --bg-desktop: #07090e;
+  --bg-desktop-pattern: radial-gradient(rgba(0, 245, 133, 0.2) 1.2px, transparent 1.2px);
+  --bg-main: #0c1017;
+  --bg-container: #10141e;
+  --bg-card: #171d2b;
+  --bg-card-subtle: #1e2638;
+
+  --border-color: #000000;
+  --border-subtle: #2b364c;
+  --border-focus: var(--primary);
+
+  --border-neo: 2.5px solid #000000;
+  --border-neo-sm: 2px solid #000000;
+
+  --shadow-offset-sm: 3px 3px 0px var(--primary);
+  --shadow-offset: 4px 4px 0px var(--primary);
+  --shadow-offset-lg: 6px 6px 0px var(--accent);
+  --shadow-sm: 3px 3px 0px var(--primary);
+  --shadow-md: 4px 4px 0px var(--primary);
+  --shadow-lg: 6px 6px 0px var(--accent);
+  --shadow-neo: 4px 4px 0px var(--primary);
+  --shadow-neo-sm: 3px 3px 0px var(--primary);
+  --shadow-neo-lg: 6px 6px 0px var(--accent);
+}
+
+[data-theme="dark"] .app-container {
+  box-shadow: 8px 8px 0px var(--primary), 0 0 35px rgba(0, 245, 133, 0.14);
+}
+
+[data-theme="dark"] .brand-icon {
+  background: var(--primary) !important;
+  color: #000000 !important;
+}
+
+[data-theme="dark"] .btn-primary {
+  background: var(--primary);
+  color: #000000;
+  box-shadow: 4px 4px 0px var(--accent);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  box-shadow: 6px 6px 0px var(--accent);
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: var(--bg-card-subtle);
+  color: var(--text-main);
+  box-shadow: 4px 4px 0px var(--primary);
+}
+
+[data-theme="dark"] .btn-outline {
+  background: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: 3px 3px 0px var(--primary);
+}
+
+[data-theme="dark"] .form-control {
+  background: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: 3px 3px 0px var(--primary);
+}
+
+[data-theme="dark"] .form-control:focus {
+  box-shadow: 5px 5px 0px var(--accent);
+}
+
+[data-theme="dark"] .modal-container {
+  box-shadow: 8px 8px 0px var(--primary) !important;
+}
+
+[data-theme="dark"] .undo-toast {
+  background: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: 5px 5px 0px var(--accent);
+}
+
+[data-theme="dark"] .undo-toast-timer-bar {
+  background: var(--accent);
+}
+
+/* ===================================================================
+   GLOBAL BASE STYLES & RESET
+   =================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Space Grotesk', 'Plus Jakarta Sans', 'Noto Sans Kannada', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg-desktop);
+  background-image: var(--bg-desktop-pattern);
+  background-size: 24px 24px;
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-bottom: max(96px, calc(80px + env(safe-area-inset-bottom, 0px)));
+  overflow-x: hidden;
+}
+
+/* Neo-Brutalist Frame */
+.app-container {
+  width: 100%;
+  max-width: 490px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--bg-container);
+  border-left: var(--border-neo);
+  border-right: var(--border-neo);
+  box-shadow: 8px 8px 0px #000000;
+}
+
+@media (min-width: 600px) {
+  body {
+    padding-top: 24px;
+  }
+  .app-container {
+    min-height: 94vh;
+    border-radius: var(--radius-lg);
+    border: var(--border-neo);
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+}
+
+/* ===================================================================
+   NEO-BRUTALIST HEADER
+   =================================================================== */
+
+.page-header {
+  padding-top: max(20px, calc(14px + env(safe-area-inset-top, 0px)));
+  padding-bottom: 14px;
+  padding-left: max(18px, env(safe-area-inset-left, 18px));
+  padding-right: max(18px, env(safe-area-inset-right, 18px));
+  background: var(--bg-container);
+  border-bottom: var(--border-neo);
+  position: sticky;
+  top: 0;
+  z-index: 1500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media all and (display-mode: standalone) {
+  .page-header {
+    padding-top: max(28px, calc(16px + env(safe-area-inset-top, 0px)));
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-neo-sm);
+  box-shadow: 3px 3px 0px #000000;
+  font-weight: 900;
+}
+
+.brand-icon i, .brand-icon svg {
+  stroke: #000000 !important;
+  stroke-width: 2.8px;
+  width: 22px;
+  height: 22px;
+}
+
+.brand-name {
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-lang {
+  background: var(--accent);
+  color: #000000;
+  border: var(--border-neo-sm);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 2px 2px 0px #000000;
+  letter-spacing: 0.5px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-lang:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000000;
+}
+
+.btn-lang:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000000;
+}
+
+.btn-theme {
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: var(--border-neo-sm);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2px 2px 0px #000000;
+  position: relative;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-theme:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000000;
+}
+
+.btn-theme:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000000;
+}
+
+/* ===================================================================
+   PAGE CONTENT & TYPOGRAPHY
+   =================================================================== */
+
+.page-content {
+  flex: 1;
+  padding: 20px 18px 28px;
+}
+
+.section-title {
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  line-height: 1.2;
+  margin-bottom: 6px;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.section-subtitle {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+/* ===================================================================
+   NEO-BRUTALIST CARDS
+   =================================================================== */
+
+.card {
+  background: var(--bg-card);
+  border: var(--border-neo);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: var(--shadow-neo);
+  margin-bottom: 20px;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px #000000;
+}
+
+/* ===================================================================
+   TACTILE MECHANICAL NEO-BRUTALIST BUTTONS
+   =================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border: var(--border-neo);
+  box-shadow: var(--shadow-neo);
+  text-decoration: none;
+  text-transform: uppercase;
+  user-select: none;
+  touch-action: manipulation;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px #000000;
+}
+
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #000000;
+}
+
+.btn-secondary {
+  background: var(--bg-card-subtle);
+  color: var(--text-main);
+}
+
+.btn-outline {
+  background: var(--bg-card);
+  color: var(--text-main);
+}
+
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  border: var(--border-neo-sm);
+  box-shadow: var(--shadow-neo-sm);
+}
+
+.btn-sm:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.btn-sm:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+.btn-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-neo-sm);
+  background: var(--bg-card);
+  color: var(--text-main);
+  cursor: pointer;
+  box-shadow: var(--shadow-neo-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-icon:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+  background: var(--accent);
+  color: #000000;
+}
+
+.btn-icon:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+/* ===================================================================
+   NEO-BRUTALIST FORM CONTROLS
+   =================================================================== */
+
+.form-control {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: var(--border-neo-sm);
+  background: var(--bg-card);
+  font-size: 0.92rem;
+  color: var(--text-main);
+  outline: none;
+  font-weight: 700;
+  box-shadow: 3px 3px 0px #000000;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0px #000000;
+  background: var(--bg-card);
+  border-color: var(--border-focus);
+}
+
+/* ===================================================================
+   NEO-BRUTALIST MODAL OVERLAYS
+   =================================================================== */
+
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.7) !important;
+  z-index: 2800 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px;
+}
+
+.modal-overlay.hidden {
+  display: none !important;
+}
+
+.modal-container {
+  background: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border: var(--border-neo) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 10px 10px 0px #000000 !important;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* 3-Second Undo Toast Notification Bar */
+.undo-toast {
+  position: fixed;
+  bottom: 86px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 440px;
+  background: var(--accent);
+  color: #000000;
+  border: var(--border-neo);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2900;
+  box-shadow: 6px 6px 0px #000000;
+  overflow: hidden;
+}
+
+.undo-toast.hidden {
+  display: none !important;
+}
+
+.undo-toast-timer-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  background: #000000;
+  width: 100%;
+}
+
+/* ===================================================================
+   NEO-BRUTALIST STICKERS, BADGES & CHIPS
+   =================================================================== */
+
+.badge-disease {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background: var(--cherry);
+  color: #ffffff;
+  border: var(--border-neo-sm);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.badge-healthy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background: var(--primary);
+  color: #000000;
+  border: var(--border-neo-sm);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.badge-amber {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  background: var(--accent);
+  color: #000000;
+  border: var(--border-neo-sm);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* Utility Hidden */
+.hidden {
+  display: none !important;
+}

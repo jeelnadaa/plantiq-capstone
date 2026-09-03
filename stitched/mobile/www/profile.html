@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PlantIQ — Farmer Profile</title>
+  <link rel="stylesheet" href="./static/css/base.css">
+  <link rel="stylesheet" href="./static/css/navbar.css">
+  <link rel="stylesheet" href="./static/css/profile.css">
+  <script src="./static/js/api.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <header class="page-header">
+      <div class="brand">
+        <div class="brand-icon"><i data-lucide="leaf"></i></div>
+        <span class="brand-name">PlantIQ</span>
+      </div>
+      <div class="header-actions">
+                <button class="btn-theme btn-open-server-settings" title="Backend Server Settings" style="position:relative;">
+          <i data-lucide="server"></i>
+          <span class="server-status-dot" style="position:absolute; top:4px; right:4px; width:8px; height:8px; border-radius:50%; background:#22c55e; border:1px solid #ffffff;"></span>
+        </button>
+        <button class="btn-theme btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i data-lucide="moon"></i>
+        </button>
+        <button class="btn-lang" id="btn-lang-toggle">
+          <i data-lucide="globe"></i> <span id="current-lang-indicator">EN</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <h1 class="section-title" data-i18n="profileTitle">Farmer Profile</h1>
+      <div class="card" style="margin-bottom:16px;">
+        <h3 id="profile-fullname" style="font-size:1.15rem; font-weight:800;">Loading...</h3>
+        <span id="profile-email" style="font-size:0.8rem; color:var(--text-muted);">Please wait...</span>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-number" id="stat-scans-count">0</div>
+          <div class="stat-label" data-i18n="statTotalScans">Total Scans</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="stat-listings-count">0</div>
+          <div class="stat-label" data-i18n="statActiveListings">Active Listings</div>
+        </div>
+      </div>
+      <button class="btn btn-outline" id="btn-logout" style="width:100%; color:var(--danger); border-color:var(--danger);" data-i18n="btnLogout">Sign Out</button>
+    </main>
+
+    <!-- Dynamic Server Backend IP / URL Configuration Modal -->
+    <div class="modal-overlay hidden" id="server-settings-modal" style="z-index:2600;">
+      <div class="modal-container" style="max-width:420px; width:92%; padding:22px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="server" style="color:var(--primary); width:22px; height:22px;"></i>
+            <h3 style="font-size:1.1rem; font-weight:800; margin:0;">Backend Server Connection</h3>
+          </div>
+          <button class="btn-icon" id="btn-close-server-settings" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
+        </div>
+
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.4;">
+          Connect your mobile app to your laptop or cloud server. If your Wi-Fi IP changes, simply update it below.
+        </p>
+
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">Server IP / URL</label>
+          <input type="text" id="server-ip-input" class="form-control" placeholder="e.g. 192.168.1.15:8000 or https://api.plantiq.ai">
+          <small style="font-size:0.68rem; color:var(--text-muted); margin-top:3px; display:block;">Enter your laptop's Wi-Fi IP (from <code>ipconfig</code>) with port 8000</small>
+        </div>
+
+        <div id="server-test-result" style="font-size:0.75rem; margin-bottom:14px; min-height:18px;"></div>
+
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <button type="button" class="btn btn-secondary" id="btn-test-server-connection" style="flex:1;">
+            <i data-lucide="activity"></i> Test Ping
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-save-server-settings" style="flex:1;">
+            <i data-lucide="save"></i> Save & Connect
+          </button>
+        </div>
+        <button type="button" class="btn btn-text" id="btn-reset-server-settings" style="width:100%; font-size:0.75rem; color:var(--text-muted);">
+          Reset to Default
+        </button>
+      </div>
+    </div>
+
+    
+    <!-- Voice Language Selection Modal -->
+    <div class="card modal-overlay hidden" id="voice-lang-modal" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); z-index:1200; display:flex; align-items:center; justify-content:center;">
+      <div class="modal-container" style="border-radius:18px; max-width:360px; width:90%; padding:24px; text-align:center; box-shadow:var(--shadow-lg);">
+        <div style="width:52px; height:52px; border-radius:50%; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+          <i data-lucide="mic" style="width:26px; height:26px;"></i>
+        </div>
+        <h3 data-i18n="voiceModalTitle" style="font-size:1.1rem; font-weight:800; margin-bottom:4px;">Choose Voice Language</h3>
+        <p data-i18n="voiceModalSub" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:18px;">Select the language you want to speak in</p>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+          <button type="button" class="btn btn-primary" id="btn-voice-opt-kn" style="width:100%;">
+            <i data-lucide="volume-2"></i> <span data-i18n="btnVoiceKn">ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಿ (Kannada)</span>
+          </button>
+          <button type="button" class="btn btn-outline" id="btn-voice-opt-en" style="width:100%;">
+            <i data-lucide="volume-2"></i> <span data-i18n="btnVoiceEn">Speak in English</span>
+          </button>
+        </div>
+        <button type="button" class="btn btn-sm btn-secondary" id="btn-voice-opt-cancel" style="width:100%;" data-i18n="btnCancel">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Google Maps Guide Modal -->
+    <div class="card modal-overlay hidden" id="gmaps-guide-modal" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); z-index:1300; display:flex; align-items:center; justify-content:center;">
+      <div class="modal-container" style="border-radius:18px; max-width:440px; width:92%; max-height:85vh; overflow-y:auto; padding:22px; box-shadow:var(--shadow-lg);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="map-pin" style="color:var(--primary); width:22px; height:22px;"></i>
+            <h3 style="font-size:1.05rem; font-weight:800; margin:0;">Google Maps Coordinates Guide</h3>
+          </div>
+          <button class="btn-icon" id="btn-close-gmaps-guide" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
+        </div>
+        
+        <div style="background:var(--bg-card-subtle); border:1px solid var(--border-subtle); border-radius:10px; padding:12px; margin-bottom:12px;">
+          <strong style="color:var(--primary); font-size:0.85rem; display:block; margin-bottom:6px;">📍 English Instructions:</strong>
+          <ol style="font-size:0.8rem; line-height:1.5; color:var(--text-main); padding-left:18px; margin:0;">
+            <li>Open the <strong>Google Maps</strong> app on your mobile.</li>
+            <li>Zoom in and <strong>long press</strong> on your coffee estate plot to drop a red pin.</li>
+            <li>Look at the top search bar for coordinates like <code>13.3161, 75.7720</code>.</li>
+            <li>Enter the first number as <strong>Latitude</strong> and second as <strong>Longitude</strong>.</li>
+          </ol>
+        </div>
+
+        <div style="background:var(--primary-light); border:1px solid var(--primary-border); border-radius:10px; padding:12px; margin-bottom:16px;">
+          <strong style="color:var(--primary); font-size:0.85rem; display:block; margin-bottom:6px;">📍 ಕನ್ನಡ ಮಾರ್ಗದರ್ಶಿ (Kannada):</strong>
+          <ol style="font-size:0.8rem; line-height:1.5; color:var(--text-main); padding-left:18px; margin:0;">
+            <li>ನಿಮ್ಮ ಮೊಬೈಲ್‌ನಲ್ಲಿ <strong>ಗೂಗಲ್ ಮ್ಯಾಪ್ಸ್</strong> ಆಪ್ ತೆರೆಯಿರಿ.</li>
+            <li>ನಿಮ್ಮ ಕಾಫಿ ತೋಟದ ಮೇಲೆ <strong>ದೀರ್ಘವಾಗಿ ಒತ್ತಿ ಹಿಡಿಯಿರಿ (Long Press)</strong>, ಕೆಂಪು ಪಿನ್ ಬೀಳುತ್ತದೆ.</li>
+            <li>ಸರ್ಚ್ ಬಾರ್‌ನಲ್ಲಿ <code>13.3161, 75.7720</code> ಸಂಖ್ಯೆಗಳು ಕಾಣಿಸುತ್ತವೆ.</li>
+            <li>ಮೊದಲ ಸಂಖ್ಯೆ <strong>ಅಕ್ಷಾಂಶ (Latitude)</strong> ಮತ್ತು ಎರಡನೇ ಸಂಖ್ಯೆ <strong>ರೇಖಾಂಶ (Longitude)</strong> ಆಗಿದೆ.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    
+    <nav class="bottom-nav">
+      <a href="./index.html" class="nav-tab ">
+        <i data-lucide="scan"></i>
+        <span data-i18n="navScanner">Scanner</span>
+      </a>
+      <a href="./chat.html" class="nav-tab ">
+        <i data-lucide="message-square"></i>
+        <span data-i18n="navChat">Chatbot</span>
+      </a>
+      <a href="./marketplace.html" class="nav-tab ">
+        <i data-lucide="shopping-bag"></i>
+        <span data-i18n="navMarket">Market</span>
+      </a>
+      <a href="./history.html" class="nav-tab ">
+        <i data-lucide="clock"></i>
+        <span data-i18n="navHistory">History</span>
+      </a>
+      <a href="./profile.html" class="nav-tab active">
+        <i data-lucide="user"></i>
+        <span data-i18n="navProfile">Profile</span>
+      </a>
+    </nav>
+
+  </div>
+  <script src="./static/js/i18n.js"></script>
+  <script src="./static/js/profile.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

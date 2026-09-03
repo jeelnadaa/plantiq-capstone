@@ -253,6 +253,173 @@ async function updateServerStatusIndicator() {
   }
 }
 
+// ===================================================================
+// DUAL-COLOR NEO-BRUTALIST PALETTES & THEME CONTROLLER
+// ===================================================================
+
+const THEME_PALETTES = [
+  {
+    id: "cobalt",
+    name: "Cobalt & Coral",
+    subtitle: "Main Signature Theme",
+    primary: "#2d5bff",
+    accent: "#ff3366",
+    darkPrimary: "#38bdf8",
+    darkAccent: "#ff2a6d"
+  },
+  {
+    id: "vaporwave",
+    name: "Vaporwave Neon",
+    subtitle: "Electric Violet & Hyper Cyan",
+    primary: "#7000ff",
+    accent: "#00d2ff",
+    darkPrimary: "#a855f7",
+    darkAccent: "#00f0ff"
+  },
+  {
+    id: "volcanic",
+    name: "Volcanic Magma",
+    subtitle: "Blaze Orange & Deep Crimson",
+    primary: "#ff5500",
+    accent: "#d00036",
+    darkPrimary: "#ff6a00",
+    darkAccent: "#ff1744"
+  },
+  {
+    id: "monochrome",
+    name: "Swiss Monochrome",
+    subtitle: "Pitch Black & Titanium Chalk",
+    primary: "#0a0a0c",
+    accent: "#64748b",
+    darkPrimary: "#ffffff",
+    darkAccent: "#94a3b8"
+  },
+  {
+    id: "berry",
+    name: "Royal Berry",
+    subtitle: "Royal Indigo & Bubblegum Pink",
+    primary: "#312e81",
+    accent: "#ec4899",
+    darkPrimary: "#818cf8",
+    darkAccent: "#f43f85"
+  }
+];
+
+function getCurrentPalette() {
+  return localStorage.getItem("plantiq_palette") || "cobalt";
+}
+
+function setPalette(paletteId) {
+  const selected = THEME_PALETTES.find(p => p.id === paletteId) || THEME_PALETTES[0];
+  document.documentElement.setAttribute("data-palette", selected.id);
+  localStorage.setItem("plantiq_palette", selected.id);
+  updatePaletteModalUI();
+}
+
+function initPalette() {
+  const saved = getCurrentPalette();
+  setPalette(saved);
+  ensurePaletteModalDOM();
+
+  document.querySelectorAll(".btn-open-palette-modal").forEach(btn => {
+    btn.onclick = () => openPaletteModal();
+  });
+}
+
+function ensurePaletteModalDOM() {
+  if (document.getElementById("theme-palette-modal")) return;
+
+  const modal = document.createElement("div");
+  modal.className = "modal-overlay hidden";
+  modal.id = "theme-palette-modal";
+  modal.style.zIndex = "2700";
+
+  modal.innerHTML = `
+    <div class="modal-container" style="max-width:440px; width:92%; padding:22px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <i data-lucide="palette" style="color:var(--primary); width:24px; height:24px;"></i>
+          <h3 style="font-size:1.15rem; font-weight:900; margin:0; text-transform:uppercase;">Neo-Brutalist Themes</h3>
+        </div>
+        <button class="btn-icon" id="btn-close-palette-modal" style="width:32px; height:32px;"><i data-lucide="x"></i></button>
+      </div>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px; line-height:1.4; font-weight:600;">
+        Choose from 5 high-voltage dual-color palettes. Each theme is engineered with fluid transitions for both Light and Dark modes.
+      </p>
+      <div class="palette-grid" id="palette-options-container"></div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const closeBtn = document.getElementById("btn-close-palette-modal");
+  if (closeBtn) {
+    closeBtn.onclick = () => closePaletteModal();
+  }
+
+  modal.onclick = (e) => {
+    if (e.target === modal) closePaletteModal();
+  };
+
+  updatePaletteModalUI();
+  if (window.lucide) lucide.createIcons();
+}
+
+function updatePaletteModalUI() {
+  const container = document.getElementById("palette-options-container");
+  if (!container) return;
+
+  const current = getCurrentPalette();
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+
+  container.innerHTML = THEME_PALETTES.map(p => {
+    const pColor = isDark ? p.darkPrimary : p.primary;
+    const aColor = isDark ? p.darkAccent : p.accent;
+    const isActive = p.id === current;
+
+    return `
+      <div class="palette-option-card ${isActive ? 'active' : ''}" data-palette-id="${p.id}">
+        <div class="palette-card-info">
+          <div class="palette-swatches-box">
+            <div class="palette-swatch-dot" style="background:${pColor};"></div>
+            <div class="palette-swatch-dot" style="background:${aColor};"></div>
+          </div>
+          <div>
+            <div class="palette-card-name">${p.name}</div>
+            <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">${p.subtitle}</div>
+          </div>
+        </div>
+        ${isActive ? '<span class="palette-card-badge">ACTIVE</span>' : '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:800;">TAP TO SET</span>'}
+      </div>
+    `;
+  }).join("");
+
+  container.querySelectorAll(".palette-option-card").forEach(card => {
+    card.onclick = () => {
+      const pid = card.getAttribute("data-palette-id");
+      if (pid) {
+        setPalette(pid);
+        setTimeout(() => closePaletteModal(), 180);
+      }
+    };
+  });
+}
+
+function openPaletteModal() {
+  ensurePaletteModalDOM();
+  updatePaletteModalUI();
+  const modal = document.getElementById("theme-palette-modal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
+function closePaletteModal() {
+  const modal = document.getElementById("theme-palette-modal");
+  if (modal) modal.classList.add("hidden");
+}
+
 // Dark Mode Theme Controller
 function initTheme() {
   const saved = localStorage.getItem("plantiq_theme") || "light";
@@ -273,11 +440,13 @@ function setTheme(theme) {
   document.querySelectorAll(".btn-theme-toggle i").forEach(icon => {
     icon.setAttribute("data-lucide", theme === "dark" ? "sun" : "moon");
   });
+  updatePaletteModalUI();
   if (window.lucide) lucide.createIcons();
 }
 
 checkAuthGuard();
 document.addEventListener("DOMContentLoaded", () => {
+  initPalette();
   initTheme();
   initServerSettings();
 });

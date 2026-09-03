@@ -268,40 +268,40 @@ const THEME_PALETTES = [
     darkAccent: "#ff2a6d"
   },
   {
-    id: "mint",
-    name: "Cyber Mint & Gold",
-    subtitle: "Agronomy High-Voltage",
-    primary: "#00e575",
-    accent: "#ffe600",
-    darkPrimary: "#00ff87",
-    darkAccent: "#ffea00"
-  },
-  {
-    id: "violet",
-    name: "Ultraviolet & Sunset",
-    subtitle: "Memphis Pop Neo-Brutalism",
-    primary: "#7c3aed",
-    accent: "#ff7700",
-    darkPrimary: "#a855f7",
-    darkAccent: "#ff8800"
-  },
-  {
-    id: "crimson",
-    name: "Crimson & Cyber Cyan",
-    subtitle: "Synthwave Neo-Brutalism",
-    primary: "#e11d48",
+    id: "vaporwave",
+    name: "Vaporwave Neon",
+    subtitle: "Electric Violet & Hyper Cyan",
+    primary: "#7000ff",
     accent: "#00d2ff",
-    darkPrimary: "#ff2a6d",
+    darkPrimary: "#a855f7",
     darkAccent: "#00f0ff"
   },
   {
-    id: "emerald",
-    name: "Emerald & Golden Amber",
-    subtitle: "Artisan Coffee Harvest",
-    primary: "#059669",
-    accent: "#f59e0b",
-    darkPrimary: "#10b981",
-    darkAccent: "#fbbf24"
+    id: "volcanic",
+    name: "Volcanic Magma",
+    subtitle: "Blaze Orange & Deep Crimson",
+    primary: "#ff5500",
+    accent: "#d00036",
+    darkPrimary: "#ff6a00",
+    darkAccent: "#ff1744"
+  },
+  {
+    id: "monochrome",
+    name: "Swiss Monochrome",
+    subtitle: "Pitch Black & Titanium Chalk",
+    primary: "#0a0a0c",
+    accent: "#64748b",
+    darkPrimary: "#ffffff",
+    darkAccent: "#94a3b8"
+  },
+  {
+    id: "berry",
+    name: "Royal Berry",
+    subtitle: "Royal Indigo & Bubblegum Pink",
+    primary: "#312e81",
+    accent: "#ec4899",
+    darkPrimary: "#818cf8",
+    darkAccent: "#f43f85"
   }
 ];
 

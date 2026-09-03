@@ -4,8 +4,8 @@
    PLANTIQ NEO-BRUTALISM DESIGN SYSTEM — HIGH-VOLTAGE FIELD UTILITY
    =================================================================== */
 
-:root {
-  /* High-Voltage Electric Cobalt & Hot Coral Neo-Brutalist Light Palette */
+:root, [data-palette="cobalt"] {
+  /* Theme 1 (Default): Electric Cobalt Blue & Hot Coral */
   --primary: #2d5bff;
   --primary-hover: #1e46e8;
   --primary-light: #e0e7ff;
@@ -40,7 +40,7 @@
 
   --border-color: #000000;
   --border-subtle: #000000;
-  --border-focus: #000000;
+  --border-focus: var(--primary);
 
   --border-width: 2.5px;
   --border-thick: 3.5px;
@@ -61,22 +61,63 @@
   --radius-full: 9999px;
 }
 
+/* Theme 2: Vaporwave Neon (Electric Violet & Hyper Cyan) */
+[data-palette="vaporwave"] {
+  --primary: #7000ff;
+  --primary-hover: #5b00d6;
+  --primary-light: #ede9fe;
+  --accent: #00d2ff;
+  --accent-hover: #00b4db;
+  --accent-light: #e0f9ff;
+  --border-focus: var(--primary);
+  --bg-desktop: #f8f6fc;
+  --bg-desktop-pattern: radial-gradient(#7000ff 1.2px, transparent 1.2px);
+}
+
+/* Theme 3: Volcanic Magma (Blaze Orange & Deep Crimson) */
+[data-palette="volcanic"] {
+  --primary: #ff5500;
+  --primary-hover: #e04b00;
+  --primary-light: #ffedd5;
+  --accent: #d00036;
+  --accent-hover: #b0002e;
+  --accent-light: #ffe4e6;
+  --border-focus: var(--primary);
+  --bg-desktop: #fdf7f2;
+  --bg-desktop-pattern: radial-gradient(#ff5500 1.2px, transparent 1.2px);
+}
+
+/* Theme 4: Swiss Monochrome (Pitch Black & Platinum White) */
+[data-palette="monochrome"] {
+  --primary: #0a0a0c;
+  --primary-hover: #27272a;
+  --primary-light: #e4e4e7;
+  --accent: #64748b;
+  --accent-hover: #475569;
+  --accent-light: #f1f5f9;
+  --border-focus: #000000;
+  --bg-desktop: #f4f4f5;
+  --bg-desktop-pattern: radial-gradient(#000000 1.4px, transparent 1.4px);
+}
+
+/* Theme 5: Royal Berry (Royal Indigo & Bubblegum Fuchsia) */
+[data-palette="berry"] {
+  --primary: #312e81;
+  --primary-hover: #262366;
+  --primary-light: #ede9fe;
+  --accent: #ec4899;
+  --accent-hover: #db2777;
+  --accent-light: #fce7f3;
+  --border-focus: var(--primary);
+  --bg-desktop: #fdf4f8;
+  --bg-desktop-pattern: radial-gradient(#312e81 1.2px, transparent 1.2px);
+}
+
 /* ===================================================================
-   DARK THEME: CYBER COBALT & NEON CORAL
+   DARK THEMES FOR EACH COLOR PALETTE (NO INVERTING, DEDICATED DARK ART)
    =================================================================== */
 
 [data-theme="dark"] {
-  /* High-Voltage Cyber Neo-Brutalism Dark Palette — Electric Cobalt & Neon Coral */
-  --primary: #38bdf8;
-  --primary-hover: #60a5fa;
-  --primary-light: rgba(56, 189, 248, 0.16);
-  --primary-border: #000000;
-
-  --accent: #ff2a6d;
-  --accent-hover: #ff457f;
-  --accent-light: rgba(255, 42, 109, 0.16);
-  --accent-border: #000000;
-
   --cherry: #ff2a6d;
   --cherry-hover: #ff457f;
   --cherry-light: rgba(255, 42, 109, 0.2);
@@ -106,6 +147,14 @@
   --border-neo: 2.5px solid #000000;
   --border-neo-sm: 2px solid #000000;
 
+  /* Theme 1 Dark Default: Cobalt & Coral */
+  --primary: #38bdf8;
+  --primary-hover: #60a5fa;
+  --primary-light: rgba(56, 189, 248, 0.16);
+  --accent: #ff2a6d;
+  --accent-hover: #ff457f;
+  --accent-light: rgba(255, 42, 109, 0.16);
+
   --shadow-offset-sm: 3px 3px 0px var(--primary);
   --shadow-offset: 4px 4px 0px var(--primary);
   --shadow-offset-lg: 6px 6px 0px var(--accent);
@@ -115,6 +164,117 @@
   --shadow-neo: 4px 4px 0px var(--primary);
   --shadow-neo-sm: 3px 3px 0px var(--primary);
   --shadow-neo-lg: 6px 6px 0px var(--accent);
+}
+
+/* Theme 2 Dark: Vaporwave Neon (Fluorescent Violet & Electric Cyan) */
+[data-theme="dark"][data-palette="vaporwave"] {
+  --primary: #a855f7;
+  --primary-hover: #c084fc;
+  --primary-light: rgba(168, 85, 247, 0.18);
+  --accent: #00f0ff;
+  --accent-hover: #33f3ff;
+  --accent-light: rgba(0, 240, 255, 0.18);
+  --bg-desktop: #0c0717;
+  --bg-desktop-pattern: radial-gradient(rgba(168, 85, 247, 0.25) 1.2px, transparent 1.2px);
+  --bg-main: #110c22;
+  --bg-container: #16102c;
+  --bg-card: #1f173d;
+  --bg-card-subtle: #291f4f;
+  --shadow-neo: 4px 4px 0px var(--accent);
+  --shadow-sm: 3px 3px 0px var(--accent);
+  --shadow-md: 4px 4px 0px var(--accent);
+  --shadow-lg: 6px 6px 0px var(--primary);
+}
+
+/* Theme 3 Dark: Volcanic Magma (Radiant Flame & Neon Blood Coral) */
+[data-theme="dark"][data-palette="volcanic"] {
+  --primary: #ff6a00;
+  --primary-hover: #ff8533;
+  --primary-light: rgba(255, 106, 0, 0.18);
+  --accent: #ff1744;
+  --accent-hover: #ff4569;
+  --accent-light: rgba(255, 23, 68, 0.18);
+  --bg-desktop: #130907;
+  --bg-desktop-pattern: radial-gradient(rgba(255, 106, 0, 0.22) 1.2px, transparent 1.2px);
+  --bg-main: #1a0d0a;
+  --bg-container: #22120e;
+  --bg-card: #2e1813;
+  --bg-card-subtle: #3d211a;
+  --shadow-neo: 4px 4px 0px var(--primary);
+  --shadow-sm: 3px 3px 0px var(--primary);
+  --shadow-md: 4px 4px 0px var(--primary);
+  --shadow-lg: 6px 6px 0px var(--accent);
+}
+
+/* Theme 4 Dark: Swiss Monochrome (Pure Chalk White & Titanium Silver with White Shadows) */
+[data-theme="dark"][data-palette="monochrome"] {
+  --primary: #ffffff;
+  --primary-hover: #e2e8f0;
+  --primary-light: rgba(255, 255, 255, 0.15);
+  --accent: #94a3b8;
+  --accent-hover: #cbd5e1;
+  --accent-light: rgba(148, 163, 184, 0.15);
+  --bg-desktop: #000000;
+  --bg-desktop-pattern: radial-gradient(rgba(255, 255, 255, 0.2) 1.2px, transparent 1.2px);
+  --bg-main: #09090b;
+  --bg-container: #101014;
+  --bg-card: #18181c;
+  --bg-card-subtle: #24242a;
+  --border-color: #000000;
+  --shadow-neo: 4px 4px 0px #ffffff;
+  --shadow-sm: 3px 3px 0px #ffffff;
+  --shadow-md: 4px 4px 0px #ffffff;
+  --shadow-lg: 6px 6px 0px #ffffff;
+  --shadow-offset-sm: 3px 3px 0px #ffffff;
+  --shadow-offset: 4px 4px 0px #ffffff;
+  --shadow-offset-lg: 6px 6px 0px #ffffff;
+}
+
+[data-theme="dark"][data-palette="monochrome"] .btn-primary {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 4px 4px 0px #94a3b8;
+}
+
+[data-theme="dark"][data-palette="monochrome"] .app-container {
+  box-shadow: 8px 8px 0px #ffffff, 0 0 40px rgba(255, 255, 255, 0.12);
+}
+
+/* Theme 5 Dark: Royal Berry (Electric Violet-Indigo & Bubblegum Fuchsia) */
+[data-theme="dark"][data-palette="berry"] {
+  --primary: #818cf8;
+  --primary-hover: #a5b4fc;
+  --primary-light: rgba(129, 140, 248, 0.18);
+  --accent: #f43f85;
+  --accent-hover: #fb7185;
+  --accent-light: rgba(244, 63, 133, 0.18);
+  --bg-desktop: #0d071a;
+  --bg-desktop-pattern: radial-gradient(rgba(244, 63, 133, 0.2) 1.2px, transparent 1.2px);
+  --bg-main: #130a24;
+  --bg-container: #190e2f;
+  --bg-card: #221340;
+  --bg-card-subtle: #2e1a55;
+  --shadow-neo: 4px 4px 0px var(--accent);
+  --shadow-sm: 3px 3px 0px var(--accent);
+  --shadow-md: 4px 4px 0px var(--accent);
+  --shadow-lg: 6px 6px 0px var(--primary);
+}
+
+/* ===================================================================
+   FLUID THEME TRANSITION ANIMATION (LIGHT & DARK MODES)
+   =================================================================== */
+html, body, .app-container, .page-header, .brand-icon, .btn-theme, .btn-lang,
+.card, .btn, .nav-tab, .form-control, .diagnosis-card, .upload-dropzone, 
+.stat-box, .market-filters, .listing-card, .modal-container, .bottom-nav,
+.confidence-bar-bg, .confidence-bar-fill, .advisory-box {
+  transition: background-color 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+input[type="range"], input[type="range"]::-webkit-slider-thumb {
+  transition: none !important;
 }
 
 [data-theme="dark"] .app-container {
@@ -636,3 +796,93 @@ body {
 .hidden {
   display: none !important;
 }
+
+/* ===================================================================
+   THEME PALETTE PICKER MODAL & SWATCHES
+   =================================================================== */
+
+.palette-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.palette-option-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: var(--border-neo-sm);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-neo-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+}
+
+.palette-option-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px #000000;
+  background: var(--bg-card-subtle);
+}
+
+.palette-option-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+.palette-option-card.active {
+  border-width: 3px;
+  box-shadow: 4px 4px 0px var(--primary);
+  background: var(--bg-card-subtle);
+}
+
+.palette-card-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.palette-swatches-box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #000000;
+  padding: 3px;
+  border-radius: 4px;
+  border: 1px solid #000000;
+}
+
+.palette-swatch-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+}
+
+.palette-card-name {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.palette-card-badge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  background: var(--primary);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+  text-transform: uppercase;
+}
+
+[data-theme="dark"] .palette-card-badge {
+  color: #000000;
+  box-shadow: 2px 2px 0px var(--accent);
+}
+

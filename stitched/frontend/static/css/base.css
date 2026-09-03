@@ -5,38 +5,38 @@
    =================================================================== */
 
 :root {
-  /* High-Voltage Neo-Brutalist Light Palette */
-  --primary: #00e575;
-  --primary-hover: #00c965;
-  --primary-light: #d1fae5;
+  /* High-Voltage Electric Cobalt & Hot Coral Neo-Brutalist Light Palette */
+  --primary: #2d5bff;
+  --primary-hover: #1e46e8;
+  --primary-light: #e0e7ff;
   --primary-border: #000000;
 
-  --accent: #ffe600;
-  --accent-hover: #ebd300;
-  --accent-light: #fef9c3;
+  --accent: #ff3366;
+  --accent-hover: #e61e53;
+  --accent-light: #ffe4e6;
   --accent-border: #000000;
 
-  --cherry: #ff3366;
-  --cherry-hover: #e62255;
+  --cherry: #ff2a6d;
+  --cherry-hover: #e51d5c;
   --cherry-light: #ffe4e6;
 
-  --cyan: #00e5ff;
-  --purple: #b388ff;
-  --orange: #ff9100;
-  --danger: #ff3344;
-  --danger-light: #fee2e2;
+  --cyan: #00d2ff;
+  --purple: #8b5cf6;
+  --orange: #ff7700;
+  --danger: #ff2a6d;
+  --danger-light: #ffe4e6;
 
   --ink: #000000;
   --text-main: #000000;
   --text-muted: #4b5563;
   --text-light: #6b7280;
 
-  --bg-desktop: #f4efe4;
+  --bg-desktop: #f6f3eb;
   --bg-desktop-pattern: radial-gradient(#000000 1.2px, transparent 1.2px);
-  --bg-main: #fcf9f2;
+  --bg-main: #fbf9f4;
   --bg-container: #ffffff;
   --bg-card: #ffffff;
-  --bg-card-subtle: #f7f3ea;
+  --bg-card-subtle: #f4f0e6;
 
   --border-color: #000000;
   --border-subtle: #000000;
@@ -62,45 +62,45 @@
 }
 
 /* ===================================================================
-   DARK THEME: CYBER NEO-BRUTALISM
+   DARK THEME: CYBER COBALT & NEON CORAL
    =================================================================== */
 
 [data-theme="dark"] {
-  /* High-Voltage Cyber Neo-Brutalism Dark Palette — Electric Mint Primary */
-  --primary: #00f585;
-  --primary-hover: #1dfda0;
-  --primary-light: rgba(0, 245, 133, 0.16);
+  /* High-Voltage Cyber Neo-Brutalism Dark Palette — Electric Cobalt & Neon Coral */
+  --primary: #38bdf8;
+  --primary-hover: #60a5fa;
+  --primary-light: rgba(56, 189, 248, 0.16);
   --primary-border: #000000;
 
-  --accent: #ffea00;
-  --accent-hover: #fff033;
-  --accent-light: rgba(255, 234, 0, 0.16);
+  --accent: #ff2a6d;
+  --accent-hover: #ff457f;
+  --accent-light: rgba(255, 42, 109, 0.16);
   --accent-border: #000000;
 
-  --cherry: #ff3366;
-  --cherry-hover: #ff527b;
-  --cherry-light: rgba(255, 51, 102, 0.2);
+  --cherry: #ff2a6d;
+  --cherry-hover: #ff457f;
+  --cherry-light: rgba(255, 42, 109, 0.2);
 
   --cyan: #00f0ff;
-  --purple: #b388ff;
-  --orange: #ff9100;
-  --danger: #ff4d6d;
-  --danger-light: rgba(255, 77, 109, 0.2);
+  --purple: #c084fc;
+  --orange: #ff8800;
+  --danger: #ff2a6d;
+  --danger-light: rgba(255, 42, 109, 0.2);
 
   --ink: #ffffff;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --text-light: #64748b;
 
-  --bg-desktop: #07090e;
-  --bg-desktop-pattern: radial-gradient(rgba(0, 245, 133, 0.2) 1.2px, transparent 1.2px);
-  --bg-main: #0c1017;
-  --bg-container: #10141e;
-  --bg-card: #171d2b;
-  --bg-card-subtle: #1e2638;
+  --bg-desktop: #0a0e1a;
+  --bg-desktop-pattern: radial-gradient(rgba(56, 189, 248, 0.2) 1.2px, transparent 1.2px);
+  --bg-main: #0e1424;
+  --bg-container: #121a2d;
+  --bg-card: #182236;
+  --bg-card-subtle: #1f2b44;
 
   --border-color: #000000;
-  --border-subtle: #2b364c;
+  --border-subtle: #2b3a55;
   --border-focus: var(--primary);
 
   --border-neo: 2.5px solid #000000;
@@ -118,7 +118,7 @@
 }
 
 [data-theme="dark"] .app-container {
-  box-shadow: 8px 8px 0px var(--primary), 0 0 35px rgba(0, 245, 133, 0.14);
+  box-shadow: 8px 8px 0px var(--primary), 0 0 35px rgba(56, 189, 248, 0.14);
 }
 
 [data-theme="dark"] .brand-icon {
@@ -262,7 +262,7 @@ body {
   height: 42px;
   border-radius: var(--radius-sm);
   background: var(--primary);
-  color: #000000;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -272,7 +272,7 @@ body {
 }
 
 .brand-icon i, .brand-icon svg {
-  stroke: #000000 !important;
+  stroke: #ffffff !important;
   stroke-width: 2.8px;
   width: 22px;
   height: 22px;
@@ -294,7 +294,7 @@ body {
 
 .btn-lang {
   background: var(--accent);
-  color: #000000;
+  color: #ffffff;
   border: var(--border-neo-sm);
   padding: 6px 12px;
   border-radius: var(--radius-sm);
@@ -307,6 +307,10 @@ body {
   box-shadow: 2px 2px 0px #000000;
   letter-spacing: 0.5px;
   transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-lang i, .btn-lang svg {
+  stroke: #ffffff !important;
 }
 
 .btn-lang:hover {
@@ -428,7 +432,7 @@ body {
 
 .btn-primary {
   background: var(--primary);
-  color: #000000;
+  color: #ffffff;
 }
 
 .btn-secondary {

@@ -75,7 +75,7 @@
 
 .user-msg .msg-bubble {
   background: var(--primary);
-  color: #000000;
+  color: #ffffff;
   font-weight: 700;
 }
 
@@ -88,7 +88,7 @@
 .attached-indicator {
   padding: 8px 14px;
   background: var(--accent);
-  color: #000000;
+  color: #ffffff;
   border-top: var(--border-neo-sm);
   font-size: 0.8rem;
   font-weight: 800;

@@ -70,18 +70,24 @@
 /* Active Tab: Bold Neo-Brutalist Sticker */
 .nav-tab.active {
   background: var(--primary);
-  color: #000000;
+  color: #ffffff;
   border: var(--border-neo-sm);
   box-shadow: 2px 2px 0px #000000;
   transform: translateY(-3px);
 }
 
 .nav-tab.active i, .nav-tab.active svg {
-  stroke: #000000 !important;
+  stroke: #ffffff !important;
   stroke-width: 2.8px;
 }
 
 [data-theme="dark"] .nav-tab.active {
-  box-shadow: 2px 2px 0px var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 2px 2px 0px var(--primary);
+}
+
+[data-theme="dark"] .nav-tab.active i, [data-theme="dark"] .nav-tab.active svg {
+  stroke: #ffffff !important;
 }
 

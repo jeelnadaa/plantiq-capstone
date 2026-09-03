@@ -245,7 +245,7 @@
 
 [data-theme="dark"] .upload-icon-circle {
   background: var(--accent);
-  color: #000000;
+  color: #ffffff;
   box-shadow: 3px 3px 0px var(--primary);
 }
 

@@ -1,77 +1,157 @@
-/* Marketplace CSS with Tabs & Multi-Photo Gallery */
+/* ===================================================================
+   NEO-BRUTALIST COFFEE CROP MARKETPLACE STYLES
+   =================================================================== */
+
 .market-tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
 .market-tab-btn {
   flex: 1;
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-card-subtle);
+  border: var(--border-neo);
+  background: var(--bg-card);
   color: var(--text-main);
-  font-weight: 700;
-  font-size: 0.82rem;
+  font-weight: 900;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  transition: all 0.2s ease;
+  gap: 8px;
+  box-shadow: var(--shadow-neo-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.market-tab-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
 }
 
 .market-tab-btn.active {
   background: var(--primary);
   color: #ffffff;
-  border-color: var(--primary);
-  box-shadow: 0 2px 8px var(--primary-glow);
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
 }
 
+/* Filter Controls Box */
 .market-filters {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  border: var(--border-neo);
   border-radius: var(--radius-md);
-  padding: 14px;
-  margin-bottom: 16px;
+  padding: 18px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-neo);
 }
 
 .dual-slider-container {
-  margin: 12px 0 6px;
+  margin: 16px 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .price-inputs-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  margin-top: 6px !important;
 }
 
+.price-inputs-row .form-control {
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 900;
+  padding: 10px 12px;
+  letter-spacing: 0.5px;
+}
+
+/* Neo-Brutalist Range Sliders */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  background: var(--bg-card-subtle);
+  border-radius: var(--radius-full);
+  outline: none;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  cursor: pointer;
+  border: 2.5px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+  transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: var(--accent);
+}
+
+[data-theme="dark"] input[type="range"] {
+  background: #1e2638;
+  border-color: #000000;
+  box-shadow: 2px 2px 0px var(--primary);
+}
+
+[data-theme="dark"] input[type="range"]::-webkit-slider-thumb {
+  background: var(--primary);
+  border-color: #000000;
+  box-shadow: 2px 2px 0px var(--accent);
+}
+
+[data-theme="dark"] .listing-price {
+  color: #000000;
+  background: var(--accent);
+  box-shadow: 2px 2px 0px var(--primary);
+}
+
+/* Listing Cards */
 .listing-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  border: var(--border-neo);
   border-radius: var(--radius-md);
-  padding: 16px;
-  margin-bottom: 14px;
-  box-shadow: var(--shadow-sm);
+  padding: 18px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-neo);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Photo Gallery & Thumbnail Carousel */
+.listing-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px #000000;
+}
+
+/* Photo Gallery & Thumbnails */
 .listing-gallery {
   position: relative;
   width: 100%;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background: #000000;
+  border: var(--border-neo-sm);
+  box-shadow: var(--shadow-neo-sm);
 }
 
 .gallery-hero-wrapper {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 210px;
 }
 
 .gallery-hero-img {
@@ -85,36 +165,40 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+  background: rgba(0, 0, 0, 0.85);
   color: #ffffff;
-  padding: 8px 12px;
-  font-size: 0.76rem;
-  line-height: 1.3;
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  font-weight: 700;
+  border-top: var(--border-neo-sm);
 }
 
 .gallery-thumbs-row {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   padding: 8px 10px;
   background: var(--bg-card-subtle);
   overflow-x: auto;
+  border-top: var(--border-neo-sm);
 }
 
 .gallery-thumb-item {
-  width: 48px;
-  height: 48px;
-  border-radius: 4px;
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-xs);
   overflow: hidden;
   cursor: pointer;
   flex-shrink: 0;
-  border: 2px solid transparent;
+  border: var(--border-neo-sm);
   opacity: 0.7;
-  transition: all 0.2s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .gallery-thumb-item.active, .gallery-thumb-item:hover {
   opacity: 1;
-  border-color: var(--primary);
+  transform: scale(1.08);
+  box-shadow: 2px 2px 0px #000000;
 }
 
 .gallery-thumb-item img {
@@ -127,64 +211,78 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 12px;
 }
 
 .listing-title {
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 1.2rem;
+  font-weight: 900;
   color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: -0.3px;
 }
 
 .listing-price {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--primary);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #ffffff;
+  background: var(--accent);
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  border: var(--border-neo-sm);
+  box-shadow: 2px 2px 0px #000000;
+  white-space: nowrap;
 }
 
 .listing-meta {
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   color: var(--text-muted);
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  font-weight: 700;
 }
 
 .listing-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 10px;
+  margin-top: 6px;
 }
 
-/* Upload photo items in modal */
+/* Sell Crop Modal Photo Uploader */
 .photo-uploader-box {
-  border: 2px dashed var(--border-subtle);
+  border: 2.5px dashed #000000;
   border-radius: var(--radius-sm);
-  padding: 12px;
+  padding: 18px;
   text-align: center;
-  background: var(--bg-card-subtle);
+  background: var(--accent-light);
   cursor: pointer;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-neo-sm);
+  transition: transform 0.12s ease;
 }
 
 .photo-uploader-box:hover {
-  border-color: var(--primary);
-  background: var(--primary-light);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
 }
 
 .photo-item-card {
-  background: var(--bg-card-subtle);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: var(--border-neo-sm);
+  border-radius: var(--radius-xs);
   padding: 8px 10px;
   display: flex;
   gap: 10px;
   align-items: center;
   margin-bottom: 8px;
+  box-shadow: 2px 2px 0px #000000;
 }
 
 .photo-item-thumb {
   width: 52px;
   height: 52px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   object-fit: cover;
+  border: 1px solid #000000;
 }

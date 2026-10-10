@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PlantIQ</title>
+  <link rel="stylesheet" href="../static/css/base.css?v=3.0">
+  <link rel="stylesheet" href="../static/css/navbar.css?v=3.0">
+  <link rel="stylesheet" href="../static/css/scanner.css?v=3.0">
+  <link rel="stylesheet" href="../static/css/chat.css?v=3.0">
+  <link rel="stylesheet" href="../static/css/marketplace.css?v=3.0">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #fbf9f4 !important; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; width: 412px; height: 892px; }
+    .app-container { width: 412px; height: 892px; margin: 0 auto; display: flex; flex-direction: column; position: relative; overflow: hidden; background: #fbf9f4; }
+    .page-content { flex: 1; overflow-y: hidden; padding: 12px 14px 68px 14px; display: flex; flex-direction: column; gap: 9px; height: 778px; }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <header class="page-header" style="height: 52px; border-bottom: 2.5px solid #000000; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; flex-shrink: 0;">
+    <div class="brand" style="display:flex; align-items:center; gap:8px;">
+      <div class="brand-icon" style="width:32px; height:32px; background:#15803d; border:2px solid #000; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff;">
+        <i data-lucide="leaf" style="width:18px; height:18px;"></i>
+      </div>
+      <span class="brand-name" style="font-weight:900; font-size:1.22rem; letter-spacing:-0.5px;">PlantIQ</span>
+    </div>
+    <div class="header-actions" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn-theme" style="position:relative; width:32px; height:32px; border:2px solid #000; border-radius:8px; background:#fff; display:flex; align-items:center; justify-content:center;">
+        <i data-lucide="server" style="width:15px; height:15px;"></i>
+        <span style="position:absolute; top:3px; right:3px; width:7px; height:7px; border-radius:50%; background:#22c55e; border:1px solid #000;"></span>
+      </button>
+      <button class="btn-theme" style="width:32px; height:32px; border:2px solid #000; border-radius:8px; background:#fff; display:flex; align-items:center; justify-content:center;">
+        <i data-lucide="moon" style="width:15px; height:15px;"></i>
+      </button>
+      <div style="background:#e11d48; color:#fff; border:2px solid #000; font-weight:800; font-size:0.75rem; padding:4px 8px; border-radius:8px; display:flex; align-items:center; gap:4px; box-shadow:1.5px 1.5px 0px #000;">
+        <i data-lucide="globe" style="width:13px; height:13px;"></i> EN
+      </div>
+    </div>
+  </header>
+
+  <main class="page-content" style="gap: 8px; padding: 10px 14px 68px 14px;">
+    <!-- Header Card -->
+    <div style="border:2px solid #000; border-radius:12px; background:#fff; padding:8px 12px; box-shadow:2.5px 2.5px 0px #000;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:32px; height:32px; background:#dcfce7; border:1.5px solid #000; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#15803d;">
+            <i data-lucide="map-pin" style="width:18px; height:18px;"></i>
+          </div>
+          <div>
+            <div style="font-size:0.92rem; font-weight:900;">Estate Microclimate Telemetry</div>
+            <div style="font-size:0.75rem; color:#15803d; font-weight:700;">Chikkamagaluru (13.3161°N, 75.7720°E)</div>
+          </div>
+        </div>
+        <span style="background:#f3f4f6; border:1px solid #000; font-size:0.72rem; font-weight:800; padding:3px 8px; border-radius:6px;">Live Open-Meteo</span>
+      </div>
+    </div>
+
+    <!-- 4 Environmental Metrics Grid -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px;">
+      <div style="border:2px solid #000; border-radius:12px; background:#fff; padding:8px 12px; box-shadow:2.5px 2.5px 0px #000;">
+        <span style="font-size:0.75rem; color:#6b7280; font-weight:700;">Elevation</span>
+        <div style="font-size:1.42rem; font-weight:900; color:#111827; margin:1px 0;">980 m</div>
+        <span style="font-size:0.72rem; color:#15803d; font-weight:800;">Highland Arabica</span>
+      </div>
+
+      <div style="border:2px solid #000; border-radius:12px; background:#fff; padding:8px 12px; box-shadow:2.5px 2.5px 0px #000;">
+        <span style="font-size:0.75rem; color:#6b7280; font-weight:700;">Temperature</span>
+        <div style="font-size:1.42rem; font-weight:900; color:#111827; margin:1px 0;">24.5 °C</div>
+        <span style="font-size:0.72rem; color:#6b7280; font-weight:700;">Feels 25.0°C</span>
+      </div>
+
+      <div style="border:2px solid #000; border-radius:12px; background:#fff; padding:8px 12px; box-shadow:2.5px 2.5px 0px #000; border-color:#b91c1c;">
+        <span style="font-size:0.75rem; color:#b91c1c; font-weight:800;">Relative Humidity</span>
+        <div style="font-size:1.42rem; font-weight:900; color:#b91c1c; margin:1px 0;">78.0 %</div>
+        <span style="font-size:0.72rem; color:#b91c1c; font-weight:800;">High spore risk</span>
+      </div>
+
+      <div style="border:2px solid #000; border-radius:12px; background:#fff; padding:8px 12px; box-shadow:2.5px 2.5px 0px #000;">
+        <span style="font-size:0.75rem; color:#6b7280; font-weight:700;">Soil pH (Estimated)</span>
+        <div style="font-size:1.42rem; font-weight:900; color:#111827; margin:1px 0;">6.2 pH</div>
+        <span style="font-size:0.72rem; color:#15803d; font-weight:800;">Optimal zone</span>
+      </div>
+    </div>
+
+    <!-- Hourly Foliar Spray Suitability Window -->
+    <div style="border:2px solid #000; border-radius:12px; background:#fff; padding:8px 12px; box-shadow:2.5px 2.5px 0px #000;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+        <strong style="font-size:0.82rem; color:#111827;">Today's Spray Suitability Timeline</strong>
+        <span style="font-size:0.72rem; color:#15803d; font-weight:800;">Best: Morning</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:5px; text-align:center;">
+        <div style="background:#dcfce7; border:1px solid #15803d; border-radius:7px; padding:3px 2px;">
+          <div style="font-size:0.7rem; color:#6b7280; font-weight:700;">06:30</div>
+          <strong style="font-size:0.76rem; color:#15803d; display:block;">IDEAL</strong>
+          <span style="font-size:0.66rem; color:#15803d;">78% RH</span>
+        </div>
+        <div style="background:#dcfce7; border:1px solid #15803d; border-radius:7px; padding:3px 2px;">
+          <div style="font-size:0.7rem; color:#6b7280; font-weight:700;">08:30</div>
+          <strong style="font-size:0.76rem; color:#15803d; display:block;">IDEAL</strong>
+          <span style="font-size:0.66rem; color:#15803d;">74% RH</span>
+        </div>
+        <div style="background:#fef3c7; border:1px solid #d97706; border-radius:7px; padding:3px 2px;">
+          <div style="font-size:0.7rem; color:#6b7280; font-weight:700;">11:30</div>
+          <strong style="font-size:0.76rem; color:#d97706; display:block;">MOD</strong>
+          <span style="font-size:0.66rem; color:#d97706;">62% RH</span>
+        </div>
+        <div style="background:#fee2e2; border:1px solid #b91c1c; border-radius:7px; padding:3px 2px;">
+          <div style="font-size:0.7rem; color:#6b7280; font-weight:700;">14:00</div>
+          <strong style="font-size:0.76rem; color:#b91c1c; display:block;">AVOID</strong>
+          <span style="font-size:0.66rem; color:#b91c1c;">Hot sun</span>
+        </div>
+        <div style="background:#fef3c7; border:1px solid #d97706; border-radius:7px; padding:3px 2px;">
+          <div style="font-size:0.7rem; color:#6b7280; font-weight:700;">17:00</div>
+          <strong style="font-size:0.76rem; color:#d97706; display:block;">FAIR</strong>
+          <span style="font-size:0.66rem; color:#d97706;">Evening</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agronomic Rule Trigger Banner -->
+    <div style="background:#fefce8; border:2px solid #000; border-radius:12px; padding:7px 12px; box-shadow:2.5px 2.5px 0px #000;">
+      <div style="font-size:0.78rem; color:#854d0e; line-height:1.35;">
+        <strong>🌧 Agronomic Adaptation:</strong> High humidity (78%) in Chikkamagaluru triggers recommendation for pre-monsoon protective spray before rainfall onset.
+      </div>
+    </div>
+
+    <!-- 7-Day Foliar Spore Pressure Forecast -->
+    <div style="border:2px solid #000; border-radius:12px; background:#fff; padding:8px 12px; box-shadow:2.5px 2.5px 0px #000;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+        <strong style="font-size:0.82rem; color:#111827;">7-Day Foliar Spore Pressure Forecast</strong>
+        <span style="font-size:0.72rem; color:#b91c1c; font-weight:800;">Next Rain: 36h (12mm)</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:5px; text-align:center;">
+        <div style="background:#fee2e2; border:1px solid #b91c1c; border-radius:7px; padding:4px 2px;">
+          <div style="font-size:0.72rem; color:#6b7280; font-weight:700;">Mon</div>
+          <strong style="font-size:0.88rem; color:#b91c1c; display:block;">78%</strong>
+          <span style="font-size:0.68rem; color:#b91c1c; font-weight:800;">HIGH</span>
+        </div>
+        <div style="background:#fee2e2; border:1px solid #b91c1c; border-radius:7px; padding:4px 2px;">
+          <div style="font-size:0.72rem; color:#6b7280; font-weight:700;">Tue</div>
+          <strong style="font-size:0.88rem; color:#b91c1c; display:block;">82%</strong>
+          <span style="font-size:0.68rem; color:#b91c1c; font-weight:800;">HIGH</span>
+        </div>
+        <div style="background:#fee2e2; border:1px solid #b91c1c; border-radius:7px; padding:4px 2px;">
+          <div style="font-size:0.72rem; color:#6b7280; font-weight:700;">Wed</div>
+          <strong style="font-size:0.88rem; color:#b91c1c; display:block;">80%</strong>
+          <span style="font-size:0.68rem; color:#b91c1c; font-weight:800;">HIGH</span>
+        </div>
+        <div style="background:#fef3c7; border:1px solid #d97706; border-radius:7px; padding:4px 2px;">
+          <div style="font-size:0.72rem; color:#6b7280; font-weight:700;">Thu</div>
+          <strong style="font-size:0.88rem; color:#d97706; display:block;">65%</strong>
+          <span style="font-size:0.68rem; color:#d97706; font-weight:800;">MOD</span>
+        </div>
+        <div style="background:#dcfce7; border:1px solid #15803d; border-radius:7px; padding:4px 2px;">
+          <div style="font-size:0.72rem; color:#6b7280; font-weight:700;">Fri</div>
+          <strong style="font-size:0.88rem; color:#15803d; display:block;">52%</strong>
+          <span style="font-size:0.68rem; color:#15803d; font-weight:800;">LOW</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Planter Guidance & Hourly Window (Reaches tab bar with clean margin) -->
+    <div style="border:2px solid #000; border-radius:12px; background:#fff; padding:8px 12px; box-shadow:2.5px 2.5px 0px #000;">
+      <strong style="font-size:0.82rem; color:#111827; display:block; margin-bottom:3px;">Planter Guidance Summary</strong>
+      <div style="font-size:0.76rem; color:#374151; line-height:1.4;">
+        • <strong>Spray Window:</strong> Tuesday morning (06:30 - 09:30 AM) before rainfall onset.<br>
+        • <strong>Canopy Shade:</strong> Maintain 50-60% shade cover to accelerate morning leaf drying.
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-tab-bar" style="position:absolute; bottom:0; left:0; width:100%; height:62px; border-top:2.5px solid #000; background:#fff; z-index:1000; display:flex; justify-content:space-around; align-items:center;">
+    <div class="tab-item active" style="display:flex; flex-direction:column; align-items:center; gap:2px; font-size:0.7rem; font-weight:700; color:#15803d;">
+      <i data-lucide="scan" style="width:20px; height:20px;"></i>
+      <span>Scanner</span>
+    </div>
+    <div class="tab-item " style="display:flex; flex-direction:column; align-items:center; gap:2px; font-size:0.7rem; font-weight:700; color:#4b5563;">
+      <i data-lucide="message-square" style="width:20px; height:20px;"></i>
+      <span>Chat AI</span>
+    </div>
+    <div class="tab-item " style="display:flex; flex-direction:column; align-items:center; gap:2px; font-size:0.7rem; font-weight:700; color:#4b5563;">
+      <i data-lucide="shopping-bag" style="width:20px; height:20px;"></i>
+      <span>Market</span>
+    </div>
+    <div class="tab-item " style="display:flex; flex-direction:column; align-items:center; gap:2px; font-size:0.7rem; font-weight:700; color:#4b5563;">
+      <i data-lucide="clock" style="width:20px; height:20px;"></i>
+      <span>History</span>
+    </div>
+  </nav>
+  <script>lucide.createIcons();</script>
+</div>
+</body>
+</html>

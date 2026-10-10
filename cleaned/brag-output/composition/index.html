@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PlantIQ Launch Video</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&family=Noto+Sans+Kannada:wght@600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #fbf9f4;
+      color: #111827;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #composition {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background: #fbf9f4;
+      overflow: hidden;
+    }
+
+    /* Ambient background grid */
+    .bg-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(21, 128, 61, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(37, 99, 235, 0.04) 0%, transparent 45%),
+        radial-gradient(#111827 0.85px, transparent 0.85px);
+      background-size: 1920px 1080px, 1920px 1080px, 32px 32px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Fixed top brand bar */
+    .brand-bar-fixed {
+      position: absolute;
+      top: 75px;
+      left: 150px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      z-index: 30;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      border: 2px solid #111827;
+      border-radius: 999px;
+      padding: 6px 18px 6px 10px;
+      box-shadow: 4px 4px 0px #111827;
+      width: fit-content;
+    }
+
+    .brand-pill-icon {
+      width: 32px;
+      height: 32px;
+      background: #15803d;
+      border-radius: 50%;
+      border: 1.5px solid #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    .brand-pill-text {
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+      color: #111827;
+    }
+
+    .brand-pill-tag {
+      font-size: 12px;
+      font-weight: 800;
+      color: #15803d;
+      background: #dcfce7;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #15803d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Left Stage — Reduced gap to phone */
+    .left-stage {
+      position: absolute;
+      top: 150px;
+      left: 150px;
+      width: 1050px;
+      height: 840px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .scene-content {
+      width: 100%;
+      display: none;
+      opacity: 0;
+    }
+
+    .scene-content.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Scene Heading in app language button pinkish color */
+    .scene-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 23px;
+      font-weight: 800;
+      color: #e11d48;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .scene-heading::before {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #e11d48;
+    }
+
+    /* Subtitles: min 64px, bold, max 2 lines */
+    .subtitle-text {
+      font-size: 66px;
+      line-height: 1.15;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: -1.8px;
+      margin-bottom: 22px;
+      text-wrap: balance;
+    }
+
+    .subtitle-text .highlight {
+      color: #15803d;
+      background: linear-gradient(180deg, transparent 65%, rgba(34, 197, 94, 0.28) 65%);
+      display: inline-block;
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+
+    .secondary-desc {
+      font-size: 25px;
+      line-height: 1.4;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 28px;
+      max-width: 960px;
+    }
+
+    /* Tech chips bar */
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .tech-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border: 2px solid #111827;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 21px;
+      font-weight: 800;
+      color: #111827;
+      box-shadow: 3px 3px 0px #111827;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .tech-chip.mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 19px;
+    }
+
+    /* 4-Step RAG Flow Container */
+    .flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 6px;
+      max-width: 980px;
+    }
+
+    .flow-step-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: #ffffff;
+      border: 2px solid #111827;
+      border-radius: 14px;
+      padding: 12px 18px;
+      box-shadow: 4px 4px 0px #111827;
+    }
+
+    .flow-step-num {
+      width: 40px;
+      height: 40px;
+      background: #f3f4f6;
+      border: 2px solid #111827;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      color: #111827;
+      flex-shrink: 0;
+    }
+
+    .flow-step-card.active .flow-step-num {
+      background: #15803d;
+      color: #ffffff;
+    }
+
+    .flow-step-info {
+      flex: 1;
+    }
+
+    .flow-step-title {
+      font-size: 23px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 2px;
+    }
+
+    .flow-step-tech {
+      font-size: 17px;
+      font-weight: 700;
+      color: #15803d;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Right Android Phone Mockup Stage — Straight & Reduced Gap & Symmetrical Bezel */
+    .phone-stage {
+      position: absolute;
+      top: 50%;
+      left: 1270px;
+      transform: translateY(-50%);
+      width: 430px;
+      height: 910px;
+      z-index: 20;
+    }
+
+    .phone-device {
+      position: relative;
+      width: 430px;
+      height: 910px;
+      background: #18181b;
+      border: 3px solid #27272a;
+      border-radius: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      box-shadow: 
+        0 30px 70px -10px rgba(0, 0, 0, 0.35),
+        0 15px 30px -5px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      transform: none;
+    }
+
+    .phone-speaker {
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 4px;
+      background: #3f3f46;
+      border-radius: 999px;
+      z-index: 40;
+    }
+
+    .phone-camera-hole {
+      position: absolute;
+      top: 17px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 14px;
+      background: #09090b;
+      border: 1.5px solid #27272a;
+      border-radius: 50%;
+      z-index: 50;
+    }
+
+    .phone-screen-container {
+      position: relative;
+      width: 412px;
+      height: 892px;
+      border-radius: 36px;
+      overflow: hidden;
+      background: #fbf9f4;
+    }
+
+    .phone-screen-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 412px;
+      height: 892px;
+      display: none;
+      opacity: 0;
+    }
+
+    .phone-screen-img.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Scene 7: Fullscreen Architecture Canvas (2x2 Grid, Clean & Centered) */
+    .arch-scene-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      background: #fbf9f4;
+      padding: 60px 140px 50px 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .arch-header {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .arch-title-group {
+      text-align: center;
+    }
+
+    .arch-title-group h1 {
+      font-size: 72px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      color: #111827;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .arch-title-group h1 span {
+      color: #15803d;
+    }
+
+    .arch-subtitle {
+      font-size: 25px;
+      font-weight: 600;
+      color: #4b5563;
+    }
+
+    /* Architecture 2 x 2 Grid */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px 36px;
+      max-width: 1460px;
+      width: 100%;
+      margin: 20px auto;
+    }
+
+    .arch-node {
+      background: #ffffff;
+      border: 3px solid #111827;
+      border-radius: 20px;
+      padding: 24px 30px;
+      box-shadow: 6px 6px 0px #111827;
+      position: relative;
+    }
+
+    .arch-node-tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #e11d48;
+      margin-bottom: 6px;
+    }
+
+    .arch-node-title {
+      font-size: 30px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 10px;
+    }
+
+    .arch-node-tech {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 17px;
+      font-weight: 700;
+      color: #374151;
+      line-height: 1.6;
+    }
+
+    .arch-footer-chips {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="composition" data-composition-id="root" data-width="1920" data-height="1080" data-duration="46">
+  <!-- Dynamic grid background -->
+  <div class="bg-grid"></div>
+
+  <!-- Audio Layer (Master Soundtrack) -->
+  <audio id="soundtrack" data-start="0" data-duration="46" data-volume="1.0" src="assets/audio/final_soundtrack.wav"></audio>
+
+  <!-- Fixed Brand Bar -->
+  <div class="brand-bar-fixed" id="brand-bar">
+    <div class="brand-pill" id="brand-pill">
+      <div class="brand-pill-icon">🌿</div>
+      <span class="brand-pill-text">PlantIQ</span>
+      <span class="brand-pill-tag">Karnataka Coffee AI</span>
+    </div>
+  </div>
+
+  <!-- Left Animated Dynamic Stage -->
+  <div class="left-stage">
+
+    <!-- Scene 1: Hook -->
+    <div class="scene-content active" id="scene-1-content">
+      <div class="scene-heading">The Challenge</div>
+      <h2 class="subtitle-text">
+        Coffee farmers lose crops to <span class="highlight">leaf disease</span> spotted too late.
+      </h2>
+      <p class="secondary-desc">
+        Expert agronomic centers are hundreds of kilometers away. Symptoms develop silently under dense canopy shade.
+      </p>
+      <div class="chips-row">
+        <div class="tech-chip">👨‍🌾 Built for Smallholder Planters</div>
+        <div class="tech-chip">📍 Kodagu • Chikkamagaluru • Hassan</div>
+      </div>
+    </div>
+
+    <!-- Scene 2: Leaf Scan -->
+    <div class="scene-content" id="scene-2-content">
+      <div class="scene-heading">CNN Classification</div>
+      <h2 class="subtitle-text">
+        Scan a leaf, and a <span class="highlight">CNN</span> identifies the disease in seconds.
+      </h2>
+      <p class="secondary-desc">
+        Deep residual computer vision classifies foliar pathology in 20 milliseconds directly from camera imagery.
+      </p>
+      <div class="chips-row">
+        <div class="tech-chip mono">PyTorch ResNet-50</div>
+        <div class="tech-chip mono">96.4% Top-1 Accuracy</div>
+        <div class="tech-chip mono">20ms Local Latency</div>
+      </div>
+    </div>
+
+    <!-- Scene 3: Treatment Advice (RAG Flow) -->
+    <div class="scene-content" id="scene-3-content">
+      <div class="scene-heading">3-Stage Hybrid RAG Advisory</div>
+      <h2 class="subtitle-text" style="font-size: 54px; margin-bottom: 14px;">
+        <span class="highlight">Hybrid RAG</span> finds treatment. An LLM explains in plain language.
+      </h2>
+      <div class="flow-container">
+        <div class="flow-step-card" id="flow-card-1">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-info">
+            <div class="flow-step-title">Detected Foliar Disease</div>
+            <div class="flow-step-tech">ResNet-50 • Hemileia vastatrix (96.4%)</div>
+          </div>
+        </div>
+        <div class="flow-step-card" id="flow-card-2">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-info">
+            <div class="flow-step-title">3-Stage Hybrid RAG Retrieval</div>
+            <div class="flow-step-tech">BGE-Base Dense (FAISS) + BM25 Lexical + Cross-Encoder</div>
+          </div>
+        </div>
+        <div class="flow-step-card" id="flow-card-3">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-info">
+            <div class="flow-step-title">Multimodal LLM Reasoning</div>
+            <div class="flow-step-tech">Google Gemini 2.5 Flash • Agronomic Domain Prompts</div>
+          </div>
+        </div>
+        <div class="flow-step-card" id="flow-card-4">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-info">
+            <div class="flow-step-title">Grounded Treatment Protocol</div>
+            <div class="flow-step-tech">CCRI Verified Fungicide Dosages & Cultural Shade</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 4: Environmental Context -->
+    <div class="scene-content" id="scene-4-content">
+      <div class="scene-heading">GPS Microclimate Telemetry</div>
+      <h2 class="subtitle-text">
+        Using GPS, advice adapts to <span class="highlight">local conditions</span>.
+      </h2>
+      <p class="secondary-desc">
+        Phone coordinates query live microclimate feeds. Fungicide spray windows adjust to humidity and rainfall risks.
+      </p>
+      <div class="chips-row">
+        <div class="tech-chip">📡 Open-Meteo NWP Reanalysis</div>
+        <div class="tech-chip mono">Elevation: 980m</div>
+        <div class="tech-chip mono">RH: 78.0%</div>
+        <div class="tech-chip mono">Temp: 24.5°C</div>
+        <div class="tech-chip mono">Soil: 6.2 pH</div>
+      </div>
+    </div>
+
+    <!-- Scene 5: Bilingual Chatbot -->
+    <div class="scene-content" id="scene-5-content">
+      <div class="scene-heading">Kannada + English Voice AI</div>
+      <h2 class="subtitle-text">
+        Ask the chatbot in <span class="highlight">Kannada</span> or English, by voice.
+      </h2>
+      <p class="secondary-desc" style="font-family:'Noto Sans Kannada', sans-serif; font-size:25px; color:#15803d; font-weight:700;">
+        ಕನ್ನಡ ಧ್ವನಿ ಇನ್‌ಪುಟ್ • ನೈಸರ್ಗಿಕ ಸಂಭಾಷಣೆ • ನಿರಂತರ ಸ್ಮರಣೆ
+      </p>
+      <div class="chips-row">
+        <div class="tech-chip">🎙️ Bilingual Voice Input (Gemini Audio)</div>
+        <div class="tech-chip">💾 Persistent SQLite Memory</div>
+        <div class="tech-chip">🔄 Kannada/Kanglish Router</div>
+      </div>
+    </div>
+
+    <!-- Scene 6: Marketplace & History -->
+    <div class="scene-content" id="scene-6-content">
+      <div class="scene-heading">Direct Crop Marketplace & History</div>
+      <h2 class="subtitle-text">
+        List crops and sell directly, <span class="highlight">no middleman</span>.
+      </h2>
+      <p class="secondary-desc">
+        Growers list bean lots directly. Buyers connect via 1-tap phone call and Google Maps estate coordinates.
+      </p>
+      <div class="chips-row">
+        <div class="tech-chip">🤝 0% Middleman Fees</div>
+        <div class="tech-chip">📞 1-Tap Direct Call</div>
+        <div class="tech-chip">📍 Google Maps Navigation</div>
+        <div class="tech-chip">📜 Saved Scan History</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right Android Phone Mockup Stage — Straight (0deg) -->
+  <div class="phone-stage" id="phone-stage">
+    <div class="phone-device" id="phone-device">
+      <div class="phone-speaker"></div>
+      <div class="phone-camera-hole"></div>
+      <div class="phone-screen-container">
+        <!-- 8 Real App Screens -->
+        <img class="phone-screen-img active" id="screen-img-1" src="assets/images/screen_01.png" alt="Scanner Ready">
+        <img class="phone-screen-img" id="screen-img-2" src="assets/images/screen_02.png" alt="Leaf Uploaded">
+        <img class="phone-screen-img" id="screen-img-3" src="assets/images/screen_03.png" alt="CNN Result">
+        <img class="phone-screen-img" id="screen-img-4" src="assets/images/screen_04.png" alt="CCRI Advisory">
+        <img class="phone-screen-img" id="screen-img-5" src="assets/images/screen_05.png" alt="Microclimate Telemetry">
+        <img class="phone-screen-img" id="screen-img-6" src="assets/images/screen_06.png" alt="Bilingual Chatbot">
+        <img class="phone-screen-img" id="screen-img-7" src="assets/images/screen_07.png" alt="Crop Marketplace">
+        <img class="phone-screen-img" id="screen-img-8" src="assets/images/screen_08.png" alt="Scan History">
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 7: Fullscreen Architecture Diagram & Final Outro (2x2 Grid) -->
+  <div class="arch-scene-wrapper" id="arch-scene">
+    <div class="arch-header">
+      <div class="arch-title-group">
+        <h1>PlantIQ <span>Architecture</span></h1>
+        <div class="arch-subtitle">Intelligent Coffee Agronomy & Market Platform • End-to-End Deep Tech Pipeline</div>
+      </div>
+    </div>
+
+    <!-- 2x2 Architecture Grid -->
+    <div class="arch-grid">
+      <!-- Node 1: Mobile Edge -->
+      <div class="arch-node" id="arch-node-1">
+        <div class="arch-node-tag">Mobile Edge</div>
+        <div class="arch-node-title">Capacitor 7 APK</div>
+        <div class="arch-node-tech">
+          • Native Android Container<br>
+          • Dynamic IP Switcher<br>
+          • MediaRecorder Voice STT<br>
+          • Geolocation GPS Sensor
+        </div>
+      </div>
+
+      <!-- Node 2: Computer Vision -->
+      <div class="arch-node" id="arch-node-2">
+        <div class="arch-node-tag">Computer Vision</div>
+        <div class="arch-node-title">PyTorch ResNet-50</div>
+        <div class="arch-node-tech">
+          • 25.5M Deep Residual Params<br>
+          • 96.4% Top-1 Accuracy<br>
+          • 5 Foliar Classes & Control<br>
+          • 20ms Local GPU Inference
+        </div>
+      </div>
+
+      <!-- Node 3: Hybrid RAG & LLM -->
+      <div class="arch-node" id="arch-node-3">
+        <div class="arch-node-tag">Advisory Engine</div>
+        <div class="arch-node-title">3-Stage Hybrid RAG</div>
+        <div class="arch-node-tech">
+          • BGE-Base 768d + FAISS FlatIP<br>
+          • BM25 Exact Chemical Lexical<br>
+          • Cross-Encoder Reranker<br>
+          • Google Gemini 2.5 Flash
+        </div>
+      </div>
+
+      <!-- Node 4: Microclimate & Market -->
+      <div class="arch-node" id="arch-node-4">
+        <div class="arch-node-tag">Spatial & Trade</div>
+        <div class="arch-node-title">Microclimate & Trade</div>
+        <div class="arch-node-tech">
+          • Open-Meteo NWP Reanalysis<br>
+          • Elevation & Spore Risk Index<br>
+          • Direct Peer-to-Peer Market<br>
+          • SQLite Persistent Memory
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-footer-chips">
+      <div class="tech-chip mono">PyTorch 2.0</div>
+      <div class="tech-chip mono">FastAPI</div>
+      <div class="tech-chip mono">FAISS FlatIP</div>
+      <div class="tech-chip mono">BGE-Base</div>
+      <div class="tech-chip mono">Gemini 2.5 Flash</div>
+      <div class="tech-chip mono">Capacitor 7</div>
+      <div class="tech-chip mono">SQLite</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- GSAP Timeline Animation -->
+<script>
+  const tl = gsap.timeline({ paused: true });
+
+  // ---------------------------------------------------------------------------
+  // SCENE 1: HOOK — The Problem (0.0s – 5.2s)
+  // ---------------------------------------------------------------------------
+  // Phone enters straight with spring ease
+  tl.from("#phone-stage", {
+    x: 250,
+    opacity: 0,
+    duration: 1.2,
+    ease: "back.out(1.1)"
+  }, 0.2);
+
+  // Scene 1 heading & text reveal with upward slide and fade
+  tl.from("#scene-1-content .scene-heading", {
+    y: 20,
+    opacity: 0,
+    duration: 0.6,
+    ease: "power3.out"
+  }, 0.3);
+
+  tl.from("#scene-1-content h2", {
+    y: 35,
+    opacity: 0,
+    duration: 0.8,
+    ease: "power3.out"
+  }, 0.4);
+
+  tl.from("#scene-1-content p", {
+    y: 25,
+    opacity: 0,
+    duration: 0.7,
+    ease: "power3.out"
+  }, 0.9);
+
+  tl.from("#scene-1-content .chips-row", {
+    y: 20,
+    opacity: 0,
+    duration: 0.6,
+    ease: "power3.out"
+  }, 1.5);
+
+  // Meet PlantIQ brand pill pop
+  tl.from("#brand-pill", {
+    scale: 0.8,
+    opacity: 0,
+    duration: 0.5,
+    ease: "back.out(2)"
+  }, 3.8);
+
+  // ---------------------------------------------------------------------------
+  // SCENE 2: SCAN — ResNet-50 CNN Classification (5.2s – 12.0s)
+  // ---------------------------------------------------------------------------
+  // Transition Scene 1 out
+  tl.to("#scene-1-content", {
+    opacity: 0,
+    y: -30,
+    duration: 0.4,
+    ease: "power2.in",
+    onComplete: () => {
+      document.getElementById("scene-1-content").style.display = "none";
+      document.getElementById("scene-2-content").style.display = "block";
+    }
+  }, 5.1);
+
+  // Transition Scene 2 in
+  tl.to("#scene-2-content", {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+    ease: "power3.out"
+  }, 5.5);
+
+  tl.from("#scene-2-content .scene-heading", {
+    y: 20,
+    opacity: 0,
+    duration: 0.5,
+    ease: "power3.out"
+  }, 5.5);
+
+  // Phone loads leaf photo (screen_02)
+  tl.call(() => {
+    document.querySelectorAll(".phone-screen-img").forEach(el => el.classList.remove("active"));
+    document.getElementById("screen-img-2").classList.add("active");
+  }, null, 5.5);
+
+  // Phone screen morphs to diagnosis result (screen_03)
+  tl.call(() => {
+    document.querySelectorAll(".phone-screen-img").forEach(el => el.classList.remove("active"));
+    document.getElementById("screen-img-3").classList.add("active");
+  }, null, 8.0);
+
+  tl.to("#phone-device", { scale: 1.02, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out" }, 8.0);
+
+  // ---------------------------------------------------------------------------
+  // SCENE 3: ADVICE — 3-Stage Hybrid RAG (12.0s – 19.5s)
+  // ---------------------------------------------------------------------------
+  // Transition Scene 2 out
+  tl.to("#scene-2-content", {
+    opacity: 0,
+    y: -30,
+    duration: 0.4,
+    ease: "power2.in",
+    onComplete: () => {
+      document.getElementById("scene-2-content").style.display = "none";
+      document.getElementById("scene-3-content").style.display = "block";
+    }
+  }, 11.8);
+
+  // Transition Scene 3 in
+  tl.to("#scene-3-content", {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+    ease: "power3.out"
+  }, 12.2);
+
+  tl.from("#scene-3-content .scene-heading", {
+    y: 20,
+    opacity: 0,
+    duration: 0.5,
+    ease: "power3.out"
+  }, 12.2);
+
+  // Phone switches to treatment advice screen (screen_04)
+  tl.call(() => {
+    document.querySelectorAll(".phone-screen-img").forEach(el => el.classList.remove("active"));
+    document.getElementById("screen-img-4").classList.add("active");
+  }, null, 12.3);
+
+  // 4-step flow animates step by step
+  tl.from("#flow-card-1", { x: -40, opacity: 0, duration: 0.5, ease: "power3.out" }, 12.4);
+  tl.to("#flow-card-1", { className: "flow-step-card active", duration: 0.3 }, 12.8);
+
+  tl.from("#flow-card-2", { x: -40, opacity: 0, duration: 0.5, ease: "power3.out" }, 13.5);
+  tl.to("#flow-card-2", { className: "flow-step-card active", duration: 0.3 }, 14.2);
+
+  tl.from("#flow-card-3", { x: -40, opacity: 0, duration: 0.5, ease: "power3.out" }, 16.3);
+  tl.to("#flow-card-3", { className: "flow-step-card active", duration: 0.3 }, 16.8);
+
+  tl.from("#flow-card-4", { x: -40, opacity: 0, duration: 0.5, ease: "power3.out" }, 17.5);
+  tl.to("#flow-card-4", { className: "flow-step-card active", duration: 0.3 }, 18.0);
+
+  // ---------------------------------------------------------------------------
+  // SCENE 4: LOCAL CONTEXT — GPS Microclimate (19.5s – 25.5s)
+  // ---------------------------------------------------------------------------
+  // Transition Scene 3 out
+  tl.to("#scene-3-content", {
+    opacity: 0,
+    y: -30,
+    duration: 0.4,
+    ease: "power2.in",
+    onComplete: () => {
+      document.getElementById("scene-3-content").style.display = "none";
+      document.getElementById("scene-4-content").style.display = "block";
+    }
+  }, 19.3);
+
+  // Transition Scene 4 in
+  tl.to("#scene-4-content", {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+    ease: "power3.out"
+  }, 19.7);
+
+  tl.from("#scene-4-content .scene-heading", {
+    y: 20,
+    opacity: 0,
+    duration: 0.5,
+    ease: "power3.out"
+  }, 19.7);
+
+  // Phone displays microclimate telemetry screen (screen_05)
+  tl.call(() => {
+    document.querySelectorAll(".phone-screen-img").forEach(el => el.classList.remove("active"));
+    document.getElementById("screen-img-5").classList.add("active");
+  }, null, 19.8);
+
+  // Microclimate chips stagger in
+  tl.from("#scene-4-content .tech-chip", {
+    scale: 0.85,
+    opacity: 0,
+    stagger: 0.12,
+    duration: 0.4,
+    ease: "back.out(1.5)"
+  }, 20.2);
+
+  // ---------------------------------------------------------------------------
+  // SCENE 5: CHATBOT — Multilingual & Voice Memory (25.5s – 32.5s)
+  // ---------------------------------------------------------------------------
+  // Transition Scene 4 out
+  tl.to("#scene-4-content", {
+    opacity: 0,
+    y: -30,
+    duration: 0.4,
+    ease: "power2.in",
+    onComplete: () => {
+      document.getElementById("scene-4-content").style.display = "none";
+      document.getElementById("scene-5-content").style.display = "block";
+    }
+  }, 25.3);
+
+  // Transition Scene 5 in
+  tl.to("#scene-5-content", {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+    ease: "power3.out"
+  }, 25.7);
+
+  tl.from("#scene-5-content .scene-heading", {
+    y: 20,
+    opacity: 0,
+    duration: 0.5,
+    ease: "power3.out"
+  }, 25.7);
+
+  // Phone displays bilingual chatbot screen (screen_06)
+  tl.call(() => {
+    document.querySelectorAll(".phone-screen-img").forEach(el => el.classList.remove("active"));
+    document.getElementById("screen-img-6").classList.add("active");
+  }, null, 25.8);
+
+  tl.to("#phone-device", { scale: 1.015, duration: 0.35, yoyo: true, repeat: 1, ease: "power2.inOut" }, 26.5);
+
+  // ---------------------------------------------------------------------------
+  // SCENE 6: MARKETPLACE & HISTORY (32.5s – 39.5s)
+  // ---------------------------------------------------------------------------
+  // Transition Scene 5 out
+  tl.to("#scene-5-content", {
+    opacity: 0,
+    y: -30,
+    duration: 0.4,
+    ease: "power2.in",
+    onComplete: () => {
+      document.getElementById("scene-5-content").style.display = "none";
+      document.getElementById("scene-6-content").style.display = "block";
+    }
+  }, 32.3);
+
+  // Transition Scene 6 in
+  tl.to("#scene-6-content", {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+    ease: "power3.out"
+  }, 32.7);
+
+  tl.from("#scene-6-content .scene-heading", {
+    y: 20,
+    opacity: 0,
+    duration: 0.5,
+    ease: "power3.out"
+  }, 32.7);
+
+  // Phone displays marketplace screen (screen_07)
+  tl.call(() => {
+    document.querySelectorAll(".phone-screen-img").forEach(el => el.classList.remove("active"));
+    document.getElementById("screen-img-7").classList.add("active");
+  }, null, 32.8);
+
+  // Morph to history screen at 36.8s
+  tl.call(() => {
+    document.querySelectorAll(".phone-screen-img").forEach(el => el.classList.remove("active"));
+    document.getElementById("screen-img-8").classList.add("active");
+  }, null, 36.8);
+
+  // ---------------------------------------------------------------------------
+  // SCENE 7: ARCHITECTURE & CLOSE (39.5s – 46.0s)
+  // ---------------------------------------------------------------------------
+  // Fade out left stage, brand bar, and phone
+  tl.to([".left-stage", "#brand-bar", "#phone-stage"], {
+    opacity: 0,
+    y: 40,
+    duration: 0.6,
+    ease: "power2.in",
+    onComplete: () => {
+      document.querySelector(".left-stage").style.display = "none";
+      document.getElementById("phone-stage").style.display = "none";
+      document.getElementById("brand-bar").style.display = "none";
+    }
+  }, 39.2);
+
+  // Architecture scene fades in full frame
+  tl.to("#arch-scene", {
+    opacity: 1,
+    pointerEvents: "auto",
+    duration: 0.8,
+    ease: "power3.out"
+  }, 39.6);
+
+  // Architecture 2x2 grid nodes draw on with spring scale
+  tl.from(["#arch-node-1", "#arch-node-2", "#arch-node-3", "#arch-node-4"], {
+    y: 25,
+    opacity: 0,
+    duration: 0.5,
+    stagger: 0.1,
+    ease: "back.out(1.3)"
+  }, 40.0);
+
+  // Tech chips pop
+  tl.from(".arch-footer-chips .tech-chip", {
+    scale: 0.85,
+    opacity: 0,
+    stagger: 0.08,
+    duration: 0.4,
+    ease: "power2.out"
+  }, 40.8);
+
+  // Register on window.__timelines
+  window.__timelines = window.__timelines || {};
+  window.__timelines["root"] = tl;
+</script>
+
+</body>
+</html>

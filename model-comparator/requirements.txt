@@ -1,0 +1,19 @@
+# ==============================================================================
+# PlantIQ: Dual CNN Model Comparator & Benchmark Suite Requirements
+# Compatible with Python 3.10, 3.11, and 3.12 (Windows / Linux / macOS)
+# ==============================================================================
+
+# Web Framework & API Server
+fastapi>=0.100.0,<1.0.0
+uvicorn[standard]>=0.22.0
+python-multipart>=0.0.6
+pydantic>=2.0.0
+
+# Deep Learning & Computer Vision
+torch>=2.0.0
+torchvision>=0.15.0
+pillow>=9.5.0
+numpy>=1.23.0,<2.0.0
+
+# Model Weight Parsing (Keras HDF5 Format)
+h5py>=3.8.0

@@ -12,6 +12,7 @@ Features:
 
 import os
 import re
+import time
 import pickle
 import numpy as np
 import torch
@@ -21,6 +22,7 @@ from pydantic import BaseModel
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer, CrossEncoder
 from app.core.config import settings
+from app.core.terminal_logger import tracker
 from app.services.router_service import analyze_and_route_query
 
 # Hardware Acceleration: Automatically bind to GPU (CUDA) if available
@@ -129,12 +131,16 @@ class RAGService:
         if cache_key in self._search_cache:
             return self._search_cache[cache_key]
 
+        t_rag_0 = time.perf_counter()
+        tracker.log_rag_start(clean_q, topic_filter)
+
         k_candidates = min(candidate_pool_size, len(self.doc_chunks))
         dense_ranks = {}
         sparse_ranks = {}
         all_candidate_ids = set()
 
         # ── Stage 1: Dense Vector Retrieval with BGE Query Instruction ──
+        t_dense_0 = time.perf_counter()
         if self.index and self.embedding_model:
             try:
                 # BAAI/bge-base-en-v1.5 performs best with the asymmetric query instruction prefix
@@ -151,8 +157,11 @@ class RAGService:
                         all_candidate_ids.add(int(idx))
             except Exception as e:
                 print(f"[Cleaned RAG] Dense search error: {e}")
+        t_dense_ms = (time.perf_counter() - t_dense_0) * 1000.0
+        tracker.log_rag_step(1, "Dense Semantic Retrieval", f"BAAI/bge-base-en on {self.device.upper()} -> {len(dense_ranks)} candidates", t_dense_ms)
 
         # ── Stage 2: Sparse BM25 Lexical Retrieval ─────────────────────
+        t_sparse_0 = time.perf_counter()
         if self.bm25:
             try:
                 q_tokens = [w.lower() for w in re.findall(r'\b\w+\b', clean_q) if len(w) > 1]
@@ -165,6 +174,8 @@ class RAGService:
                             all_candidate_ids.add(int(idx))
             except Exception as e:
                 print(f"[Cleaned RAG] Sparse search error: {e}")
+        t_sparse_ms = (time.perf_counter() - t_sparse_0) * 1000.0
+        tracker.log_rag_step(2, "Sparse BM25 Lexical Retrieval", f"Exact agronomic keyword match -> {len(sparse_ranks)} candidates", t_sparse_ms)
 
         if not all_candidate_ids:
             all_candidate_ids = set(range(min(top_k, len(self.doc_chunks))))
@@ -178,6 +189,8 @@ class RAGService:
             r_sparse = sparse_ranks.get(idx, 1000)
             score = (1.0 / (rrf_k + r_dense)) + (1.0 / (rrf_k + r_sparse))
             rrf_scores[idx] = score
+
+        tracker.log_rag_step(3, "Reciprocal Rank Fusion (RRF)", f"Balanced {len(all_candidate_ids)} candidates across dense & sparse channels (k=60)")
 
         # Sort candidate pool by RRF score descending
         sorted_by_rrf = sorted(all_candidate_ids, key=lambda i: rrf_scores[i], reverse=True)
@@ -198,6 +211,7 @@ class RAGService:
         valid_candidates = valid_candidates[:k_candidates]
 
         # ── Stage 4: Cross-Encoder Deep Reranking ──────────────────────
+        t_rerank_0 = time.perf_counter()
         scored_results = []
         if self.reranker and len(valid_candidates) > 0:
             try:
@@ -242,6 +256,11 @@ class RAGService:
         # Sort by score descending and return Top-K
         scored_results.sort(key=lambda x: x["score"], reverse=True)
         final_top_k = scored_results[:top_k]
+        t_rerank_ms = (time.perf_counter() - t_rerank_0) * 1000.0
+        tracker.log_rag_step(4, "Cross-Encoder Joint Reranker", f"ms-marco-MiniLM on {self.device.upper()} -> Top {len(final_top_k)} selected", t_rerank_ms)
+
+        total_rag_ms = (time.perf_counter() - t_rag_0) * 1000.0
+        tracker.log_rag_results(final_top_k, total_rag_ms)
 
         # Cache top result (limit cache size to 256 items)
         if len(self._search_cache) > 256:
@@ -400,11 +419,20 @@ Generate an actionable, scientifically accurate disease advisory.
 5. End with a 1-sentence source acknowledgment citing the relevant CCRI agronomy protocol.
 """
 
+        provider = "Google Gemini" if settings.GEMINI_API_KEY else ("Groq Cloud" if settings.GROQ_API_KEY else "Local Extension")
+        model_name = "gemini-2.5-flash" if settings.GEMINI_API_KEY else settings.GROQ_MODEL
+        tracker.log_llm_start(provider, model_name, target_lang)
+
+        t_llm_0 = time.perf_counter()
         answer = self._call_llm(prompt)
+        t_llm_s = time.perf_counter() - t_llm_0
+        tracker.log_llm_complete(t_llm_s, answer)
+
         sources = [d["source"] for d in retrieved_docs] if retrieved_docs else ["CCRI Agronomy Extension Guide"]
 
         # Run safety audit on generated dosages
         safety_audit = self._audit_dosage_safety(answer, retrieved_docs)
+        tracker.log_safety_audit(safety_audit)
 
         result = AdvisoryResult(
             answer=answer,

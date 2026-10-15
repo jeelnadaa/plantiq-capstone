@@ -12,6 +12,9 @@ from app.schemas.predict import DiagnosisResponse
 
 router = APIRouter(tags=["Leaf Diagnosis"])
 
+import time
+from app.core.terminal_logger import tracker
+
 @router.post("/predict", response_model=DiagnosisResponse)
 async def predict_leaf(
     file: UploadFile = File(...),
@@ -22,18 +25,30 @@ async def predict_leaf(
     current_user: Optional[User] = Depends(get_current_user_optional),
     db: Session = Depends(get_db)
 ):
+    t_start = time.perf_counter()
+    user_id = current_user.id if current_user else None
+    tracker.log_request_header(
+        operation="Leaf Image Diagnosis (ResNet-50 + Hybrid RAG + LLM)",
+        filename=file.filename or "uploaded_leaf.jpg",
+        user_id=user_id,
+        language=language
+    )
+
     try:
         contents = await file.read()
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to read image file: {e}")
 
-    user_id = current_user.id if current_user else None
-
     # 1. SHA-256 Deduplication Cache Check
     image_hash = compute_image_hash(contents, user_id=user_id, user_question=user_question, language=language)
     cached = get_cached_result(db, image_hash)
     if cached:
+        tracker.log_cache_status(True, image_hash)
+        total_time_s = time.perf_counter() - t_start
+        tracker.log_pipeline_complete(total_time_s, cached=True)
         return cached
+
+    tracker.log_cache_status(False, image_hash)
 
     # 2. ResNet50 Inference
     detector = get_detector()
@@ -45,11 +60,12 @@ async def predict_leaf(
     confidence = prediction["confidence"]
     distribution = prediction["distribution"]
 
-    # 3. Microclimate Weather
+    # 3. Microclimate Weather Engine
     env_service = get_env_service()
     env_data = env_service.get_environmental_data(latitude, longitude)
+    tracker.log_microclimate(env_data)
 
-    # 4. RAG Advisory Synthesis
+    # 4. RAG Advisory Synthesis & LLM
     rag_service = get_rag_service()
     advisory_res = rag_service.generate_advisory(
         disease=disease,
@@ -74,6 +90,9 @@ async def predict_leaf(
         is_blended=advisory_res.is_blended,
         user_id=user_id
     )
+
+    total_time_s = time.perf_counter() - t_start
+    tracker.log_pipeline_complete(total_time_s, cached=False, device="cuda" if rag_service.device == "cuda" else "cpu")
 
     return {
         "cache_hit": False,

@@ -1,5 +1,6 @@
 import uuid
 import json
+import time
 from typing import Dict, Any, Optional, List
 from sqlalchemy.orm import Session
 from app.models.chat import ChatThread, ChatMessage
@@ -7,6 +8,7 @@ from app.services.router_service import analyze_and_route_query
 from app.services.rag_service import get_rag_service
 from app.services.env_service import get_env_service
 from app.core.config import settings
+from app.core.terminal_logger import tracker
 
 def process_chat_message(
     db: Session,
@@ -22,6 +24,13 @@ def process_chat_message(
     longitude: Optional[float] = None,
     user_id: Optional[int] = None
 ) -> Dict[str, Any]:
+    t_chat_0 = time.perf_counter()
+    tracker.log_chat_request(
+        user_message=user_message,
+        detected_lang=language,
+        has_image=bool(image_bytes),
+        thread_id=session_id or "new-thread"
+    )
     if not session_id:
         session_id = str(uuid.uuid4())
         initial_title = user_message[:35] + ("..." if len(user_message) > 35 else "")
@@ -165,6 +174,8 @@ CRITICAL INSTRUCTIONS:
 """
 
     reply = rag_service._call_llm(prompt)
+    total_chat_s = time.perf_counter() - t_chat_0
+    tracker.log_pipeline_complete(total_chat_s, cached=False, device="cuda" if rag_service.device == "cuda" else "cpu")
 
     user_msg_record = ChatMessage(
         thread_id=session_id,

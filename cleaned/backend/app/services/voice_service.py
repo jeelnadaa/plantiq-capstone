@@ -1,10 +1,12 @@
 import io
 import os
+import time
 import tempfile
 import threading
 from typing import Dict, Any, Optional
 import numpy as np
 from app.core.config import settings
+from app.core.terminal_logger import tracker
 
 class IndicConformerSTTManager:
     """
@@ -200,6 +202,8 @@ def transcribe_audio(audio_bytes: bytes, filename: str, target_lang: str = "kn")
     2. Groq Whisper (WhisperFlow large-v3)
     3. Gemini 1.5 Flash Audio
     """
+    t_voice_0 = time.perf_counter()
+    tracker.log_voice_request(filename, len(audio_bytes), target_lang)
     errors = []
 
     # 1. Primary: Local Indic-Conformer 600M Multilingual (English & Kannada)
@@ -208,6 +212,8 @@ def transcribe_audio(audio_bytes: bytes, filename: str, target_lang: str = "kn")
             manager = IndicConformerSTTManager.get_instance()
             text = manager.transcribe(audio_bytes, filename, target_lang=target_lang)
             if text:
+                dur_ms = (time.perf_counter() - t_voice_0) * 1000.0
+                tracker.log_voice_step("IndicConformer (Local)", manager.device, dur_ms, text)
                 return {
                     "text": text,
                     "language": target_lang,
@@ -236,6 +242,8 @@ def transcribe_audio(audio_bytes: bytes, filename: str, target_lang: str = "kn")
                 response_format="json"
             )
             if transcription.text:
+                dur_ms = (time.perf_counter() - t_voice_0) * 1000.0
+                tracker.log_voice_step("Groq Whisper (whisper-large-v3)", "Cloud", dur_ms, transcription.text.strip())
                 return {
                     "text": transcription.text.strip(),
                     "language": target_lang,
@@ -273,6 +281,8 @@ def transcribe_audio(audio_bytes: bytes, filename: str, target_lang: str = "kn")
             model = legacy_genai.GenerativeModel("gemini-1.5-flash")
             resp = model.generate_content([lang_prompt, audio_part])
             if resp.text:
+                dur_ms = (time.perf_counter() - t_voice_0) * 1000.0
+                tracker.log_voice_step("Gemini Audio (gemini-1.5-flash)", "Cloud", dur_ms, resp.text.strip())
                 return {
                     "text": resp.text.strip(),
                     "language": target_lang,

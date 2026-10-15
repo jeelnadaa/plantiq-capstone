@@ -11,6 +11,12 @@ def rebuild():
     www_dir = os.path.join(base_dir, "www")
     android_dir = os.path.join(base_dir, "android")
 
+    # Ensure JAVA_HOME is defined
+    if "JAVA_HOME" not in os.environ or not os.environ["JAVA_HOME"]:
+        jdk_path = r"C:\Program Files\Java\jdk-21.0.11"
+        if os.path.exists(jdk_path):
+            os.environ["JAVA_HOME"] = jdk_path
+
     # 1. Update www/static
     print("[1/4] Syncing frontend assets...")
     shutil.rmtree(os.path.join(www_dir, "static"), ignore_errors=True)

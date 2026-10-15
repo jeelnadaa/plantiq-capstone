@@ -78,7 +78,27 @@ def process_chat_message(
         except Exception as e:
             print(f"[Chat Service] CNN inference warning: {e}")
 
-    # 3. Live Environmental context
+    # 3. Live Environmental context & Manual Coordinates Extraction
+    if (latitude is None or longitude is None) and user_message:
+        import re
+        m1 = re.search(r'(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)', user_message)
+        if m1:
+            try:
+                cand_lat, cand_lng = float(m1.group(1)), float(m1.group(2))
+                if -90.0 <= cand_lat <= 90.0 and -180.0 <= cand_lng <= 180.0:
+                    latitude, longitude = cand_lat, cand_lng
+            except Exception:
+                pass
+        if latitude is None or longitude is None:
+            m2 = re.search(r'lat(?:itude)?\s*[:=]?\s*(-?\d{1,2}\.\d+).*?l(?:ng|on|ongitude)?\s*[:=]?\s*(-?\d{1,3}\.\d+)', user_message, re.IGNORECASE)
+            if m2:
+                try:
+                    cand_lat, cand_lng = float(m2.group(1)), float(m2.group(2))
+                    if -90.0 <= cand_lat <= 90.0 and -180.0 <= cand_lng <= 180.0:
+                        latitude, longitude = cand_lat, cand_lng
+                except Exception:
+                    pass
+
     env_service = get_env_service()
     env_data = env_service.get_environmental_data(latitude, longitude)
 

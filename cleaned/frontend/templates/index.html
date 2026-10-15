@@ -71,15 +71,20 @@
           <button type="button" id="btn-mode-manual" class="btn btn-sm btn-secondary" style="flex:1;"><i data-lucide="edit-3"></i> <span data-i18n="btnManualEntry">Manual Entry</span></button>
         </div>
 
-        <div id="manual-lat-lng-container" class="hidden" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
-          <div>
-            <label style="font-size:0.72rem; font-weight:600;" data-i18n="lblLat">Latitude (°N)</label>
-            <input type="number" step="0.0001" id="input-manual-lat" class="form-control" placeholder="13.3161">
+        <div id="manual-lat-lng-container" class="hidden" style="margin-top:10px; background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:var(--radius-xs); padding:10px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+            <div>
+              <label style="font-size:0.72rem; font-weight:700;" data-i18n="lblLat">Latitude (°N)</label>
+              <input type="number" step="0.0001" id="input-manual-lat" class="form-control" placeholder="13.3161">
+            </div>
+            <div>
+              <label style="font-size:0.72rem; font-weight:700;" data-i18n="lblLng">Longitude (°E)</label>
+              <input type="number" step="0.0001" id="input-manual-lng" class="form-control" placeholder="75.7720">
+            </div>
           </div>
-          <div>
-            <label style="font-size:0.72rem; font-weight:600;" data-i18n="lblLng">Longitude (°E)</label>
-            <input type="number" step="0.0001" id="input-manual-lng" class="form-control" placeholder="75.7720">
-          </div>
+          <button type="button" id="btn-apply-manual-coords" class="btn btn-sm btn-primary" style="width:100%; padding:6px 10px; font-size:0.75rem;">
+            <i data-lucide="check-circle" style="width:13px; height:13px;"></i> <span data-i18n="btnApplyCoords">Apply Coordinates & Get Weather</span>
+          </button>
         </div>
 
         <!-- Live Microclimate Environmental Display matching Neo-Brutalism -->

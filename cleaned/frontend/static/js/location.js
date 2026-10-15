@@ -58,8 +58,45 @@ const LocationManager = {
     }
   },
 
+  debounceTimer: null,
+
+  handleManualCoordChange(source = "main") {
+    let latInput = document.getElementById("input-manual-lat");
+    let lngInput = document.getElementById("input-manual-lng");
+    if (source === "chat") {
+      latInput = document.getElementById("input-chat-manual-lat");
+      lngInput = document.getElementById("input-chat-manual-lng");
+    }
+    if (!latInput || !lngInput) return;
+
+    const latRaw = latInput.value.trim();
+    const lngRaw = lngInput.value.trim();
+
+    if (latRaw === "" || lngRaw === "") {
+      this.coords.lat = null;
+      this.coords.lng = null;
+      this.coords.mode = "manual";
+      this.coords.allowed = false;
+      this.envData = { available: false };
+      localStorage.setItem("plantiq_coords", JSON.stringify(this.coords));
+      this.updateUI();
+      this.renderEnvironmentUI();
+      return;
+    }
+
+    const latVal = parseFloat(latRaw);
+    const lngVal = parseFloat(lngRaw);
+
+    if (!isNaN(latVal) && !isNaN(lngVal) && latVal >= -90.0 && latVal <= 90.0 && lngVal >= -180.0 && lngVal <= 180.0) {
+      this.coords.lat = latVal;
+      this.coords.lng = lngVal;
+      this.coords.mode = "manual";
+      this.coords.allowed = true;
+      this.save();
+    }
+  },
+
   async fetchEnvironment() {
-    if (this.isFetchingEnv) return;
     this.isFetchingEnv = true;
     this.renderEnvironmentUI();
     const refreshBtn = document.getElementById("btn-refresh-env");
@@ -68,10 +105,11 @@ const LocationManager = {
     try {
       const lat = this.coords ? this.coords.lat : null;
       const lng = this.coords ? this.coords.lng : null;
-      let url = "/api/environment/live";
-      if (lat != null && lng != null && !isNaN(lat) && !isNaN(lng)) {
-        url += `?latitude=${lat}&longitude=${lng}`;
+      if (lat == null || lng == null || isNaN(lat) || isNaN(lng)) {
+        this.envData = { available: false };
+        return;
       }
+      const url = `/api/environment/live?latitude=${lat}&longitude=${lng}`;
       const res = await apiRequest(url);
       if (res.ok) {
         this.envData = await res.json();
@@ -217,12 +255,14 @@ const LocationManager = {
   },
 
   bindUI() {
+    // 1. Scanner Page Controls
     const btnGps = document.getElementById("btn-mode-gps");
     const btnManual = document.getElementById("btn-mode-manual");
     const manualInputs = document.getElementById("manual-lat-lng-container");
     const latInput = document.getElementById("input-manual-lat");
     const lngInput = document.getElementById("input-manual-lng");
     const btnRefreshEnv = document.getElementById("btn-refresh-env");
+    const btnApplyManual = document.getElementById("btn-apply-manual-coords");
 
     if (btnRefreshEnv) {
       btnRefreshEnv.onclick = (e) => {
@@ -246,36 +286,119 @@ const LocationManager = {
         btnManual.className = "btn btn-sm btn-primary";
         if (manualInputs) {
           manualInputs.classList.remove("hidden");
-          if (latInput) latInput.value = this.coords.lat.toFixed(4);
-          if (lngInput) lngInput.value = this.coords.lng.toFixed(4);
+          if (latInput && this.coords.lat != null) latInput.value = this.coords.lat.toFixed(4);
+          if (lngInput && this.coords.lng != null) lngInput.value = this.coords.lng.toFixed(4);
         }
         this.save();
       };
     }
 
+    const triggerDebounced = (src = "main") => {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.handleManualCoordChange(src);
+      }, 500);
+    };
+
     if (latInput) {
-      latInput.oninput = () => {
-        const val = parseFloat(latInput.value);
-        if (!isNaN(val)) {
-          this.coords.lat = val;
-          this.coords.mode = "manual";
-          this.save();
+      latInput.oninput = () => triggerDebounced("main");
+      latInput.onchange = () => this.handleManualCoordChange("main");
+      latInput.onkeydown = (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          this.handleManualCoordChange("main");
         }
       };
     }
 
     if (lngInput) {
-      lngInput.oninput = () => {
-        const val = parseFloat(lngInput.value);
-        if (!isNaN(val)) {
-          this.coords.lng = val;
-          this.coords.mode = "manual";
-          this.save();
+      lngInput.oninput = () => triggerDebounced("main");
+      lngInput.onchange = () => this.handleManualCoordChange("main");
+      lngInput.onkeydown = (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          this.handleManualCoordChange("main");
         }
       };
     }
 
-    // Google Maps Guide Modal Triggers
+    if (btnApplyManual) {
+      btnApplyManual.onclick = (e) => {
+        e.preventDefault();
+        this.handleManualCoordChange("main");
+      };
+    }
+
+    // 2. Chat Page Controls
+    const btnToggleChatLoc = document.getElementById("btn-toggle-chat-loc");
+    const chatManualContainer = document.getElementById("chat-manual-coords-container");
+    const btnChatGps = document.getElementById("btn-chat-mode-gps");
+    const btnChatManual = document.getElementById("btn-chat-mode-manual");
+    const chatManualInputs = document.getElementById("chat-manual-inputs");
+    const chatLatInput = document.getElementById("input-chat-manual-lat");
+    const chatLngInput = document.getElementById("input-chat-manual-lng");
+    const btnApplyChatManual = document.getElementById("btn-apply-chat-manual");
+
+    if (btnToggleChatLoc && chatManualContainer) {
+      btnToggleChatLoc.onclick = (e) => {
+        e.preventDefault();
+        chatManualContainer.classList.toggle("hidden");
+        if (window.lucide) lucide.createIcons();
+      };
+    }
+
+    if (btnChatGps && btnChatManual) {
+      btnChatGps.onclick = () => {
+        this.coords.mode = "gps";
+        btnChatGps.className = "btn btn-sm btn-primary";
+        btnChatManual.className = "btn btn-sm btn-secondary";
+        if (chatManualInputs) chatManualInputs.classList.add("hidden");
+        this.requestGPS();
+      };
+
+      btnChatManual.onclick = () => {
+        this.coords.mode = "manual";
+        btnChatGps.className = "btn btn-sm btn-secondary";
+        btnChatManual.className = "btn btn-sm btn-primary";
+        if (chatManualInputs) {
+          chatManualInputs.classList.remove("hidden");
+          if (chatLatInput && this.coords.lat != null) chatLatInput.value = this.coords.lat.toFixed(4);
+          if (chatLngInput && this.coords.lng != null) chatLngInput.value = this.coords.lng.toFixed(4);
+        }
+        this.save();
+      };
+    }
+
+    if (chatLatInput) {
+      chatLatInput.oninput = () => triggerDebounced("chat");
+      chatLatInput.onchange = () => this.handleManualCoordChange("chat");
+      chatLatInput.onkeydown = (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          this.handleManualCoordChange("chat");
+        }
+      };
+    }
+
+    if (chatLngInput) {
+      chatLngInput.oninput = () => triggerDebounced("chat");
+      chatLngInput.onchange = () => this.handleManualCoordChange("chat");
+      chatLngInput.onkeydown = (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          this.handleManualCoordChange("chat");
+        }
+      };
+    }
+
+    if (btnApplyChatManual) {
+      btnApplyChatManual.onclick = (e) => {
+        e.preventDefault();
+        this.handleManualCoordChange("chat");
+      };
+    }
+
+    // 3. Google Maps Guide Modal Triggers
     const gmapsModal = document.getElementById("gmaps-guide-modal");
     document.querySelectorAll(".btn-open-gmaps-guide").forEach(btn => {
       btn.onclick = (e) => {
@@ -299,11 +422,61 @@ const LocationManager = {
       ? (currentLang === "kn" ? "(ಹಸ್ತಚಾಲಿತ)" : "(Manual)")
       : (currentLang === "kn" ? "(ಸ್ವಯಂಚಾಲಿತ ಜಿಪಿಎಸ್)" : "(Auto GPS)");
 
+    // 1. Scanner Page Location Card
     const statusEl = document.getElementById("loc-status-text");
     if (statusEl) statusEl.textContent = `${coordStr} ${modeLabel}`;
 
+    const btnGps = document.getElementById("btn-mode-gps");
+    const btnManual = document.getElementById("btn-mode-manual");
+    const manualInputs = document.getElementById("manual-lat-lng-container");
+    const latInput = document.getElementById("input-manual-lat");
+    const lngInput = document.getElementById("input-manual-lng");
+
+    if (btnGps && btnManual) {
+      if (this.coords.mode === "manual") {
+        btnGps.className = "btn btn-sm btn-secondary";
+        btnManual.className = "btn btn-sm btn-primary";
+        if (manualInputs) manualInputs.classList.remove("hidden");
+        if (latInput && document.activeElement !== latInput) {
+          latInput.value = hasValidCoords ? lat.toFixed(4) : "";
+        }
+        if (lngInput && document.activeElement !== lngInput) {
+          lngInput.value = hasValidCoords ? lng.toFixed(4) : "";
+        }
+      } else {
+        btnGps.className = "btn btn-sm btn-primary";
+        btnManual.className = "btn btn-sm btn-secondary";
+        if (manualInputs) manualInputs.classList.add("hidden");
+      }
+    }
+
+    // 2. Chat Page Location Card
     const chatLocEl = document.getElementById("chat-loc-badge");
     if (chatLocEl) chatLocEl.textContent = `${currentLang === "kn" ? "ಸ್ಥಳ" : "Location"}: ${coordStr} ${modeLabel}`;
+
+    const btnChatGps = document.getElementById("btn-chat-mode-gps");
+    const btnChatManual = document.getElementById("btn-chat-mode-manual");
+    const chatManualInputs = document.getElementById("chat-manual-inputs");
+    const chatLatInput = document.getElementById("input-chat-manual-lat");
+    const chatLngInput = document.getElementById("input-chat-manual-lng");
+
+    if (btnChatGps && btnChatManual) {
+      if (this.coords.mode === "manual") {
+        btnChatGps.className = "btn btn-sm btn-secondary";
+        btnChatManual.className = "btn btn-sm btn-primary";
+        if (chatManualInputs) chatManualInputs.classList.remove("hidden");
+        if (chatLatInput && document.activeElement !== chatLatInput) {
+          chatLatInput.value = hasValidCoords ? lat.toFixed(4) : "";
+        }
+        if (chatLngInput && document.activeElement !== chatLngInput) {
+          chatLngInput.value = hasValidCoords ? lng.toFixed(4) : "";
+        }
+      } else {
+        btnChatGps.className = "btn btn-sm btn-primary";
+        btnChatManual.className = "btn btn-sm btn-secondary";
+        if (chatManualInputs) chatManualInputs.classList.add("hidden");
+      }
+    }
 
     this.renderEnvironmentUI();
   }

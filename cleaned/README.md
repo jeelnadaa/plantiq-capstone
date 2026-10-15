@@ -206,6 +206,9 @@ For permanent 24/7 testing without needing your laptop turned on:
 * **Live Microclimate & Epidemiological Risk Display**:
   * Displays 4 key site environmental factors directly on the Scanner homepage: **Temperature (°C)** (with apparent feels-like), **Relative Humidity (%)**, **24h Rainfall (mm)**, and **Elevation (m a.s.l.)**.
   * Dynamic incubation alert banner models Coffee Leaf Rust & Cercospora fungal infection risk in real time.
+* **Dual GPS & Manual Coordinate Ingestion**:
+  * Seamlessly toggle between **Auto GPS** and **Manual Entry** on both the Scanner and Chatbot screens.
+  * Entering manual latitude and longitude immediately triggers debounced queries to Open-Meteo, updating the live microclimate metrics on the main screen in real time.
 * **Strict Zero Mock Data Policy**:
   * **No Hardcoded Numbers**: Never returns fabricated or static weather data (`23.5`, `82.0`, etc.).
   * If GPS coordinates are unset or sensor APIs are unreachable, the UI and API explicitly display **"Not Available"** / **"ಲಭ್ಯವಿಲ್ಲ"**.
@@ -223,8 +226,9 @@ For permanent 24/7 testing without needing your laptop turned on:
 ### 2. 💬 Multimodal Agri Chatbot
 * **Live Environmental & Weather Intelligence**:
   * Farmers can ask about their microclimate in English or Kannada (e.g. *"What is the weather around me?"* or *"ನನ್ನ ಸುತ್ತಲಿನ ವಾತಾವರಣ ಹೇಗಿದೆ?"*).
-  * With GPS enabled, the assistant breaks down live temperature, humidity, rainfall, elevation, and CCRI fungal spray windows.
-  * Without GPS, the chatbot adheres to the **zero-mock policy**, informing the farmer in their selected language that live coordinates are unavailable without hallucinating numbers.
+  * **Manual Coordinates Support**: Synchronizes coordinates from the main screen, supports in-chat manual location editing, and parses user-typed coordinates (e.g. `"12.4244, 75.7382"`) directly from messages to fetch live microclimate telemetry.
+  * With GPS/manual coordinates active, the assistant breaks down live temperature, humidity, rainfall, elevation, and CCRI fungal spray windows.
+  * Without coordinates, the chatbot adheres to the **zero-mock policy**, informing the farmer in their selected language that live coordinates are unavailable without hallucinating numbers.
 * **Image Context Attachment**: Upload fresh photos from the phone camera or pick past scans from device history.
 * **Scan Metadata Ingestion**: Ingests historical microclimate weather conditions and previous scan treatment advisories directly into LLM reasoning.
 * **Multi-Turn Persistent Chat**: Saves chat history and attached photos across page navigation and app restarts.

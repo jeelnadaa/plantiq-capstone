@@ -84,5 +84,18 @@ To ensure agronomic safety and prevent misleading chemical applications:
 
 ### 4.3 Multimodal Chatbot Environmental Querying
 When queries pertain to weather, microclimate, or ambient estate conditions (`weather`, `temperature`, `humidity`, `ಹವಾಮಾನ`, `ವಾತಾವರಣ`, `ಮಳೆ`, `ತಾಪಮಾನ`):
-* **With Active GPS**: The chatbot ingests live sensor readings and explains real-time fungal incubation risks and CCRI spray timings in the chosen language.
-* **Without GPS**: The chatbot strictly refuses to fabricate mock weather data and politely guides the farmer in Kannada or English to enable GPS or enter coordinates.
+* **With Active GPS or Manual Coordinates**: The chatbot ingests live sensor readings and explains real-time fungal incubation risks and CCRI spray timings in the chosen language.
+* **Without Coordinates**: The chatbot strictly refuses to fabricate mock weather data and politely guides the farmer in Kannada or English to enable GPS or enter coordinates manually.
+
+### 4.4 Dual-Mode Coordinate Ingestion (GPS & Manual)
+1. **Main Scanner Screen (`index.html`)**:
+   - Planters can switch between `Auto GPS` and `Manual Entry`.
+   - Dedicated latitude and longitude inputs with debounced validation and instant `Apply Coordinates & Get Weather` button.
+   - Live Microclimate Panel updates dynamically to reflect entered estate coordinates.
+2. **Chatbot Screen (`chat.html`)**:
+   - Includes `#chat-manual-coords-container` enabling farmers to toggle between Auto GPS and manual coordinate entry without navigating away.
+   - Ingests manual coordinates into `FormData` on message send.
+3. **Conversational Regex Coordinate Parsing (`chat_service.py`)**:
+   - If a planter types or pastes coordinates directly into their chat message (e.g., `"What is the weather at 12.4244, 75.7382?"` or `"lat: 13.3161 lng: 75.7720"`), the backend automatically extracts and bounds-checks the coordinates, retrieves live Open-Meteo weather data, and answers their query immediately.
+4. **API Resilience & Rate Limiting (`env_service.py`)**:
+   - Configured custom User-Agent headers, automated retry backoff on 503/429 status codes, and 60-second in-memory coordinate caching to eliminate throttling while strictly maintaining the zero-mock policy.

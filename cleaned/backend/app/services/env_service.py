@@ -1,7 +1,11 @@
+import time
 import requests
 from typing import Dict, Any, Optional
 
 class EnvironmentalService:
+    def __init__(self):
+        self._cache: Dict[str, tuple[float, Dict[str, Any]]] = {}
+
     def get_environmental_data(self, latitude: Optional[float] = None, longitude: Optional[float] = None) -> Dict[str, Any]:
         """
         Fetches live microclimate weather from Open-Meteo for the given GPS coordinates.
@@ -35,11 +39,36 @@ class EnvironmentalService:
         elif 12.7 <= latitude <= 13.1 and 75.6 <= longitude <= 76.3:
             region_name = "Hassan (Sakleshpur) Coffee Belt"
 
+        # Check 60s in-memory cache to prevent redundant external API hits & rate-limiting
+        cache_key = f"{round(latitude, 3)}_{round(longitude, 3)}"
+        now = time.time()
+        if hasattr(self, "_cache") and cache_key in self._cache:
+            cached_time, cached_data = self._cache[cache_key]
+            if now - cached_time < 60:
+                return cached_data
+
+        headers = {
+            'User-Agent': 'PlantIQ-Agronomic-Engine/1.0 (Agriculture Decision Support; Open-Meteo Client)'
+        }
+        url = f'https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m,apparent_temperature&elevation=nan'
+
+        data = None
+        for attempt in range(2):
+            try:
+                res = requests.get(url, headers=headers, timeout=5)
+                if res.status_code == 200:
+                    data = res.json()
+                    break
+                elif res.status_code in (503, 429) and attempt == 0:
+                    time.sleep(0.5)
+            except Exception as req_err:
+                if attempt == 0:
+                    time.sleep(0.5)
+                else:
+                    print(f'[Cleaned EnvService] Live Open-Meteo Request Error: {req_err}')
+
         try:
-            url = f'https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m,apparent_temperature&elevation=nan'
-            res = requests.get(url, timeout=4)
-            if res.status_code == 200:
-                data = res.json()
+            if data and 'current' in data:
                 current = data.get('current', {})
                 elevation_val = data.get('elevation')
                 temp = current.get('temperature_2m')
@@ -75,7 +104,7 @@ class EnvironmentalService:
                         incubation_risk = "Low Infection Risk (Favorable Spray Window)"
                         risk_level = "low"
 
-                return {
+                result = {
                     'available': True,
                     'location_status': 'Active GPS Location',
                     'Coordinates': f'{latitude:.4f}, {longitude:.4f}',
@@ -99,6 +128,8 @@ class EnvironmentalService:
                     'Soil pH (estimated)': 6.2,
                     'Elevation (m)': elevation_val
                 }
+                self._cache[cache_key] = (now, result)
+                return result
         except Exception as e:
             print(f'[Cleaned EnvService] Live Open-Meteo Query Exception: {e}')
 

@@ -58,9 +58,13 @@ function initScanner() {
       const formData = new FormData();
       formData.append("file", selectedScanFile);
       formData.append("language", currentLang);
-      if (LocationManager.coords.allowed) {
-        formData.append("latitude", LocationManager.coords.lat);
-        formData.append("longitude", LocationManager.coords.lng);
+      if (LocationManager.coords) {
+        const lat = LocationManager.coords.lat;
+        const lng = LocationManager.coords.lng;
+        if (lat != null && lng != null && !isNaN(lat) && !isNaN(lng)) {
+          formData.append("latitude", lat);
+          formData.append("longitude", lng);
+        }
       }
       if (questionText) {
         formData.append("user_question", questionText);

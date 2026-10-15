@@ -10,6 +10,14 @@ import time
 import sys
 from typing import Dict, Any, List, Optional
 
+# Ensure UTF-8 output encoding on Windows terminals to prevent charmap UnicodeEncodeErrors
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # ANSI Color Codes for Rich Terminal Output
 class Colors:
     RESET = "\033[0m"

@@ -66,3 +66,23 @@ Where:
 * **High Risk ($\mathcal{R} \ge 0.75$)**: Trigger immediate systemic fungicide recommendation (*Hexaconazole 5% EC @ 2 ml/L* or *Triadimefon 25 WP @ 0.5 g/L*) to eradicate incubating mycelium.
 * **Moderate Risk ($0.45 \le \mathcal{R} < 0.75$)**: Recommend protective contact fungicide (*Bordeaux Mixture 1%*) before monsoon showers begin.
 * **Low Risk ($\mathcal{R} < 0.45$)**: Focus on cultural canopy shade management, organic copper oxychloride, and nutrient balance.
+
+---
+
+## 4. Zero Mock Data Governance & Bilingual Interface Integration
+
+### 4.1 Strict Zero Mock Data Policy
+To ensure agronomic safety and prevent misleading chemical applications:
+* **No Hardcoded Numbers**: The backend service (`env_service.py`) never supplies static fallback numbers (e.g. `23.5°C`, `82%`).
+* **Explicit Unavailability**: If GPS coordinates are not provided, or external meteorological APIs are unreachable, the service explicitly returns `available: False` with `None` values and `note: "Microclimate sensor data unavailable"`.
+* **Frontend Handling**: When `available: False`, all UI metric tiles display **"Not Available"** (English) or **"ಲಭ್ಯವಿಲ್ಲ"** (Kannada), and the alert badge is styled as neutral inactive state without fabricated units.
+
+### 4.2 Instant Language Reactivity (English <-> Kannada)
+* **Single-Click Switcher**: Toggling the language button immediately triggers `updateDOMTranslations()` and `LocationManager.renderEnvironmentUI()`.
+* **Universal Digits & Units**: Numerical values and scientific units (`27.1°C`, `56%`, `0.0 mm`, `1135 m`, `12.5 km/h`, `6.2`) remain in standard universal formatting for agronomic precision.
+* **Linguistic Localization**: All text, status titles, labels (`ತಾಪಮಾನ`, `ಆರ್ದ್ರತೆ / ತೇವಾಂಶ`, `24 ಗಂಟೆಗಳ ಮಳೆ`, `ಸಮುದ್ರ ಮಟ್ಟದಿಂದ ಎತ್ತರ`), apparent temperature prefixes (`ಅನುಭವ: 27.5°C`), risk badges (`ಹೆಚ್ಚಿನ ಅಪಾಯ`, `ಮಧ್ಯಮ ಅಪಾಯ`, `ಕಡಿಮೆ ಅಪಾಯ`), and actionable warnings switch into authentic native Kannada script (ಕನ್ನಡ ಲಿಪಿ).
+
+### 4.3 Multimodal Chatbot Environmental Querying
+When queries pertain to weather, microclimate, or ambient estate conditions (`weather`, `temperature`, `humidity`, `ಹವಾಮಾನ`, `ವಾತಾವರಣ`, `ಮಳೆ`, `ತಾಪಮಾನ`):
+* **With Active GPS**: The chatbot ingests live sensor readings and explains real-time fungal incubation risks and CCRI spray timings in the chosen language.
+* **Without GPS**: The chatbot strictly refuses to fabricate mock weather data and politely guides the farmer in Kannada or English to enable GPS or enter coordinates.

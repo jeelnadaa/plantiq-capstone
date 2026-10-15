@@ -201,9 +201,17 @@ For permanent 24/7 testing without needing your laptop turned on:
 
 ## 🌟 Key Application Features
 
-### 1. 🔬 Leaf Diagnostic Scanner
+### 1. 🔬 Leaf Diagnostic Scanner & Live Microclimate Panel
 * **PyTorch ResNet50 Classifier**: Identifies *Coffee Leaf Rust*, *Cercospora Leaf Spot*, *Phoma*, *Leaf Miner*, and *Healthy Leaf* (20ms local inference).
-* **Open-Meteo Microclimate Engine**: Detects site elevation, temperature, humidity, rainfall, wind speed, and soil pH.
+* **Live Microclimate & Epidemiological Risk Display**:
+  * Displays 4 key site environmental factors directly on the Scanner homepage: **Temperature (°C)** (with apparent feels-like), **Relative Humidity (%)**, **24h Rainfall (mm)**, and **Elevation (m a.s.l.)**.
+  * Dynamic incubation alert banner models Coffee Leaf Rust & Cercospora fungal infection risk in real time.
+* **Strict Zero Mock Data Policy**:
+  * **No Hardcoded Numbers**: Never returns fabricated or static weather data (`23.5`, `82.0`, etc.).
+  * If GPS coordinates are unset or sensor APIs are unreachable, the UI and API explicitly display **"Not Available"** / **"ಲಭ್ಯವಿಲ್ಲ"**.
+* **Instant Bilingual Reactivity (English & Kannada)**:
+  * Toggling the language selector instantly translates all microclimate headings, labels, risk banners, and badges into **native Kannada script (ಕನ್ನಡ ಲಿಪಿ)** or English without page reloads.
+  * Preserves standard universal digits and units (`27.1°C`, `56%`, `0.0 mm`, `1135 m`) while localizing all surrounding agronomic terms (e.g., `ಅನುಭವ`, `ತಾಪಮಾನ`, `ಆರ್ದ್ರತೆ`, `ಹೆಚ್ಚಿನ ಅಪಾಯ`).
 * **Upgraded 3-Stage Hybrid RAG Advisory**:
   * **BGE Asymmetric Prompting** with `BAAI/bge-base-en-v1.5` dense vectors.
   * **Reciprocal Rank Fusion (RRF)** balancing dense semantic vectors with BM25Okapi lexical chemical compound matches.
@@ -213,6 +221,10 @@ For permanent 24/7 testing without needing your laptop turned on:
   * **Structured Citations & Sub-5ms Query Cache**: Returns exact manual citations and serves frequent queries instantaneously.
 
 ### 2. 💬 Multimodal Agri Chatbot
+* **Live Environmental & Weather Intelligence**:
+  * Farmers can ask about their microclimate in English or Kannada (e.g. *"What is the weather around me?"* or *"ನನ್ನ ಸುತ್ತಲಿನ ವಾತಾವರಣ ಹೇಗಿದೆ?"*).
+  * With GPS enabled, the assistant breaks down live temperature, humidity, rainfall, elevation, and CCRI fungal spray windows.
+  * Without GPS, the chatbot adheres to the **zero-mock policy**, informing the farmer in their selected language that live coordinates are unavailable without hallucinating numbers.
 * **Image Context Attachment**: Upload fresh photos from the phone camera or pick past scans from device history.
 * **Scan Metadata Ingestion**: Ingests historical microclimate weather conditions and previous scan treatment advisories directly into LLM reasoning.
 * **Multi-Turn Persistent Chat**: Saves chat history and attached photos across page navigation and app restarts.

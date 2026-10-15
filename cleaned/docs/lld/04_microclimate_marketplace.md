@@ -162,7 +162,9 @@ classDiagram
 Source: backend/app/services/env_service.py:4-46
 
 #### 3.5.3.1 Class Description: `EnvironmentalService`
-`EnvironmentalService` is a singleton service responsible for querying external meteorological APIs and assembling localized environmental telemetry. When provided valid latitude and longitude coordinates, it queries the Open-Meteo Numerical Weather Prediction (NWP) API with a 3-second network timeout. It extracts ambient temperature, apparent temperature ("feels like"), relative humidity, rainfall precipitation, wind speed, Digital Elevation Model (DEM) altitude, and returns estimated soil pH. If GPS permissions are denied or network timeouts occur, it returns standard South Indian coffee belt agronomic baselines.
+`EnvironmentalService` is a singleton service responsible for querying external meteorological APIs and assembling localized environmental telemetry. When provided valid latitude and longitude coordinates, it queries the Open-Meteo Numerical Weather Prediction (NWP) API with a network timeout. It extracts ambient temperature, apparent temperature ("feels like"), relative humidity, rainfall precipitation, wind speed, Digital Elevation Model (DEM) altitude, and evaluates fungal incubation risks. 
+
+**Strict Zero Mock Data Governance**: To ensure scientific integrity and agronomic safety, the service never manufactures mock or hardcoded numbers (`23.5`, `82.0`, etc.). If GPS coordinates are not provided, or if the meteorological service is unreachable, it explicitly returns `available: False` with `None` values, prompting the frontend and chat services to clearly display **"Not Available"** / **"ಲಭ್ಯವಿಲ್ಲ"**.
 
 #### 3.5.3.2 Class Name: `EnvironmentalService`
 
@@ -174,56 +176,90 @@ Source: backend/app/services/env_service.py
 ---
 
 [MODULE: Microclimate & Marketplace | SECTION: 3.5.3.4 Method: EnvironmentalService.get_environmental_data | TYPE: Text]
-Source: backend/app/services/env_service.py:5-42
+Source: backend/app/services/env_service.py:5-131
 
 #### 3.5.3.4 Method: `get_environmental_data(self, latitude: Optional[float] = None, longitude: Optional[float] = None) -> Dict[str, Any]`
-- **Purpose**: Retrieves real-time atmospheric conditions and terrain elevation for given GPS coordinates from Open-Meteo, with deterministic agronomic fallback values.
+- **Purpose**: Retrieves real-time atmospheric conditions and terrain elevation for given GPS coordinates from Open-Meteo. Governed by a strict zero-mock policy (returns `available: False` with `None` values when coordinates or sensor data are unavailable).
 - **Input**: `latitude` (`Optional[float]`), `longitude` (`Optional[float]`).
-- **Output**: `Dict[str, Any]` containing location status, temperature, feels like, humidity, rainfall, wind speed, soil pH, and elevation.
+- **Output**: `Dict[str, Any]` containing `available` (`bool`), `location_status`, `temperature`, `feels_like`, `humidity`, `rainfall`, `wind_speed`, `elevation`, `soil_ph`, and `incubation_risk`.
 - **Parameters**: `latitude`, `longitude`.
-- **Exceptions**: Catches `requests.RequestException` and network timeouts, returning default coffee belt baseline dictionary.
+- **Exceptions**: Catches `requests.RequestException` and network timeouts, returning `available: False` with `None` metric values.
 - **Pseudo-code**:
 ```python
 IF latitude IS NULL OR longitude IS NULL THEN
     RETURN {
-        'location_status': 'Disallowed / Unavailable',
-        'note': 'Operating with standard South Indian coffee belt agronomic baselines.'
+        'available': False,
+        'location_status': 'Unavailable',
+        'note': 'GPS coordinates not provided. Microclimate sensor data unavailable.',
+        'temperature': None,
+        'feels_like': None,
+        'humidity': None,
+        'rainfall': None,
+        'wind_speed': None,
+        'elevation': None,
+        'soil_ph': None,
+        'incubation_risk': None,
+        'risk_level': 'none',
+        'Coordinates': 'Not Set'
     }
 END IF
 
 TRY
     SET url = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m,apparent_temperature&elevation=nan"
-    SET res = CALL requests.get(url, timeout=3)
+    SET res = CALL requests.get(url, timeout=4)
     IF res.status_code == 200 THEN
         SET data = res.json()
         SET current = data.get('current', {})
-        SET elevation_val = data.get('elevation', 980.0)
+        SET elevation_val = data.get('elevation')
+        
+        # Evaluate Fungal Incubation Risk
+        SET temp = current.get('temperature_2m')
+        SET humidity = current.get('relative_humidity_2m')
+        SET rain = current.get('rain')
+        
+        SET incubation_risk = "Low Risk"
+        SET risk_level = "low"
+        IF humidity >= 80.0 AND 20.0 <= temp <= 28.0 THEN
+            SET incubation_risk = "High Infection Risk (Coffee Leaf Rust & Cercospora Favorable)"
+            SET risk_level = "high"
+        ELSE IF humidity >= 65.0 OR (rain > 0.0) THEN
+            SET incubation_risk = "Moderate Risk (Active Canopy Spore Monitoring Advised)"
+            SET risk_level = "moderate"
+        END IF
+
         RETURN {
+            'available': True,
             'location_status': 'Active GPS Location',
             'Coordinates': STRING(latitude) + ", " + STRING(longitude),
-            'Temperature (°C)': current.get('temperature_2m', 24.5),
-            'Feels Like (°C)': current.get('apparent_temperature', 25.0),
-            'Humidity (%)': current.get('relative_humidity_2m', 78.0),
-            'Rainfall (mm)': current.get('rain', 0.0),
-            'Wind Speed (km/h)': current.get('wind_speed_10m', 12.0),
-            'Soil pH (estimated)': 6.2,
-            'Elevation (m)': elevation_val
+            'temperature': temp,
+            'feels_like': current.get('apparent_temperature'),
+            'humidity': humidity,
+            'rainfall': rain,
+            'wind_speed': current.get('wind_speed_10m'),
+            'elevation': elevation_val,
+            'soil_ph': 6.2,
+            'incubation_risk': incubation_risk,
+            'risk_level': risk_level
         }
     END IF
 CATCH Exception AS e:
     LOG "Open-Meteo Warning: " + e
 END TRY
 
+# Strict Zero Mock Policy: If external API fails, report Unavailable
 RETURN {
-    'location_status': 'Active GPS Location (Fallback Weather)',
-    'Coordinates': STRING(latitude) + ", " + STRING(longitude),
-    'Temperature (°C)': 23.5,
-    'Feels Like (°C)': 24.5,
-    'Humidity (%)': 82.0,
-    'Rainfall (mm)': 5.0,
-    'Wind Speed (km/h)': 10.0,
-    'Soil pH': 6.2,
-    'Elevation (m)': 980.0
+    'available': False,
+    'location_status': 'Unavailable',
+    'note': 'Environmental sensor data could not be retrieved from weather service.',
+    'temperature': None,
+    'feels_like': None,
+    'humidity': None,
+    'rainfall': None,
+    'wind_speed': None,
+    'elevation': None,
+    'soil_ph': None,
+    'incubation_risk': None,
+    'risk_level': 'none'
 }
 ```
 

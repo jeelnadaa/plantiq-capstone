@@ -377,8 +377,8 @@ class RAGService:
             reasons.append(f"Hybrid Reranker relevance ({max_rag_score:.2f}) is below threshold ({settings.CONFIDENCE_THRESHOLD_RAG:.2f}).")
 
         lang_rule = (
-            "OUTPUT STRICTLY IN KANNADA SCRIPT (ಕನ್ನಡ ಲಿಪಿ). Use clear, respectful agricultural Kannada."
-            if target_lang == "kn" or route_meta.get("detected_script") in ["kannada_script", "kanglish"]
+            "OUTPUT STRICTLY IN KANNADA SCRIPT (ಕನ್ನಡ ಲಿಪಿ). Use clear, respectful agricultural Kannada. Keep all numerical digits and units in standard format (e.g. 200L, 0.5%, 1 kg, 27°C)."
+            if target_lang == "kn" or language == "kn" or route_meta.get("detected_script") in ["kannada_script", "kanglish"]
             else "OUTPUT IN CLEAR, CONCISE ENGLISH."
         )
 

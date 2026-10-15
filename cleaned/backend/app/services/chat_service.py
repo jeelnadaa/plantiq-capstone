@@ -82,23 +82,36 @@ def process_chat_message(
     env_service = get_env_service()
     env_data = env_service.get_environmental_data(latitude, longitude)
 
-    # 4. Linguistic Router
+    # 4. Linguistic Router & Environmental Intent Check
     route_meta = analyze_and_route_query(user_message)
-    target_lang = route_meta.get("target_response_language", language)
+    target_lang = "kn" if language == "kn" or route_meta.get("target_response_language") == "kn" or route_meta.get("detected_script") in ["kannada_script", "kanglish"] else "en"
     is_greeting_or_loc = route_meta.get("is_greeting_or_location_only", False)
+
+    msg_lower = user_message.lower()
+    is_env_query = any(w in msg_lower for w in [
+        "environment", "weather", "temperature", "humidity", "rainfall", "climate", "rain", 
+        "microclimate", "forecast", "conditions", "wind", "elevation", "outside", "hot", "cold",
+        "temp", "humid", "surrounding", "around me",
+        "ಹವಾಮಾನ", "ವಾತಾವರಣ", "ಮಳೆ", "ತಾಪಮಾನ", "ತೇವಾಂಶ", "ಆರ್ದ್ರತೆ", "ಚಳಿ", "ಬಿಸಿಲು", "ಗಾಳಿ",
+        "ಪರಿಸರ", "ಹವಾಗುಣ", "ಹವಾ", "ಸೆಕೆ", "ತಂಪು"
+    ])
+    if is_env_query:
+        is_greeting_or_loc = False
 
     # 5. RAG Retrieval
     rag_service = get_rag_service()
     retrieved_docs = []
-    if not is_greeting_or_loc or attached_image_info or disease_context or scan_metadata_json:
+    if not is_greeting_or_loc or attached_image_info or disease_context or scan_metadata_json or is_env_query:
         query_kw = route_meta.get("search_query_english") or user_message
-        if disease_context:
+        if is_env_query:
+            query_kw = f"coffee microclimate weather temperature humidity rainfall disease risk {query_kw}"
+        elif disease_context:
             query_kw = f"{disease_context} {query_kw}"
         retrieved_docs = rag_service.search(query_kw, top_k=2)
 
     lang_instruction = (
-        "OUTPUT STRICTLY IN NATIVE KANNADA SCRIPT (ಕನ್ನಡ ಲಿಪಿ). Do NOT write Kannada in Latin alphabets."
-        if target_lang == "kn" or route_meta.get("detected_script") in ["kannada_script", "kanglish"]
+        "OUTPUT STRICTLY IN NATIVE KANNADA SCRIPT (ಕನ್ನಡ ಲಿಪಿ). Do NOT write Kannada in Latin alphabets. Keep digits and units in standard normal format (e.g. 27.1°C, 56%, 0.0 mm, 1135 m, 200L, 0.5%)."
+        if target_lang == "kn"
         else "OUTPUT IN CLEAR, CONCISE ENGLISH."
     )
 
@@ -112,7 +125,7 @@ def process_chat_message(
 
     env_str = ""
     if env_data and env_data.get("location_status") != "Disallowed / Unavailable":
-        env_lines = [f"- {k}: {v}" for k, v in env_data.items()]
+        env_lines = [f"- {k}: {v}" for k, v in env_data.items() if not k.startswith("_")]
         env_str = "\n[Current Live Site Environmental Conditions]\n" + "\n".join(env_lines)
 
     # Build image and historical scan context
@@ -154,6 +167,30 @@ def process_chat_message(
     docs_lines = [f"- {d['text']}" for d in retrieved_docs]
     docs_str = "\n".join(docs_lines) if docs_lines else "Standard South Indian coffee agronomic guidelines."
 
+    env_specific_instruction = ""
+    if is_env_query:
+        if env_data.get("available"):
+            env_specific_instruction = f"""
+5. [SPECIAL INSTRUCTION: USER INQUIRING ABOUT LOCAL ENVIRONMENT / WEATHER]
+The farmer is explicitly asking about their surrounding environment, weather, or microclimate.
+- Report the live readings from [Current Live Site Environmental Conditions] (Temperature: {env_data.get('temperature')}°C, Feels Like: {env_data.get('feels_like')}°C, Relative Humidity: {env_data.get('humidity')}%, 24h Rainfall: {env_data.get('rainfall')}mm, Wind Speed: {env_data.get('wind_speed')}km/h, Elevation: {env_data.get('elevation')}m, Soil pH: {env_data.get('soil_ph')}, and Region: {env_data.get('region_name', 'Karnataka Coffee Belt')}).
+- State the Disease Incubation Risk: {env_data.get('incubation_risk', 'Low Risk')}.
+- Provide practical agronomic guidance for these exact conditions: e.g. how current humidity affects coffee leaf rust spore incubation, whether it is suitable to spray Bordeaux mixture today, and canopy aeration recommendations.
+- Keep standard numbers and units (e.g. 27.1°C, 56%, 0.0 mm, 1135 m, 6.2).
+- If target language is Kannada (kn), deliver the response entirely in polite, natural Kannada script (ಕನ್ನಡ ಲಿಪಿ) with terms like ತಾಪಮಾನ, ಸಾಪೇಕ್ಷ ಆರ್ದ್ರತೆ, ಮಳೆ, ಸಮುದ್ರ ಮಟ್ಟದಿಂದ ಎತ್ತರ, ಮತ್ತು ಶಿಲೀಂಧ್ರ ರೋಗದ ಅಪಾಯ.
+- If target language is English (en), provide a well-structured agronomic weather report with clear bullet points.
+"""
+        else:
+            env_specific_instruction = """
+5. [SPECIAL INSTRUCTION: LOCAL ENVIRONMENT / WEATHER REQUESTED BUT UNAVAILABLE]
+The farmer is asking about their local weather or environment, but live GPS coordinates were NOT provided or sensor data is currently unavailable.
+- STRICT RULE: DO NOT INVENT OR MOCK ANY FAKE TEMPERATURE, HUMIDITY, OR RAINFALL NUMBERS.
+- Clearly inform the farmer that live environmental data is currently unavailable because GPS location was not provided.
+- If target language is Kannada (kn), state clearly in Kannada script: "ಕ್ಷಮಿಸಿ, ನಿಮ್ಮ ತೋಟದ ಲೈವ್ ಜಿಪಿಎಸ್ ಸ್ಥಳದ ಮಾಹಿತಿ ಲಭ್ಯವಿಲ್ಲದ ಕಾರಣ ಪ್ರಸ್ತುತ ವಾತಾವರಣದ ನಿಖರ ಅಂಕಿಅಂಶಗಳು ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ಸ್ಕ್ಯಾನರ್ ಪುಟದಲ್ಲಿ ಜಿಪಿಎಸ್ ಆನ್ ಮಾಡಿ ಅಥವಾ ನಿರ್ದೇಶಾಂಕಗಳನ್ನು ನಮೂದಿಸಿ."
+- If target language is English (en), state: "Live environmental and microclimate data is currently unavailable because GPS coordinates were not provided. Please enable GPS or enter your estate coordinates on the Scanner page."
+- Provide general seasonal coffee weather management guidelines based on CCRI recommendations.
+"""
+
     prompt = f"""You are PlantIQ Assistant, an expert AI agronomist specialized in South Indian coffee plantations (Arabica & Robusta).
 {lang_instruction}
 
@@ -169,8 +206,9 @@ Farmer's Current Message: "{user_message}"
 CRITICAL INSTRUCTIONS:
 1. If an attached leaf image or past scan metadata is provided above, YOU ALREADY HAVE THE VISUAL DIAGNOSIS AND ENVIRONMENTAL CONTEXT. NEVER state "I cannot process images" or "Please describe the symptoms".
 2. If Historical Scan Metadata (past advisory, recorded microclimate factors like humidity/rainfall/temperature) is provided, incorporate this exact site history into your answers and recommendations!
-3. Clearly identify the disease ({disease_context or (attached_image_info and attached_image_info.get('class')) or 'the attached leaf disease'}), describe its visual symptoms, and explain the exact agronomic causes and Central Coffee Research Institute (CCRI) chemical/organic management protocols.
+3. If this is a disease diagnosis query, clearly identify the disease ({disease_context or (attached_image_info and attached_image_info.get('class')) or 'the attached leaf disease'}), describe its visual symptoms, and explain the exact agronomic causes and Central Coffee Research Institute (CCRI) chemical/organic management protocols.
 4. Answer directly, concisely, and practically for a field grower.
+{env_specific_instruction}
 """
 
     reply = rag_service._call_llm(prompt)

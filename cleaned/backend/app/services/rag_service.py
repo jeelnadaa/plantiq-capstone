@@ -23,20 +23,25 @@ from sentence_transformers import SentenceTransformer, CrossEncoder
 from app.core.config import settings
 from app.services.router_service import analyze_and_route_query
 
-# Optimize PyTorch CPU multi-threading
-torch.set_num_threads(max(1, min(8, os.cpu_count() or 4)))
+# Hardware Acceleration: Automatically bind to GPU (CUDA) if available
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+if DEVICE == "cpu":
+    torch.set_num_threads(max(1, min(8, os.cpu_count() or 4)))
 
 class AdvisoryResult(BaseModel):
     answer: str
     sources: List[str]
     is_blended: bool
     reasons: List[str]
+    citations: Optional[List[Dict[str, Any]]] = None
+    safety_audit: Optional[Dict[str, Any]] = None
 
 class RAGService:
     def __init__(self):
         self.embedding_model_name = "BAAI/bge-base-en-v1.5"
         self.reranker_model_name = "cross-encoder/ms-marco-MiniLM-L-6-v2"
         self.index_dir = settings.RAG_INDEX_DIR
+        self.device = DEVICE
         
         self.embedding_model = None
         self.reranker = None
@@ -44,16 +49,20 @@ class RAGService:
         self.bm25 = None
         self.doc_chunks = []
         
+        # High-speed in-memory query & advisory cache (LRU-style)
+        self._search_cache: Dict[str, List[Dict[str, Any]]] = {}
+        self._advisory_cache: Dict[str, AdvisoryResult] = {}
+        
         self._load_models()
         self._load_index()
 
     def _load_models(self):
         try:
-            print(f"[Cleaned RAG] Loading Dense Embedding model: {self.embedding_model_name}...")
-            self.embedding_model = SentenceTransformer(self.embedding_model_name)
-            print(f"[Cleaned RAG] Loading Cross-Encoder Reranker: {self.reranker_model_name}...")
-            self.reranker = CrossEncoder(self.reranker_model_name)
-            print("[Cleaned RAG] AI Models initialized successfully.")
+            print(f"[Cleaned RAG] Loading Dense Embedding model '{self.embedding_model_name}' on {self.device.upper()}...")
+            self.embedding_model = SentenceTransformer(self.embedding_model_name, device=self.device)
+            print(f"[Cleaned RAG] Loading Cross-Encoder Reranker '{self.reranker_model_name}' on {self.device.upper()}...")
+            self.reranker = CrossEncoder(self.reranker_model_name, device=self.device)
+            print(f"[Cleaned RAG] AI Models initialized successfully on {self.device.upper()}.")
         except Exception as e:
             print(f"[Cleaned RAG] Warning during model initialization: {e}")
 
@@ -106,33 +115,40 @@ class RAGService:
         candidate_pool_size: int = 15
     ) -> List[Dict[str, Any]]:
         """
-        Executes 3-Stage Hybrid Retrieval:
-        1. Dense Vector Search (BGE) -> Top Candidate IDs
-        2. Sparse Lexical Search (BM25) -> Top Candidate IDs
-        3. Cross-Encoder Joint Reranker -> Top-K Results with Sigmoid Normalization
+        Executes Advanced 3-Stage Hybrid Retrieval:
+        1. Dense Vector Search with BGE Asymmetric Prompting -> Dense Ranks
+        2. Sparse Lexical Search (BM25Okapi) -> Sparse Ranks
+        3. Reciprocal Rank Fusion (RRF) to systematically merge candidates
+        4. Cross-Encoder Joint Reranker -> Top-K Results with Sigmoid Normalization
         """
         if not query or not query.strip() or len(self.doc_chunks) == 0:
             return []
 
         clean_q = query.strip()
-        k_candidates = min(candidate_pool_size, len(self.doc_chunks))
-        candidate_indices = set()
-        dense_scores_map = {}
-        sparse_scores_map = {}
+        cache_key = f"{clean_q}__top{top_k}__topic{topic_filter or 'none'}"
+        if cache_key in self._search_cache:
+            return self._search_cache[cache_key]
 
-        # ── Stage 1: Dense Vector Retrieval ───────────────────────────
+        k_candidates = min(candidate_pool_size, len(self.doc_chunks))
+        dense_ranks = {}
+        sparse_ranks = {}
+        all_candidate_ids = set()
+
+        # ── Stage 1: Dense Vector Retrieval with BGE Query Instruction ──
         if self.index and self.embedding_model:
             try:
+                # BAAI/bge-base-en-v1.5 performs best with the asymmetric query instruction prefix
+                bge_query = f"Represent this sentence for searching relevant passages: {clean_q}"
                 q_emb = self.embedding_model.encode(
-                    [clean_q], 
+                    [bge_query], 
                     normalize_embeddings=True, 
                     convert_to_numpy=True
                 ).astype(np.float32)
                 d_scores, d_indices = self.index.search(q_emb, k_candidates)
-                for score, idx in zip(d_scores[0], d_indices[0]):
+                for rank, (score, idx) in enumerate(zip(d_scores[0], d_indices[0]), start=1):
                     if idx != -1 and idx < len(self.doc_chunks):
-                        candidate_indices.add(idx)
-                        dense_scores_map[idx] = float(score)
+                        dense_ranks[int(idx)] = rank
+                        all_candidate_ids.add(int(idx))
             except Exception as e:
                 print(f"[Cleaned RAG] Dense search error: {e}")
 
@@ -143,31 +159,45 @@ class RAGService:
                 if q_tokens:
                     bm25_scores = self.bm25.get_scores(q_tokens)
                     top_sparse_idx = np.argsort(bm25_scores)[::-1][:k_candidates]
-                    max_sparse = float(np.max(bm25_scores)) if len(bm25_scores) > 0 and np.max(bm25_scores) > 0 else 1.0
-                    for idx in top_sparse_idx:
+                    for rank, idx in enumerate(top_sparse_idx, start=1):
                         if bm25_scores[idx] > 0 and idx < len(self.doc_chunks):
-                            candidate_indices.add(int(idx))
-                            sparse_scores_map[int(idx)] = float(bm25_scores[idx]) / max_sparse
+                            sparse_ranks[int(idx)] = rank
+                            all_candidate_ids.add(int(idx))
             except Exception as e:
                 print(f"[Cleaned RAG] Sparse search error: {e}")
 
-        if not candidate_indices:
-            # Fallback if both dense/sparse produced no matches
-            candidate_indices = set(range(min(top_k, len(self.doc_chunks))))
+        if not all_candidate_ids:
+            all_candidate_ids = set(range(min(top_k, len(self.doc_chunks))))
+
+        # ── Stage 3: Reciprocal Rank Fusion (RRF) Ranking ──────────────
+        # Standard formula: RRF(d) = sum(1 / (60 + rank_i))
+        rrf_k = 60.0
+        rrf_scores = {}
+        for idx in all_candidate_ids:
+            r_dense = dense_ranks.get(idx, 1000)
+            r_sparse = sparse_ranks.get(idx, 1000)
+            score = (1.0 / (rrf_k + r_dense)) + (1.0 / (rrf_k + r_sparse))
+            rrf_scores[idx] = score
+
+        # Sort candidate pool by RRF score descending
+        sorted_by_rrf = sorted(all_candidate_ids, key=lambda i: rrf_scores[i], reverse=True)
 
         # Apply topic filter if specified
         valid_candidates = []
-        for idx in candidate_indices:
+        for idx in sorted_by_rrf:
             chunk = self.doc_chunks[idx]
             if topic_filter and chunk.get("topic") and chunk.get("topic") != topic_filter:
                 continue
             valid_candidates.append((idx, chunk))
 
         if not valid_candidates:
-            # Relax filter if too restrictive
-            valid_candidates = [(idx, self.doc_chunks[idx]) for idx in candidate_indices]
+            # Relax topic filter if candidate pool became empty
+            valid_candidates = [(idx, self.doc_chunks[idx]) for idx in sorted_by_rrf]
 
-        # ── Stage 3: Cross-Encoder Deep Reranking ──────────────────────
+        # Keep top candidate pool for deep cross-encoder reranking
+        valid_candidates = valid_candidates[:k_candidates]
+
+        # ── Stage 4: Cross-Encoder Deep Reranking ──────────────────────
         scored_results = []
         if self.reranker and len(valid_candidates) > 0:
             try:
@@ -191,18 +221,17 @@ class RAGService:
                         }
                     })
             except Exception as e:
-                print(f"[Cleaned RAG] Reranker error: {e}. Falling back to hybrid score.")
+                print(f"[Cleaned RAG] Reranker warning: {e}. Falling back to RRF scores.")
 
         if not scored_results:
-            # Fallback scoring: Reciprocal Rank Fusion / Weighted average
+            # Fallback to normalized Reciprocal Rank Fusion scores
+            max_rrf = max([rrf_scores[idx] for idx, _ in valid_candidates]) if valid_candidates else 1.0
             for idx, chunk in valid_candidates:
-                d_s = dense_scores_map.get(idx, 0.5)
-                s_s = sparse_scores_map.get(idx, 0.0)
-                hybrid_score = 0.65 * d_s + 0.35 * s_s
+                rel_score = rrf_scores.get(idx, 0.0) / (max_rrf if max_rrf > 0 else 1.0)
                 scored_results.append({
                     "text": chunk.get("text", ""),
                     "source": chunk.get("source", "CCRI Coffee Agronomy Manual"),
-                    "score": round(float(hybrid_score), 4),
+                    "score": round(float(rel_score), 4),
                     "metadata": {
                         "page": chunk.get("page", 1),
                         "section": chunk.get("section", ""),
@@ -212,7 +241,73 @@ class RAGService:
 
         # Sort by score descending and return Top-K
         scored_results.sort(key=lambda x: x["score"], reverse=True)
-        return scored_results[:top_k]
+        final_top_k = scored_results[:top_k]
+
+        # Cache top result (limit cache size to 256 items)
+        if len(self._search_cache) > 256:
+            self._search_cache.pop(next(iter(self._search_cache)))
+        self._search_cache[cache_key] = final_top_k
+        return final_top_k
+
+    def _expand_agronomic_query(self, user_question: Optional[str], disease: str, routed_search: str) -> str:
+        """
+        Dynamically enriches the search query based on agronomic intent:
+        timing/monsoon schedules, exact chemical dosages, organic methods, or canopy management.
+        """
+        q_lower = (user_question or "").lower()
+        expanded_keywords = [f"coffee {disease}"]
+
+        if routed_search:
+            expanded_keywords.append(routed_search)
+
+        # 1. Timing / Schedule Intent
+        if any(w in q_lower for w in ["when", "month", "schedule", "monsoon", "pre-monsoon", "post-monsoon", "timing", "calendar", "time", "season", "stage"]):
+            expanded_keywords.append("spray schedule calendar timing pre-monsoon post-monsoon application stage")
+
+        # 2. Dosage / Chemical Formulation Intent
+        if any(w in q_lower for w in ["how much", "dose", "dosage", "quantity", "ratio", "barrel", "concentration", "liters", "litres", "grams", "mix", "copper", "bordeaux", "fungicide", "chemical"]):
+            expanded_keywords.append("chemical fungicide dosage concentration per barrel 200L grams active ingredient dilution")
+
+        # 3. Organic / Bio-control Intent
+        if any(w in q_lower for w in ["organic", "natural", "bio", "biological", "neem", "trichoderma", "herbal"]):
+            expanded_keywords.append("organic biological control bio-agents cultural practices trichoderma neem pseudomonas")
+
+        # 4. Shade / Cultural / Pruning Intent
+        if any(w in q_lower for w in ["shade", "tree", "lopping", "pruning", "canopy", "spacing", "drainage", "sunlight"]):
+            expanded_keywords.append("shade regulation lopping canopy pruning spacing drainage aeration")
+
+        # 5. Nutritional Intent
+        if any(w in q_lower for w in ["fertilizer", "nutrition", "deficiency", "npk", "urea", "zinc", "boron", "manure"]):
+            expanded_keywords.append("fertilizer nutrient foliar spray urea potash zinc boron dolomite soil")
+
+        if len(expanded_keywords) == 1:
+            expanded_keywords.append("control management treatment dosage fungicide spray schedule")
+
+        return " ".join(expanded_keywords)
+
+    def _audit_dosage_safety(self, llm_text: str, retrieved_docs: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Post-generation safety guardrail: audits whether numerical dosages generated by LLM
+        are grounded in the retrieved CCRI documentation.
+        """
+        # Find dosage patterns like '0.5%', '1%', '500g', '400 ml', '1 kg'
+        dosage_regex = re.compile(r'\b\d+(?:\.\d+)?\s*(?:%|kg|g|gm|ml|liters?|litres?|ppm)\b', re.IGNORECASE)
+        generated_dosages = dosage_regex.findall(llm_text)
+
+        combined_doc_text = " ".join([d.get("text", "") for d in retrieved_docs])
+        unverified_dosages = []
+        for dose in generated_dosages:
+            cleaned_dose = dose.strip().lower()
+            if cleaned_dose not in combined_doc_text.lower():
+                unverified_dosages.append(dose)
+
+        is_safe = len(unverified_dosages) == 0
+        return {
+            "verified": is_safe,
+            "detected_dosages": list(set(generated_dosages)),
+            "unverified_dosages": list(set(unverified_dosages)),
+            "safety_note": "All dosages strictly match CCRI reference literature." if is_safe else f"Caution: Check field manual before mixing ({', '.join(unverified_dosages)})."
+        }
 
     def generate_advisory(
         self,
@@ -223,15 +318,22 @@ class RAGService:
         user_question: Optional[str] = None,
         language: str = "en"
     ) -> AdvisoryResult:
+        # Cache check
+        advisory_cache_key = f"{disease}__{cnn_confidence:.1f}__{user_question or 'std'}__{language}"
+        if advisory_cache_key in self._advisory_cache:
+            return self._advisory_cache[advisory_cache_key]
+
         route_meta = {}
-        search_kw = f"coffee {disease} control management treatment dosage fungicide"
         target_lang = language
+        routed_search = ""
         if user_question:
             route_meta = analyze_and_route_query(user_question)
-            if route_meta.get("search_query_english"):
-                search_kw = f"coffee {disease} " + route_meta["search_query_english"]
+            routed_search = route_meta.get("search_query_english", "")
             if route_meta.get("target_response_language"):
                 target_lang = route_meta["target_response_language"]
+
+        # Dynamic Agronomic Query Intent Expansion
+        search_kw = self._expand_agronomic_query(user_question, disease, routed_search)
 
         # Topic filtering heuristic
         topic_filter = None
@@ -266,7 +368,17 @@ class RAGService:
             env_lines = [f"- {k}: {v}" for k, v in env_data.items()]
             env_block = "\nLocation Factors:\n" + "\n".join(env_lines)
 
-        doc_lines = [f"[{i+1}] {d['text']}" for i, d in enumerate(retrieved_docs)]
+        doc_lines = []
+        citations = []
+        for i, d in enumerate(retrieved_docs):
+            doc_lines.append(f"[{i+1}] {d['text']}")
+            citations.append({
+                "source": d.get("source"),
+                "page": d.get("metadata", {}).get("page"),
+                "section": d.get("metadata", {}).get("section"),
+                "score": d.get("score")
+            })
+
         docs_block = "\n".join(doc_lines) if doc_lines else "General South Indian coffee extension protocols apply."
 
         prompt = f"""You are PlantIQ, an expert coffee agronomist specialized in South Indian Arabica & Robusta plantations.
@@ -283,18 +395,31 @@ Generate an actionable, scientifically accurate disease advisory.
 [CRITICAL INSTRUCTIONS]
 1. {lang_rule}
 2. Be direct, authoritative, and structured with bullet points for immediate field actions (chemical/organic dosage, timing, cultural shade management).
-3. Ground recommendations in the provided microclimate parameters (humidity, temperature, rainfall, soil pH).
+3. Ground recommendations strictly in the provided CCRI literature and microclimate parameters (humidity, temperature, rainfall, soil pH).
+4. For all chemical sprays, specify exact dilution per 200L barrel where available.
+5. End with a 1-sentence source acknowledgment citing the relevant CCRI agronomy protocol.
 """
 
         answer = self._call_llm(prompt)
         sources = [d["source"] for d in retrieved_docs] if retrieved_docs else ["CCRI Agronomy Extension Guide"]
 
-        return AdvisoryResult(
+        # Run safety audit on generated dosages
+        safety_audit = self._audit_dosage_safety(answer, retrieved_docs)
+
+        result = AdvisoryResult(
             answer=answer,
             sources=sources,
             is_blended=is_blended,
-            reasons=reasons
+            reasons=reasons,
+            citations=citations,
+            safety_audit=safety_audit
         )
+
+        # Store in cache
+        if len(self._advisory_cache) > 128:
+            self._advisory_cache.pop(next(iter(self._advisory_cache)))
+        self._advisory_cache[advisory_cache_key] = result
+        return result
 
     def _call_llm(self, prompt: str) -> str:
         if settings.GEMINI_API_KEY:

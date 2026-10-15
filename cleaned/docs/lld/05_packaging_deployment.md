@@ -41,15 +41,16 @@ flowchart TB
     %% ────────────────────────────────────────────────────────────────
     %% INTELLIGENT AI SERVICES LAYER
     %% ────────────────────────────────────────────────────────────────
-    subgraph AIServiceTier ["Intelligent AI Inference Tier (Python 3.11 Runtime)"]
+    subgraph AIServiceTier ["Intelligent AI Inference Tier (Python 3.11 Runtime / CUDA Acceleration)"]
         direction TB
         CNN_Engine["cnn_service.py\n(ResNet-50 PyTorch Inference)"]
         Cache_Engine["cache_service.py\n(SHA-256 Deduplication Cache)"]
-        RAG_Engine["rag_service.py\n(3-Stage Hybrid RAG Engine)"]
+        RAG_Engine["rag_service.py\n(3-Stage Hybrid RAG Engine:\nBGE Asymmetric + BM25 + RRF + Safety Audit)"]
         Router_Engine["router_service.py\n(Linguistic Script Pre-Router)"]
         Chat_Engine["chat_service.py\n(Multimodal Context Fusion)"]
-        Voice_Engine["voice_service.py\n(Gemini Audio / Whisper STT)"]
+        Voice_Engine["voice_service.py\n(IndicConformer 600M Local STT /\nGroq Whisper / Gemini Audio)"]
         Env_Engine["env_service.py\n(Microclimate Telemetry Client)"]
+        Diag_Engine["test.py\n(Hardware, GPU & RAG Diagnostic Suite)"]
     end
 
     %% ────────────────────────────────────────────────────────────────
@@ -121,16 +122,19 @@ The PlantIQ deployment topology implements a distributed client-server architect
 
 3. **Intelligent AI Services Tier**:
    - Co-located on the FastAPI application host to minimize network serialization overhead.
-   - **PyTorch CNN Runtime**: Operates in evaluation mode (`eval()`) with multi-threaded CPU tensor execution.
-   - **Vector & Lexical Search**: FAISS C++ binary flat vector index and Rank-BM25 memory-mapped lexical index.
+   - **PyTorch CNN Runtime**: Operates in evaluation mode (`eval()`) with optional CUDA acceleration on NVIDIA RTX GPUs, falling back to multi-threaded CPU tensor execution.
+   - **Upgraded Hybrid RAG Engine**: BAAI/bge-base-en-v1.5 dense vectors, BM25Okapi lexical inverted index, Reciprocal Rank Fusion (RRF), Cross-Encoder reranking, and chemical dosage safety auditing.
+   - **Bilingual Speech-to-Text Pipeline**: Priority fallback from local IndicConformer 600M (Kannada/English acoustic model) to Groq Whisper Large-v3 and Gemini Flash Audio.
+   - **Diagnostic & Hardware Validation Suite**: `test.py` validates NVIDIA driver telemetry, PyTorch CUDA readiness, real-time matrix multiplication speedup, and all index files.
 
 4. **Persistence & Storage Tier**:
    - **Relational Store**: Embedded SQLite file database ([plantiq_cleaned.db](file:///d:/end-capstone-project/cleaned/backend/plantiq_cleaned.db)) with WAL journal mode.
-   - **Vector Binary Checkpoints**: `faiss_index.bin` (768-dimensional normalized dense vectors).
+   - **Vector Binary Checkpoints**: `faiss_index.bin` (768-dimensional normalized dense vectors) and `bm25_index.pkl`.
    - **Neural Network Weights**: `best_resnet50_coffee.pth` (25.5 million parameter fine-tuned ResNet-50 state dictionary).
 
 5. **External Cloud Services Tier**:
    - **Open-Meteo REST API**: Geospatial high-resolution NWP forecasts over TLS/HTTPS.
-   - **Google Generative AI**: Gemini 2.5 Flash for multimodal reasoning and Kannada generation.
+   - **Google Generative AI**: Gemini 2.5 Flash for multimodal reasoning, Kannada generation, and audio fallback.
    - **Groq LPU Cloud**: Ultra-low-latency Whisper Large-v3 speech-to-text and `gpt-oss-120b` fallback inference.
+   - **Hugging Face Hub**: Gated weights authorization (`HF_TOKEN`) for AI4Bharat IndicConformer STT.
    - **External App Intent Handshakes**: Direct OS-level intent dispatching to WhatsApp Business and Google Maps without web-based intermediaries.

@@ -37,15 +37,17 @@ d:\end-capstone-project\cleaned\
 │   │   └── services\                 # Decoupled AI & Business Logic
 │   │       ├── cnn_service.py         # PyTorch ResNet50 Classifier (20ms local inference)
 │   │       ├── cache_service.py       # SHA-256 composite deduplication hashing
-│   │       ├── rag_service.py         # 3-Stage Hybrid RAG (BGE-Base + BM25 + Cross-Encoder Reranker)
-│   │       ├── build_index.py         # Semantic Section Chunker & Multi-Threaded Ingestion Engine
+│   │       ├── rag_service.py         # 3-Stage Hybrid RAG (BGE Asymmetric + BM25 + RRF + Cross-Encoder Reranker + Dosage Safety Audit)
+│   │       ├── build_index.py         # Table-Aware Section Chunker & Multi-Threaded Ingestion Engine (CUDA-accelerated)
 │   │       ├── router_service.py      # Linguistic Pre-Router (Kannada/Kanglish/English)
 │   │       ├── chat_service.py        # Multi-turn context & past scan metadata ingestion
-│   │       ├── voice_service.py       # Gemini 1.5 Audio & Groq Whisper STT
+│   │       ├── voice_service.py       # IndicConformer 600M Local STT + Groq Whisper + Gemini 1.5 Audio Fallback
 │   │       └── env_service.py         # Open-Meteo real-time microclimate provider
 │   ├── requirements.txt               # Python dependencies
 │   ├── .env                           # Active Environment File
 │   ├── .env.example                   # Template configuration
+│   ├── test.py                        # Hardware, GPU, ML Modules & Hybrid RAG Diagnostic Tool
+│   ├── test_indic_conformer.py        # Standalone IndicConformer STT Audio Benchmark Tool
 │   └── run.py                         # Production server launcher (0.0.0.0:8000)
 ├── frontend\                          # Multi-Page Semantic Web Interface
 │   ├── static\
@@ -93,16 +95,28 @@ HOST=0.0.0.0
 GEMINI_API_KEY=your_gemini_api_key
 GROQ_API_KEY=your_groq_api_key
 SECRET_KEY=your_secret_key_here
+HF_TOKEN=hf_your_read_only_token_here     # Hugging Face Read-Only token for IndicConformer STT
 ```
 
-### 2. Install Dependencies
-```bash
+### 2. Activate Virtual Environment (`env`)
+In PowerShell from the project root:
+```powershell
 cd cleaned/backend
-pip install -r requirements.txt
+
+# Activate the Python 3.11 virtual environment
+.\env\Scripts\Activate.ps1
 ```
 
-### 3. Launch Backend Server
-```bash
+*(Optional GPU Acceleration: If you have an NVIDIA GPU, enable CUDA acceleration via: `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121`)*
+
+### 3. Run System & Hybrid RAG Diagnostic
+Verify all hardware, GPU bindings, ML modules, and knowledge base indexes:
+```powershell
+python test.py
+```
+
+### 4. Launch Backend Server
+```powershell
 python run.py
 ```
 Access the web app at **`http://127.0.0.1:8000`** in your browser!
@@ -188,15 +202,24 @@ For permanent 24/7 testing without needing your laptop turned on:
 ## 🌟 Key Application Features
 
 ### 1. 🔬 Leaf Diagnostic Scanner
-* **PyTorch ResNet50 Classifier**: Identifies *Coffee Leaf Rust*, *Cercospora Leaf Spot*, *Phoma*, *Leaf Miner*, and *Healthy Leaf*.
+* **PyTorch ResNet50 Classifier**: Identifies *Coffee Leaf Rust*, *Cercospora Leaf Spot*, *Phoma*, *Leaf Miner*, and *Healthy Leaf* (20ms local inference).
 * **Open-Meteo Microclimate Engine**: Detects site elevation, temperature, humidity, rainfall, wind speed, and soil pH.
-* **CCRI Agronomic Advisory**: Provides verified chemical fungicide dosages (Bordeaux mixture 1%, Bayleton, Contaf, Tilt) and organic cultural shade practices.
+* **Upgraded 3-Stage Hybrid RAG Advisory**:
+  * **BGE Asymmetric Prompting** with `BAAI/bge-base-en-v1.5` dense vectors.
+  * **Reciprocal Rank Fusion (RRF)** balancing dense semantic vectors with BM25Okapi lexical chemical compound matches.
+  * **Deep Cross-Encoder Reranking** with `cross-encoder/ms-marco-MiniLM-L-6-v2` and logistic sigmoid confidence normalization.
+  * **Dynamic Intent Query Expansion** targeting spray timing, tank mixture ratios, organic bio-agents, or canopy shade lopping.
+  * **Chemical Dosage Safety Audit Guardrail**: Automates post-generation verification to prevent dangerous chemical concentration hallucinations.
+  * **Structured Citations & Sub-5ms Query Cache**: Returns exact manual citations and serves frequent queries instantaneously.
 
 ### 2. 💬 Multimodal Agri Chatbot
 * **Image Context Attachment**: Upload fresh photos from the phone camera or pick past scans from device history.
 * **Scan Metadata Ingestion**: Ingests historical microclimate weather conditions and previous scan treatment advisories directly into LLM reasoning.
 * **Multi-Turn Persistent Chat**: Saves chat history and attached photos across page navigation and app restarts.
-* **Voice Speech-to-Text**: Bilingual voice microphone input in English and native Kannada (`ಕನ್ನಡ`).
+* **3-Tier Priority Fallback Voice Speech-to-Text**:
+  * **Tier 1:** Local `ai4bharat/indic-conformer-600m-multilingual` (tuned for Kannada script and Indian English accents).
+  * **Tier 2 (Fallback 1):** Groq Whisper (`whisper-large-v3`) cloud acceleration.
+  * **Tier 3 (Fallback 2):** Google Gemini 1.5 Flash Audio with Kanglish-to-Kannada script normalization.
 
 ### 3. 🛒 Coffee Crop Marketplace
 * **Tabbed View**: Filter between **All Listings** and **Your Listings**.

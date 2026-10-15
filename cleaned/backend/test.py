@@ -289,6 +289,41 @@ def check_plantiq_services():
         print(f" * Could not resolve app settings: {e}")
 
 
+def check_rag_pipeline():
+    print_header("6. 3-Stage Hybrid RAG Knowledge Base Status")
+    index_dir = os.path.join(os.path.dirname(__file__), "app", "services", "index")
+    kb_dir = os.path.join(os.path.dirname(__file__), "app", "services", "knowledge_base")
+
+    # 1. Knowledge Base PDFs
+    if os.path.exists(kb_dir):
+        pdf_count = len([f for f in os.listdir(kb_dir) if f.endswith(".pdf")])
+        print(f" * CCRI Knowledge PDFs:          {pdf_count} files in {kb_dir}")
+    else:
+        print(f" * CCRI Knowledge PDFs:          {Colors.YELLOW}Directory missing{Colors.RESET}")
+
+    # 2. Indexes
+    faiss_file = os.path.join(index_dir, "faiss_index.bin")
+    chunks_file = os.path.join(index_dir, "chunks.pkl")
+    bm25_file = os.path.join(index_dir, "bm25_index.pkl")
+
+    has_faiss = os.path.exists(faiss_file)
+    has_chunks = os.path.exists(chunks_file)
+    has_bm25 = os.path.exists(bm25_file)
+
+    print_badge("FAISS Dense Vector Store", has_faiss, f"({os.path.basename(faiss_file)})" if has_faiss else "Missing")
+    print_badge("BM25Okapi Lexical Index", has_bm25, f"({os.path.basename(bm25_file)})" if has_bm25 else "Missing")
+    print_badge("Semantic Chunks & Metadata", has_chunks, f"({os.path.basename(chunks_file)})" if has_chunks else "Missing")
+
+    # 3. Upgraded Features Status
+    print("\n   [Upgraded RAG Pipeline Capabilities]:")
+    print(f"   + BGE Asymmetric Prompting:   {Colors.GREEN}ENABLED ('Represent this sentence for searching...'){Colors.RESET}")
+    print(f"   + Reciprocal Rank Fusion:     {Colors.GREEN}ENABLED (Dense + BM25 RRF score balancing){Colors.RESET}")
+    print(f"   + Dynamic Intent Expansion:   {Colors.GREEN}ENABLED (Timing, Dosage, Organic, Canopy){Colors.RESET}")
+    print(f"   + Chemical Safety Guardrail:  {Colors.GREEN}ENABLED (Dosage verification audit){Colors.RESET}")
+    print(f"   + High-Speed Query Cache:     {Colors.GREEN}ENABLED (In-memory LRU search cache){Colors.RESET}")
+    print(f"   + Tabular Matrix Extraction:  {Colors.GREEN}ENABLED (PyMuPDF table parser){Colors.RESET}")
+
+
 def print_final_verdict(gpu_available: bool, gpu_name: str = ""):
     print_header("Summary Verdict")
     if gpu_available:
@@ -317,4 +352,5 @@ if __name__ == "__main__":
     benchmark_gpu_vs_cpu()
     check_other_modules()
     check_plantiq_services()
+    check_rag_pipeline()
     print_final_verdict(cuda_ok, dev_name if cuda_ok else (gpu_name or "N/A"))

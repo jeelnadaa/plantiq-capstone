@@ -87,5 +87,7 @@ async def predict_leaf(
         "advisory": advisory_res.answer,
         "sources": advisory_res.sources,
         "is_blended": advisory_res.is_blended,
-        "reasons": advisory_res.reasons
+        "reasons": advisory_res.reasons,
+        "citations": advisory_res.citations,
+        "safety_audit": advisory_res.safety_audit
     }

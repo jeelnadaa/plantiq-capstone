@@ -11,11 +11,31 @@ def rebuild():
     www_dir = os.path.join(base_dir, "www")
     android_dir = os.path.join(base_dir, "android")
 
-    # Ensure JAVA_HOME is defined
-    if "JAVA_HOME" not in os.environ or not os.environ["JAVA_HOME"]:
-        jdk_path = r"C:\Program Files\Java\jdk-21.0.11"
-        if os.path.exists(jdk_path):
-            os.environ["JAVA_HOME"] = jdk_path
+    # 0. Dynamically resolve JAVA_HOME and Android SDK
+    if "JAVA_HOME" not in os.environ or not os.path.isdir(os.environ.get("JAVA_HOME", "")):
+        candidates = [
+            r"C:\Program Files\Java\jdk-21.0.12",
+            r"C:\Program Files\Java\latest",
+            r"C:\Program Files\Java\jdk-21.0.11",
+        ]
+        java_root = r"C:\Program Files\Java"
+        if os.path.exists(java_root):
+            for item in sorted(os.listdir(java_root), reverse=True):
+                full_p = os.path.join(java_root, item)
+                if os.path.isdir(full_p) and item not in candidates:
+                    candidates.append(full_p)
+        for cand in candidates:
+            if os.path.exists(cand):
+                os.environ["JAVA_HOME"] = cand
+                break
+    print(f"[*] Using JAVA_HOME: {os.environ.get('JAVA_HOME', 'System Default')}")
+
+    if "ANDROID_HOME" not in os.environ or not os.path.isdir(os.environ.get("ANDROID_HOME", "")):
+        sdk_cand = os.path.expanduser(r"~\AppData\Local\Android\Sdk")
+        if os.path.exists(sdk_cand):
+            os.environ["ANDROID_HOME"] = sdk_cand
+            os.environ["ANDROID_SDK_ROOT"] = sdk_cand
+    print(f"[*] Using ANDROID_HOME: {os.environ.get('ANDROID_HOME', 'Configured via local.properties')}")
 
     # 1. Update www/static
     print("[1/4] Syncing frontend assets...")

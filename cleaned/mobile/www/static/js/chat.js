@@ -252,9 +252,13 @@ async function sendChatMessage(messageText, diseaseCtx = null) {
   if (attachedImgToSend) formData.append("image_base64", attachedImgToSend);
   if (metadataToSend) formData.append("scan_metadata_json", JSON.stringify(metadataToSend));
   if (diseaseCtx) formData.append("disease_context", diseaseCtx);
-  if (window.LocationManager && LocationManager.coords.allowed) {
-    formData.append("latitude", LocationManager.coords.lat);
-    formData.append("longitude", LocationManager.coords.lng);
+  if (window.LocationManager && LocationManager.coords) {
+    const lat = LocationManager.coords.lat;
+    const lng = LocationManager.coords.lng;
+    if (lat != null && lng != null && !isNaN(lat) && !isNaN(lng)) {
+      formData.append("latitude", lat);
+      formData.append("longitude", lng);
+    }
   }
 
   // Placeholder typing bubble

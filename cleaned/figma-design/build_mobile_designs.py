@@ -222,7 +222,7 @@ def build_all_screens():
                 "name": "WeatherLocation",
                 "parent": f1,
                 "x": 36, "y": 102,
-                "text": "📍 Balehonnur, Chikkamagaluru  •  1,150m ASL",
+                "text": "📍 Chikkamagaluru (13.3161°N, 75.7720°E) • 1,150m ASL",
                 "props": {"fontSize": 12, "fontWeight": 600, "fill": C_PRIMARY_MED}
             }
         },
@@ -233,8 +233,8 @@ def build_all_screens():
                 "name": "WeatherMetrics",
                 "parent": f1,
                 "x": 36, "y": 126,
-                "text": "⛅ 24.2°C   💧 84% Humid   🌧️ 60% Rain   🧪 pH 5.6",
-                "props": {"fontSize": 13, "fontWeight": 500, "fill": C_TEXT_DARK}
+                "text": "⛅ 24.2°C (Feels 26.5°C)  💧 84%  🌧️ 0.0mm  • High Risk",
+                "props": {"fontSize": 12, "fontWeight": 500, "fill": C_TEXT_DARK}
             }
         },
 
@@ -801,8 +801,8 @@ def build_all_screens():
                 "name": "ChatSub",
                 "parent": f3,
                 "x": 24, "y": 72,
-                "text": "Active Scan Context: Coffee Leaf Rust (Plot 4)",
-                "props": {"fontSize": 11, "fontWeight": 500, "fill": C_TEXT_MUTED}
+                "text": "📍 12.4244°N, 75.7382°E (Manual) • 23.1°C 93% Humid",
+                "props": {"fontSize": 11, "fontWeight": 600, "fill": C_PRIMARY_MED}
             }
         },
         {

@@ -25,6 +25,13 @@ class Settings:
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
     GROQ_MODEL: str = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
+    HF_TOKEN: str = os.getenv("HF_TOKEN", "")
+
+    # Speech-to-Text (IndicConformer Local Model & Fallbacks)
+    INDIC_CONFORMER_MODEL_ID: str = os.getenv("INDIC_CONFORMER_MODEL_ID", "ai4bharat/indic-conformer-600m-multilingual")
+    INDIC_CONFORMER_DEVICE: str = os.getenv("INDIC_CONFORMER_DEVICE", "auto")  # 'auto', 'cuda', 'cpu'
+    INDIC_CONFORMER_DECODER: str = os.getenv("INDIC_CONFORMER_DECODER", "ctc")  # 'ctc' or 'rnnt'
+    ENABLE_LOCAL_STT: bool = os.getenv("ENABLE_LOCAL_STT", "true").lower() in ("true", "1", "yes")
     
     # Security
     SECRET_KEY: str = os.getenv("SECRET_KEY", "plantiq-production-secret-key-change-in-env")

@@ -4,6 +4,11 @@ python-multipart>=0.0.6
 pydantic>=2.0.0
 torch
 torchvision
+torchaudio
+soundfile
+onnx
+onnxruntime
+transformers>=4.36.0
 pillow
 numpy
 faiss-cpu

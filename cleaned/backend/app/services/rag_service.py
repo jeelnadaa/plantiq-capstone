@@ -310,7 +310,7 @@ class RAGService:
         are grounded in the retrieved CCRI documentation.
         """
         # Find dosage patterns like '0.5%', '1%', '500g', '400 ml', '1 kg'
-        dosage_regex = re.compile(r'\b\d+(?:\.\d+)?\s*(?:%|kg|g|gm|ml|liters?|litres?|ppm)\b', re.IGNORECASE)
+        dosage_regex = re.compile(r'\b\d+(?:\.\d+)?\s*(?:%|(?:kg|g|gm|ml|liters?|litres?|ppm)\b)', re.IGNORECASE)
         generated_dosages = dosage_regex.findall(llm_text)
 
         combined_doc_text = " ".join([d.get("text", "") for d in retrieved_docs])
@@ -456,7 +456,8 @@ Generate an actionable, scientifically accurate disease advisory.
                 genai.configure(api_key=settings.GEMINI_API_KEY)
                 model = genai.GenerativeModel('gemini-2.5-flash')
                 resp = model.generate_content(prompt, generation_config={"temperature": 0.2})
-                return resp.text.strip()
+                if resp and hasattr(resp, "text") and resp.text and resp.text.strip():
+                    return resp.text.strip()
             except Exception as e:
                 print(f"[Cleaned RAG] Gemini error: {e}. Falling back to Groq...")
 
@@ -470,7 +471,10 @@ Generate an actionable, scientifically accurate disease advisory.
                     temperature=0.2,
                     max_tokens=600
                 )
-                return comp.choices[0].message.content.strip()
+                if comp and comp.choices and comp.choices[0].message.content:
+                    ans = comp.choices[0].message.content.strip()
+                    if ans:
+                        return ans
             except Exception as e:
                 print(f"[Cleaned RAG] Groq error: {e}")
 

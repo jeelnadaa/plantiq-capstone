@@ -19,5 +19,6 @@ groq
 python-dotenv
 pymupdf
 sqlalchemy
+psycopg2-binary>=2.9.9
 requests
 passlib[bcrypt]

@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from urllib.parse import quote_plus
 from dotenv import load_dotenv
 
 # Load .env
@@ -38,7 +39,23 @@ class Settings:
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 # 7 days
     
-    # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", f"sqlite:///{ROOT_DIR}/plantiq_cleaned.db")
+    # PostgreSQL Database Configuration
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "")
+    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
+    POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", "5432")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "plantiq")
+
+    def __init__(self):
+        # Database URL resolution
+        explicit_url = os.getenv("DATABASE_URL")
+        if explicit_url:
+            self.DATABASE_URL = explicit_url
+        else:
+            if self.POSTGRES_PASSWORD:
+                encoded_pw = quote_plus(self.POSTGRES_PASSWORD)
+                self.DATABASE_URL = f"postgresql://{self.POSTGRES_USER}:{encoded_pw}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+            else:
+                self.DATABASE_URL = f"postgresql://{self.POSTGRES_USER}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
 settings = Settings()

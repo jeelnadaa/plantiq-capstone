@@ -4,17 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.core.config import settings
-from app.core.database import Base, engine
+from app.core.database import Base, engine, init_database
 from app.api.router import api_router
 import app.models  # Register all SQLAlchemy models
 
-# Initialize database schema
-try:
-    Base.metadata.create_all(bind=engine)
-    print("✅ Database schema initialized and tables verified.")
-except Exception as exc:
-    print(f"⚠️ Notice: Database initialization deferred or connection not ready: {exc}")
-    print("👉 Please verify your PostgreSQL credentials in backend/.env")
+# Initialize database schema with auto-creation, auto-migration, and SQLite fallback
+init_database()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

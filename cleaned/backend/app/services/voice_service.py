@@ -3,10 +3,88 @@ import os
 import time
 import tempfile
 import threading
+import shutil
+import subprocess
 from typing import Dict, Any, Optional
 import numpy as np
 from app.core.config import settings
 from app.core.terminal_logger import tracker
+
+def _decode_audio_with_ffmpeg(audio_bytes: bytes, filename: str = "") -> Optional[np.ndarray]:
+    """
+    Decodes arbitrary audio bytes (e.g. webm, ogg, mp3, mp4, wav) to 16kHz mono float32 numpy array using ffmpeg.
+    """
+    ffmpeg_bin = shutil.which("ffmpeg") or (r"C:\ffmpeg\bin\ffmpeg.EXE" if os.path.exists(r"C:\ffmpeg\bin\ffmpeg.EXE") else None)
+    if not ffmpeg_bin:
+        return None
+
+    # Strategy A: in-memory pipe conversion directly to 16kHz mono wav
+    try:
+        cmd = [
+            ffmpeg_bin,
+            "-y",
+            "-i", "pipe:0",
+            "-ac", "1",
+            "-ar", "16000",
+            "-f", "wav",
+            "pipe:1"
+        ]
+        proc = subprocess.run(cmd, input=audio_bytes, capture_output=True, timeout=12)
+        if proc.returncode == 0 and len(proc.stdout) > 44:
+            try:
+                import soundfile as sf
+                data, _ = sf.read(io.BytesIO(proc.stdout), dtype="float32")
+                return data
+            except Exception:
+                import scipy.io.wavfile as wavfile
+                _, data = wavfile.read(io.BytesIO(proc.stdout))
+                if data.dtype == np.int16:
+                    return data.astype(np.float32) / 32768.0
+                elif data.dtype == np.int32:
+                    return data.astype(np.float32) / 2147483648.0
+                return data.astype(np.float32)
+    except Exception:
+        pass
+
+    # Strategy B: tempfile conversion (for WebM streams needing seekable media container headers)
+    try:
+        ext = os.path.splitext(filename)[1] or ".webm"
+        with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as in_tmp:
+            in_tmp.write(audio_bytes)
+            in_path = in_tmp.name
+        out_path = in_path + ".wav"
+        try:
+            cmd = [
+                ffmpeg_bin,
+                "-y",
+                "-i", in_path,
+                "-ac", "1",
+                "-ar", "16000",
+                out_path
+            ]
+            proc = subprocess.run(cmd, capture_output=True, timeout=12)
+            if proc.returncode == 0 and os.path.exists(out_path):
+                try:
+                    import soundfile as sf
+                    data, _ = sf.read(out_path, dtype="float32")
+                    return data
+                except Exception:
+                    import scipy.io.wavfile as wavfile
+                    _, data = wavfile.read(out_path)
+                    if data.dtype == np.int16:
+                        return data.astype(np.float32) / 32768.0
+                    return data.astype(np.float32)
+        finally:
+            if os.path.exists(in_path):
+                try: os.remove(in_path)
+                except Exception: pass
+            if os.path.exists(out_path):
+                try: os.remove(out_path)
+                except Exception: pass
+    except Exception:
+        pass
+
+    return None
 
 class IndicConformerSTTManager:
     """
@@ -90,46 +168,62 @@ class IndicConformerSTTManager:
     def preprocess_audio(self, audio_bytes: bytes, filename: str):
         """
         Loads audio from bytes and prepares mono 16kHz PyTorch tensor for the model.
+        Supports WebM, OGG, MP3, WAV and all container formats seamlessly via FFmpeg, soundfile, and torchaudio.
         """
         import torch
 
         waveform = None
         sample_rate = 16000
+        errors = {}
 
-        # Method 1: Try torchaudio directly in memory
+        # 1. Primary Strategy: FFmpeg decoding (universal support for browser WebM, OGG, MP4, etc.)
         try:
-            import torchaudio
-            audio_buffer = io.BytesIO(audio_bytes)
-            waveform, sample_rate = torchaudio.load(audio_buffer)
-        except Exception as e1:
-            # Method 2: Write to temporary file with extension and load
+            data = _decode_audio_with_ffmpeg(audio_bytes, filename)
+            if data is not None and len(data) > 0:
+                waveform = torch.from_numpy(data)
+                if waveform.ndim == 1:
+                    waveform = waveform.unsqueeze(0)
+                elif waveform.ndim == 2 and waveform.shape[0] > 1:
+                    waveform = torch.mean(waveform, dim=0, keepdim=True)
+                return waveform.to(self.device)
+        except Exception as e_ffmpeg:
+            errors["ffmpeg"] = str(e_ffmpeg)
+
+        # 2. Secondary Strategy: soundfile
+        try:
+            import soundfile as sf
+            data, sr = sf.read(io.BytesIO(audio_bytes), dtype="float32")
+            sample_rate = sr
+            if data.ndim == 1:
+                waveform = torch.from_numpy(data).unsqueeze(0)
+            else:
+                waveform = torch.from_numpy(data.T)
+        except Exception as e_sf:
+            errors["soundfile"] = str(e_sf)
+
+            # 3. Tertiary Strategy: torchaudio in memory
             try:
                 import torchaudio
-                ext = os.path.splitext(filename)[1] or ".wav"
-                with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as tmp:
-                    tmp.write(audio_bytes)
-                    tmp_path = tmp.name
+                waveform, sample_rate = torchaudio.load(io.BytesIO(audio_bytes))
+            except Exception as e_ta_mem:
+                errors["torchaudio_mem"] = str(e_ta_mem)
 
+                # 4. Quaternary Strategy: torchaudio temporary file
                 try:
-                    waveform, sample_rate = torchaudio.load(tmp_path)
-                finally:
-                    if os.path.exists(tmp_path):
-                        os.remove(tmp_path)
-            except Exception as e2:
-                # Method 3: Try soundfile
-                try:
-                    import soundfile as sf
-                    data, sr = sf.read(io.BytesIO(audio_bytes), dtype="float32")
-                    sample_rate = sr
-                    if data.ndim == 1:
-                        waveform = torch.from_numpy(data).unsqueeze(0)
-                    else:
-                        waveform = torch.from_numpy(data.T)
-                except Exception as e3:
-                    raise RuntimeError(
-                        f"Unable to decode audio format for '{filename}'. Errors: "
-                        f"torchaudio_mem=({e1}), torchaudio_tmp=({e2}), soundfile=({e3})"
-                    )
+                    import torchaudio
+                    ext = os.path.splitext(filename)[1] or ".wav"
+                    with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as tmp:
+                        tmp.write(audio_bytes)
+                        tmp_path = tmp.name
+                    try:
+                        waveform, sample_rate = torchaudio.load(tmp_path)
+                    finally:
+                        if os.path.exists(tmp_path):
+                            os.remove(tmp_path)
+                except Exception as e_ta_tmp:
+                    errors["torchaudio_tmp"] = str(e_ta_tmp)
+                    err_details = ", ".join([f"{k}=({v})" for k, v in errors.items()])
+                    raise RuntimeError(f"Unable to decode audio format for '{filename}'. Errors: {err_details}")
 
         # Convert to mono if multi-channel
         if waveform.dim() == 2 and waveform.shape[0] > 1:

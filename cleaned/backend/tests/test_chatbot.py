@@ -134,3 +134,28 @@ class TestChatbotModule:
             db.query(ChatThread).filter(ChatThread.id == session_id).delete()
             db.commit()
             db.close()
+
+    # --- 5. Explicit GPS Coordinates Ingestion Regression Test ---
+    def test_chat_service_with_explicit_gps_coordinates(self):
+        """TC-CHT-06: Verifies process_chat_message executes smoothly when browser passes explicit GPS coordinates."""
+        db = SessionLocal()
+        session_id = "test-session-gps-explicit"
+        try:
+            res = process_chat_message(
+                db=db,
+                session_id=session_id,
+                user_message="hi",
+                language="en",
+                latitude=12.88605,
+                longitude=77.64015,
+                user_id=1
+            )
+            assert res["session_id"] == session_id
+            assert "reply" in res
+            assert len(res["reply"]) > 0
+        finally:
+            db.query(ChatMessage).filter(ChatMessage.thread_id == session_id).delete()
+            db.query(ChatThread).filter(ChatThread.id == session_id).delete()
+            db.commit()
+            db.close()
+

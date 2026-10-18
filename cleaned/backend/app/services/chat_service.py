@@ -1,3 +1,4 @@
+import re
 import uuid
 import json
 import time
@@ -80,7 +81,6 @@ def process_chat_message(
 
     # 3. Live Environmental context & Manual Coordinates Extraction
     if (latitude is None or longitude is None) and user_message:
-        import re
         m1 = re.search(r'(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)', user_message)
         if m1:
             try:

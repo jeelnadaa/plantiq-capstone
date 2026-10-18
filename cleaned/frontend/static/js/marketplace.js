@@ -101,51 +101,24 @@ function initMarketplace() {
     };
   }
 
-  // Sell Form submission
+  // Sell Form submission with Mandatory Field Validation & Custom Modal
   if (sellForm) {
     sellForm.onsubmit = async (e) => {
       e.preventDefault();
 
-      // Phone number strict 10-digit regex check
-      const rawPhone = document.getElementById("sell-phone")?.value?.trim() || "";
-      const cleanPhone = rawPhone.replace(/\D/g, "");
-      const finalPhone = (cleanPhone.length === 12 && cleanPhone.startsWith("91")) ? cleanPhone.slice(2) : cleanPhone;
-      if (!/^\d{10}$/.test(finalPhone)) {
-        alert("Phone number must contain exactly 10 digits (e.g. 9876543210).");
-        document.getElementById("sell-phone")?.focus();
+      // Clear previous error highlights
+      document.querySelectorAll(".validation-error-highlight").forEach(el => {
+        el.classList.remove("validation-error-highlight");
+      });
+
+      // Run strict mandatory field validation
+      const validation = validateListingForm();
+      if (!validation.valid) {
+        showListingValidationModal(validation.issues);
         return;
       }
 
-      // Quantity & Pricing Units Resolution
-      let selectedQtyUnit = qtyUnitSelect?.value || "kg";
-      if (selectedQtyUnit === "custom") {
-        selectedQtyUnit = qtyUnitCustom?.value?.trim() || "kg";
-      }
-
-      let selectedPriceUnit = priceUnitSelect?.value || "per kg";
-      if (selectedPriceUnit === "custom") {
-        selectedPriceUnit = priceUnitCustom?.value?.trim() || "per kg";
-      }
-
-      const latVal = parseFloat(document.getElementById("sell-lat")?.value);
-      const lngVal = parseFloat(document.getElementById("sell-lng")?.value);
-      const qtyVal = parseFloat(document.getElementById("sell-qty")?.value);
-      const priceVal = parseFloat(document.getElementById("sell-price")?.value);
-
-      const payload = {
-        title: document.getElementById("sell-title")?.value?.trim() || "Coffee Crop Lot",
-        variety: document.getElementById("sell-variety")?.value?.trim() || "Arabica",
-        quantity: !isNaN(qtyVal) ? qtyVal : 100.0,
-        quantity_unit: selectedQtyUnit,
-        price: !isNaN(priceVal) ? priceVal : 0.0,
-        price_unit: selectedPriceUnit,
-        farmer_name: document.getElementById("sell-farmer")?.value?.trim() || "Coffee Grower",
-        phone_number: finalPhone,
-        address: document.getElementById("sell-address")?.value?.trim() || "Karnataka, India",
-        latitude: !isNaN(latVal) ? latVal : (window.LocationManager && LocationManager.coords.allowed ? LocationManager.coords.lat : null),
-        longitude: !isNaN(lngVal) ? lngVal : (window.LocationManager && LocationManager.coords.allowed ? LocationManager.coords.lng : null),
-        photos: uploadedListingPhotos || []
-      };
+      const payload = validation.data;
 
       try {
         const res = await apiRequest("/api/marketplace/listings", {
@@ -163,24 +136,352 @@ function initMarketplace() {
           fetchListings();
         } else {
           const errData = await res.json().catch(() => ({}));
-          let errMsg = "Failed to publish listing.";
+          const serverIssues = [];
           if (errData && errData.detail) {
             if (Array.isArray(errData.detail)) {
-              errMsg += " " + errData.detail.map(d => `${d.loc?.slice(-1)[0] || 'field'}: ${d.msg}`).join(", ");
+              errData.detail.forEach(d => {
+                const fieldRaw = d.loc?.slice(-1)[0] || "field";
+                const cleanMsg = d.msg || "Invalid value";
+                serverIssues.push({
+                  fieldId: `sell-${fieldRaw.replace('_kg', '').replace('_per_kg', '')}`,
+                  fieldName: fieldRaw.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
+                  icon: "alert-triangle",
+                  whatToFill: cleanMsg,
+                  whyRequired: "All marketplace fields are mandatory and strictly audited for quality and platform security."
+                });
+              });
             } else {
-              errMsg += " " + errData.detail;
+              serverIssues.push({
+                fieldId: "sell-title",
+                fieldName: "Marketplace Listing Error",
+                icon: "alert-triangle",
+                whatToFill: String(errData.detail),
+                whyRequired: "The listing server requires complete and accurate harvest information before publishing."
+              });
             }
           }
-          alert(errMsg);
+          if (serverIssues.length > 0) {
+            showListingValidationModal(serverIssues);
+          } else {
+            showListingValidationModal([{
+              fieldId: "sell-title",
+              fieldName: "Listing Error",
+              icon: "alert-triangle",
+              whatToFill: "Please check all fields and submit again.",
+              whyRequired: "Unable to publish listing due to a server response error."
+            }]);
+          }
         }
       } catch (err) {
         console.error("Listing create error:", err);
+        showListingValidationModal([{
+          fieldId: "sell-title",
+          fieldName: "Connection Error",
+          icon: "wifi-off",
+          whatToFill: "Ensure your backend server is running and reachable.",
+          whyRequired: "Cannot connect to the marketplace database server to publish your crop."
+        }]);
       }
     };
-
   }
 
   fetchListings();
+}
+
+// Custom Validation Modal: Displays what to fill and why it cannot list the crop
+function showListingValidationModal(issues) {
+  const modal = document.getElementById("listing-validation-modal");
+  const listEl = document.getElementById("listing-validation-issues-list");
+  const btnClose = document.getElementById("btn-close-val-modal");
+  const btnDismiss = document.getElementById("btn-dismiss-val-modal");
+  const btnFix = document.getElementById("btn-fix-listing-validation");
+
+  if (!modal || !listEl) return;
+
+  const isKn = (typeof currentLang !== "undefined" && currentLang === "kn");
+
+  listEl.innerHTML = issues.map((issue, idx) => {
+    const title = isKn ? (issue.fieldNameKn || issue.fieldName) : issue.fieldName;
+    const fill = isKn ? (issue.whatToFillKn || issue.whatToFill) : issue.whatToFill;
+    const why = isKn ? (issue.whyRequiredKn || issue.whyRequired) : issue.whyRequired;
+    const fillLbl = isKn ? "ತುಂಬಬೇಕಾದ ವಿವರ:" : "What to fill:";
+    const whyLbl = isKn ? "ಏಕೆ ಕಡ್ಡಾಯವಾಗಿದೆ:" : "Why it's required:";
+
+    return `
+      <div class="validation-issue-card" data-target="${issue.fieldId || ''}" title="Click to fix this field">
+        <div class="validation-issue-header">
+          <i data-lucide="${issue.icon || 'alert-circle'}" style="width:16px; height:16px; flex-shrink:0;"></i>
+          <span>${idx + 1}. ${title}</span>
+        </div>
+        <div class="validation-issue-fill">
+          <strong style="color:var(--text-main); font-weight:700;">${fillLbl}</strong> ${fill}
+        </div>
+        <div class="validation-issue-why">
+          <strong style="color:var(--primary); font-weight:700;">${whyLbl}</strong> ${why}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+
+  // Highlight all invalid fields with pulsing red border and attach one-time clear listeners
+  issues.forEach(issue => {
+    if (issue.fieldId) {
+      const el = document.getElementById(issue.fieldId);
+      if (el) {
+        el.classList.add("validation-error-highlight");
+        el.addEventListener("input", () => el.classList.remove("validation-error-highlight"), { once: true });
+        el.addEventListener("change", () => el.classList.remove("validation-error-highlight"), { once: true });
+      }
+    }
+  });
+
+  function closeModal() {
+    modal.classList.add("hidden");
+  }
+
+  function focusTargetField(targetId) {
+    closeModal();
+    if (!targetId) return;
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => {
+        el.focus();
+        el.classList.add("validation-error-highlight");
+      }, 250);
+    }
+  }
+
+  // Clicking an individual card focuses that specific field
+  listEl.querySelectorAll(".validation-issue-card").forEach(card => {
+    card.onclick = () => {
+      const targetId = card.getAttribute("data-target");
+      focusTargetField(targetId);
+    };
+  });
+
+  if (btnClose) btnClose.onclick = closeModal;
+  if (btnDismiss) btnDismiss.onclick = closeModal;
+
+  if (btnFix) {
+    btnFix.onclick = () => {
+      const firstTargetId = issues[0]?.fieldId;
+      focusTargetField(firstTargetId);
+    };
+  }
+
+  modal.classList.remove("hidden");
+}
+
+// Client-side Validation: Ensures no field is left optional
+function validateListingForm() {
+  const issues = [];
+  const isKn = (typeof currentLang !== "undefined" && currentLang === "kn");
+
+  // 1. Title (mandatory, min 3 chars)
+  const titleEl = document.getElementById("sell-title");
+  const titleVal = titleEl?.value?.trim() || "";
+  if (!titleVal || titleVal.length < 3) {
+    issues.push({
+      fieldId: "sell-title",
+      fieldName: "Crop Title",
+      fieldNameKn: "ಬೆಳೆ ಹೆಸರು (ಶೀರ್ಷಿಕೆ)",
+      icon: "file-text",
+      whatToFill: "Enter a descriptive name for your coffee lot (at least 3 characters, e.g. 'Premium Washed Arabica A-Grade').",
+      whatToFillKn: "ನಿಮ್ಮ ಕಾಫಿ ಬೆಳೆಗೆ ಸ್ಪಷ್ಟ ಹೆಸರನ್ನು ನಮೂದಿಸಿ (ಕನಿಷ್ಠ 3 ಅಕ್ಷರಗಳು, ಉದಾ: ಪ್ರೀಮಿಯಂ ಅರೇಬಿಕಾ).",
+      whyRequired: "Buyers and roasters search listings by crop lot name. Without a descriptive title, buyers cannot find or evaluate your harvest in search results.",
+      whyRequiredKn: "ಖರೀದಿದಾರರು ಬೆಳೆಯ ಹೆಸರು ಮತ್ತು ದರ್ಜೆಯ ಮೂಲಕ ಹುಡುಕುತ್ತಾರೆ. ಹೆಸರಿಲ್ಲದೆ ನಿಮ್ಮ ಬೆಳೆ ಹುಡುಕಾಟದಲ್ಲಿ ಕಾಣಿಸುವುದಿಲ್ಲ."
+    });
+  }
+
+  // 2. Variety (mandatory, min 2 chars)
+  const varietyEl = document.getElementById("sell-variety");
+  const varietyVal = varietyEl?.value?.trim() || "";
+  if (!varietyVal || varietyVal.length < 2) {
+    issues.push({
+      fieldId: "sell-variety",
+      fieldName: "Crop Variety / Cultivar",
+      fieldNameKn: "ಕಾಫಿ ತಳಿ (Variety)",
+      icon: "sprout",
+      whatToFill: "Specify the coffee cultivar (e.g. 'Arabica Sln 795', 'Robusta CXR', 'Chandragiri', 'Geisha').",
+      whatToFillKn: "ಕಾಫಿ ತಳಿಯನ್ನು ನಮೂದಿಸಿ (ಉದಾ: ಅರೇಬಿಕಾ Sln 795, ರೋಬಸ್ಟಾ CXR, ಚಂದ್ರಗಿರಿ).",
+      whyRequired: "Roasters and exporters buy coffee based on cup profile and bean genetics. They cannot evaluate flavor profile or market pricing without the cultivar.",
+      whyRequiredKn: "ರೋಸ್ಟರ್‌ಗಳು ಮತ್ತು ರಫ್ತುದಾರರು ಕಾಫಿಯ ರುಚಿ ಮತ್ತು ತಳಿಯ ಆಧಾರದ ಮೇಲೆ ಖರೀದಿಸುತ್ತಾರೆ. ತಳಿ ತಿಳಿಯದೆ ಬೆಲೆ ನಿಗದಿಪಡಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+    });
+  }
+
+  // 3. Harvest Quantity & Unit (mandatory, > 0)
+  const qtyEl = document.getElementById("sell-qty");
+  const qtyVal = parseFloat(qtyEl?.value);
+  const qtySelect = document.getElementById("sell-qty-unit-select");
+  const qtyCustom = document.getElementById("sell-qty-unit-custom");
+  const isQtyCustom = (qtySelect?.value === "custom");
+  const customQtyUnitVal = qtyCustom?.value?.trim() || "";
+
+  if (isNaN(qtyVal) || qtyVal <= 0) {
+    issues.push({
+      fieldId: "sell-qty",
+      fieldName: "Harvest Quantity",
+      fieldNameKn: "ಬೆಳೆಯ ಪ್ರಮಾಣ (Quantity)",
+      icon: "scale",
+      whatToFill: "Enter available harvest amount strictly greater than 0 (e.g. 500, 20, 5).",
+      whatToFillKn: "ಲಭ್ಯವಿರುವ ಬೆಳೆಯ ಪ್ರಮಾಣವನ್ನು 0 ಕ್ಕಿಂತ ಹೆಚ್ಚು ನಮೂದಿಸಿ (ಉದಾ: 500).",
+      whyRequired: "Logistics partners and wholesale buyers require exact volume metrics to plan transport freight, warehouse capacity, and container contracts.",
+      whyRequiredKn: "ಸಾಗಾಟ ಮತ್ತು ಗೋದಾಮು ವ್ಯವಸ್ಥೆಗೆ ನಿಖರವಾದ ತೂಕದ ಮಾಹಿತಿ ಕಡ್ಡಾಯವಾಗಿದೆ."
+    });
+  } else if (qtyVal > 100000) {
+    issues.push({
+      fieldId: "sell-qty",
+      fieldName: "Harvest Quantity Exceeds Limit",
+      fieldNameKn: "ಪ್ರಮಾಣದ ಮಿತಿ ಮೀರಿದೆ",
+      icon: "scale",
+      whatToFill: "Quantity cannot exceed 100,000 kg (100 metric tons) per single lot listing.",
+      whatToFillKn: "ಒಂದು ಬಾರಿಗೆ 100,000 ಕೆಜಿ (100 ಮೆಟ್ರಿಕ್ ಟನ್) ಗಿಂತ ಹೆಚ್ಚು ಪಟ್ಟಿ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+      whyRequired: "Protects marketplace integrity against bulk spam entries and ensures manageable contract lot fulfillment.",
+      whyRequiredKn: "ಮಾರುಕಟ್ಟೆಯಲ್ಲಿ ನಿಖರತೆ ಕಾಪಾಡಲು ಈ ಮಿತಿ ನಿಗದಿಪಡಿಸಲಾಗಿದೆ."
+    });
+  } else if (isQtyCustom && !customQtyUnitVal) {
+    issues.push({
+      fieldId: "sell-qty-unit-custom",
+      fieldName: "Custom Quantity Unit",
+      fieldNameKn: "ಗ್ರಾಹಕೀಯ ಘಟಕ (Custom Unit)",
+      icon: "package",
+      whatToFill: "Specify the custom packaging unit (e.g. '25 kg sack', '50 kg crate', 'bags').",
+      whatToFillKn: "ನಿಮ್ಮ ಘಟಕದ ಹೆಸರನ್ನು ನಮೂದಿಸಿ (ಉದಾ: 25 ಕೆಜಿ ಚೀಲ, ಕ್ರೇಟ್).",
+      whyRequired: "Custom quantity amounts must specify the packaging container so buyers understand the exact batch volume.",
+      whyRequiredKn: "ಖರೀದಿದಾರರಿಗೆ ಪ್ಯಾಕೇಜಿಂಗ್ ಘಟಕ ಸ್ಪಷ್ಟವಾಗಿ ತಿಳಿಯಬೇಕಾಗಿದೆ."
+    });
+  }
+
+  // 4. Selling Price & Pricing Unit (mandatory, > 0)
+  const priceEl = document.getElementById("sell-price");
+  const priceVal = parseFloat(priceEl?.value);
+  const priceSelect = document.getElementById("sell-price-unit-select");
+  const priceCustom = document.getElementById("sell-price-unit-custom");
+  const isPriceCustom = (priceSelect?.value === "custom");
+  const customPriceUnitVal = priceCustom?.value?.trim() || "";
+
+  if (isNaN(priceVal) || priceVal <= 0) {
+    issues.push({
+      fieldId: "sell-price",
+      fieldName: "Crop Price",
+      fieldNameKn: "ಬೆಳೆಯ ಬೆಲೆ (Price)",
+      icon: "indian-rupee",
+      whatToFill: "Enter your asking price strictly greater than ₹0 (e.g. ₹420).",
+      whatToFillKn: "ನಿಮ್ಮ ನಿರೀಕ್ಷಿತ ಬೆಲೆಯನ್ನು ₹0 ಕ್ಕಿಂತ ಹೆಚ್ಚು ನಮೂದಿಸಿ (ಉದಾ: ₹420).",
+      whyRequired: "Mandatory for transparent marketplace commerce. Verified buyers cannot make purchase offers without upfront price transparency.",
+      whyRequiredKn: "ಮಾರುಕಟ್ಟೆಯಲ್ಲಿ ಪಾರದರ್ಶಕತೆಗಾಗಿ ಬೆಲೆ ನಮೂದಿಸುವುದು ಕಡ್ಡಾಯವಾಗಿದೆ."
+    });
+  } else if (isPriceCustom && !customPriceUnitVal) {
+    issues.push({
+      fieldId: "sell-price-unit-custom",
+      fieldName: "Custom Pricing Unit",
+      fieldNameKn: "ಗ್ರಾಹಕೀಯ ಬೆಲೆ ಘಟಕ (Custom Price Unit)",
+      icon: "tag",
+      whatToFill: "Specify the pricing terms (e.g. 'per 2 kg', 'per 5 ton', 'per box').",
+      whatToFillKn: "ಬೆಲೆಯ ನಿಯಮಗಳನ್ನು ನಮೂದಿಸಿ (ಉದಾ: ಪ್ರತಿ 2 ಕೆಜಿ, ಪ್ರತಿ 5 ಟನ್).",
+      whyRequired: "The pricing denominator is required to calculate the normalized ₹/kg rate for fair market comparisons.",
+      whyRequiredKn: "ಪ್ರತಿ ಕೆಜಿ ದರವನ್ನು ಲೆಕ್ಕಹಾಕಿ ಹೋಲಿಕೆ ಮಾಡಲು ಘಟಕ ಅಗತ್ಯವಿದೆ."
+    });
+  }
+
+  // 5. Farmer Name (mandatory, min 2 chars)
+  const farmerEl = document.getElementById("sell-farmer");
+  const farmerVal = farmerEl?.value?.trim() || "";
+  if (!farmerVal || farmerVal.length < 2) {
+    issues.push({
+      fieldId: "sell-farmer",
+      fieldName: "Farmer / Estate Owner Name",
+      fieldNameKn: "ರೈತರ / ತೋಟದ ಮಾಲೀಕರ ಹೆಸರು",
+      icon: "user",
+      whatToFill: "Enter your full name or registered estate brand name (at least 2 characters).",
+      whatToFillKn: "ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರು ಅಥವಾ ತೋಟದ ಹೆಸರನ್ನು ನಮೂದಿಸಿ (ಕನಿಷ್ಠ 2 ಅಕ್ಷರಗಳು).",
+      whyRequired: "Direct farm-to-cup traceability builds buyer trust and verifies genuine agricultural producer identity.",
+      whyRequiredKn: "ಖರೀದಿದಾರರಿಗೆ ವಿಶ್ವಾಸ ಮೂಡಿಸಲು ಮತ್ತು ಮಧ್ಯವರ್ತಿ ರಹಿತ ಸಂಪರ್ಕಕ್ಕೆ ಮಾಲೀಕರ ಹೆಸರು ಅಗತ್ಯವಿದೆ."
+    });
+  }
+
+  // 6. Phone Number (mandatory, exact 10 digits)
+  const phoneEl = document.getElementById("sell-phone");
+  const rawPhone = phoneEl?.value?.trim() || "";
+  const cleanPhone = rawPhone.replace(/\D/g, "");
+  const finalPhone = (cleanPhone.length === 12 && cleanPhone.startsWith("91")) ? cleanPhone.slice(2) : cleanPhone;
+  if (!finalPhone || !/^\d{10}$/.test(finalPhone)) {
+    issues.push({
+      fieldId: "sell-phone",
+      fieldName: "Phone / WhatsApp Number",
+      fieldNameKn: "ದೂರವಾಣಿ / ವಾಟ್ಸಾಪ್ ಸಂಖ್ಯೆ",
+      icon: "phone",
+      whatToFill: "Enter an exact 10-digit mobile number (e.g. 9876543210, without country code or special characters).",
+      whatToFillKn: "ನಿಖರವಾಗಿ 10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ (ಉದಾ: 9876543210).",
+      whyRequired: "PlantIQ connects growers directly with buyers without middlemen. A verified 10-digit number is required for direct voice calls and WhatsApp deal closing.",
+      whyRequiredKn: "ಖರೀದಿದಾರರು ನೇರವಾಗಿ ಕರೆ ಅಥವಾ ವಾಟ್ಸಾಪ್ ಮೂಲಕ ಸಂಪರ್ಕಿಸಲು 10 ಅಂಕಿಯ ಸಂಖ್ಯೆ ಕಡ್ಡಾಯವಾಗಿದೆ."
+    });
+  }
+
+  // 7. Estate Address (mandatory, min 3 chars)
+  const addressEl = document.getElementById("sell-address");
+  const addressVal = addressEl?.value?.trim() || "";
+  if (!addressVal || addressVal.length < 3) {
+    issues.push({
+      fieldId: "sell-address",
+      fieldName: "Estate Address / Village",
+      fieldNameKn: "ತೋಟದ ವಿಳಾಸ / ಊರು",
+      icon: "map-pin",
+      whatToFill: "Enter your estate village, taluk, or town (at least 3 characters, e.g. 'Aldur, Chikkamagaluru').",
+      whatToFillKn: "ನಿಮ್ಮ ತೋಟದ ಊರು ಅಥವಾ ತಾಲೂಕನ್ನು ನಮೂದಿಸಿ (ಉದಾ: ಆಲ್ದೂರು, ಚಿಕ್ಕಮಗಳೂರು).",
+      whyRequired: "Origin region dictates terroir and freight logistics. Buyers need your address to plan transport pickup and verify geographic origin.",
+      whyRequiredKn: "ಕಾಫಿಯ ಮೂಲ ಪ್ರದೇಶ ತಿಳಿಯಲು ಮತ್ತು ಸಾಗಾಟ ವಾಹನ ಕಳುಹಿಸಲು ವಿಳಾಸ ಕಡ್ಡಾಯವಾಗಿದೆ."
+    });
+  }
+
+  // 8. Estate GPS Coordinates (mandatory, valid coordinates)
+  const latEl = document.getElementById("sell-lat");
+  const lngEl = document.getElementById("sell-lng");
+  let latVal = parseFloat(latEl?.value);
+  let lngVal = parseFloat(lngEl?.value);
+  if (isNaN(latVal) || isNaN(lngVal)) {
+    if (window.LocationManager && LocationManager.coords.allowed && LocationManager.coords.lat && LocationManager.coords.lng) {
+      latVal = LocationManager.coords.lat;
+      lngVal = LocationManager.coords.lng;
+    }
+  }
+  const hasValidCoords = (!isNaN(latVal) && !isNaN(lngVal) && latVal >= -90 && latVal <= 90 && lngVal >= -180 && lngVal <= 180 && (latVal !== 0 || lngVal !== 0));
+  if (!hasValidCoords) {
+    issues.push({
+      fieldId: "btn-sell-gps",
+      fieldName: "Estate GPS / Coordinates",
+      fieldNameKn: "ತೋಟದ ಜಿಪಿಎಸ್ ಸ್ಥಳ",
+      icon: "crosshair",
+      whatToFill: "Click 'Auto GPS' to fetch device location, or click 'Manual Entry' to enter your latitude and longitude.",
+      whatToFillKn: "'Auto GPS' ಕ್ಲಿಕ್ ಮಾಡಿ ಅಥವಾ 'Manual Entry' ಮೂಲಕ ಅಕ್ಷಾಂಶ-ರೇಖಾಂಶ ನಮೂದಿಸಿ.",
+      whyRequired: "Required to place your coffee plantation on the interactive buyer discovery map, allowing nearby roasters to locate you.",
+      whyRequiredKn: "ಖರೀದಿದಾರರ ಮ್ಯಾಪ್‌ನಲ್ಲಿ ನಿಮ್ಮ ತೋಟ ಕಾಣಿಸಲು ಜಿಪಿಎಸ್ ನಿರ್ದೇಶಾಂಕಗಳು ಅಗತ್ಯವಿದೆ."
+    });
+  }
+
+  return {
+    valid: issues.length === 0,
+    issues,
+    data: {
+      title: titleVal,
+      variety: varietyVal,
+      quantity: qtyVal,
+      quantity_unit: isQtyCustom ? customQtyUnitVal : (qtySelect?.value || "kg"),
+      price: priceVal,
+      price_unit: isPriceCustom ? customPriceUnitVal : (priceSelect?.value || "per kg"),
+      farmer_name: farmerVal,
+      phone_number: finalPhone,
+      address: addressVal,
+      latitude: hasValidCoords ? latVal : null,
+      longitude: hasValidCoords ? lngVal : null,
+      photos: uploadedListingPhotos || []
+    }
+  };
 }
 
 // Inline Location in Sell Form

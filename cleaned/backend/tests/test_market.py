@@ -315,3 +315,75 @@ class TestMarketModule:
             db.commit()
             db.close()
 
+    # --- 7. Mandatory Listing Fields Verification ---
+    def test_marketplace_mandatory_fields_validation(self):
+        """TC-MKT-07: Verifies that no listing field is optional and missing or empty core fields are rejected with 422."""
+        valid_base = {
+            "title": "Kaveri Washed Parchment",
+            "variety": "Arabica Kaveri",
+            "quantity": 500.0,
+            "quantity_unit": "kg",
+            "price": 420.0,
+            "price_unit": "per kg",
+            "farmer_name": "Ravi Gowda",
+            "phone_number": "9876543210",
+            "address": "Aldur, Chikkamagaluru"
+        }
+
+        # 1. Missing or empty title -> 422
+        bad_title = dict(valid_base)
+        bad_title["title"] = ""
+        assert client.post("/api/marketplace/listings", json=bad_title).status_code == 422
+        del bad_title["title"]
+        assert client.post("/api/marketplace/listings", json=bad_title).status_code == 422
+
+        # 2. Missing or empty variety -> 422
+        bad_variety = dict(valid_base)
+        bad_variety["variety"] = " "
+        assert client.post("/api/marketplace/listings", json=bad_variety).status_code == 422
+        del bad_variety["variety"]
+        assert client.post("/api/marketplace/listings", json=bad_variety).status_code == 422
+
+        # 3. Missing or zero quantity -> 422
+        bad_qty = dict(valid_base)
+        bad_qty["quantity"] = 0.0
+        assert client.post("/api/marketplace/listings", json=bad_qty).status_code == 422
+        del bad_qty["quantity"]
+        assert client.post("/api/marketplace/listings", json=bad_qty).status_code == 422
+
+        # 4. Missing or zero price -> 422
+        bad_price = dict(valid_base)
+        bad_price["price"] = 0.0
+        assert client.post("/api/marketplace/listings", json=bad_price).status_code == 422
+        del bad_price["price"]
+        assert client.post("/api/marketplace/listings", json=bad_price).status_code == 422
+
+        # 5. Missing or empty farmer_name -> 422
+        bad_farmer = dict(valid_base)
+        bad_farmer["farmer_name"] = ""
+        assert client.post("/api/marketplace/listings", json=bad_farmer).status_code == 422
+        del bad_farmer["farmer_name"]
+        assert client.post("/api/marketplace/listings", json=bad_farmer).status_code == 422
+
+        # 6. Missing or empty address -> 422
+        bad_addr = dict(valid_base)
+        bad_addr["address"] = "  "
+        assert client.post("/api/marketplace/listings", json=bad_addr).status_code == 422
+        del bad_addr["address"]
+        assert client.post("/api/marketplace/listings", json=bad_addr).status_code == 422
+
+        # 7. Complete valid payload -> 200
+        ok_resp = client.post("/api/marketplace/listings", json=valid_base)
+        assert ok_resp.status_code == 200
+        listing_id = ok_resp.json()["id"]
+
+        # Clean up
+        db = SessionLocal()
+        try:
+            db.query(ListingReport).filter(ListingReport.listing_id == listing_id).delete()
+            db.query(CropListing).filter(CropListing.id == listing_id).delete()
+            db.commit()
+        finally:
+            db.close()
+
+

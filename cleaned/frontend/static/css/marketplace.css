@@ -286,3 +286,59 @@ input[type="range"]::-webkit-slider-thumb:hover {
   object-fit: cover;
   border: 1px solid #000000;
 }
+
+/* Custom Listing Validation Modal & Input Highlights */
+.validation-issue-card {
+  background: var(--bg-card);
+  border: 1.5px solid #ef4444;
+  border-left: 5px solid #ef4444;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+}
+
+.validation-issue-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.7);
+}
+
+.validation-issue-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #ef4444;
+  margin-bottom: 4px;
+}
+
+.validation-issue-fill {
+  font-size: 0.78rem;
+  color: var(--text-main);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.validation-issue-why {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  background: var(--bg-card-subtle);
+  padding: 6px 8px;
+  border-radius: 4px;
+  border-left: 3px solid var(--primary);
+}
+
+.validation-error-highlight {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.35) !important;
+  animation: pulse-border 1.5s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3); }
+  50% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.6); }
+  100% { box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3); }
+}

@@ -70,17 +70,17 @@ class ListingPhoto(BaseModel):
     caption: Optional[str] = ""
 
 class ListingCreate(BaseModel):
-    title: str = Field(default="Coffee Crop Lot", max_length=150, description="Listing title")
-    variety: Optional[str] = Field(default="Arabica", max_length=100, description="Crop variety")
+    title: str = Field(..., min_length=3, max_length=150, description="Listing title (mandatory)")
+    variety: str = Field(..., min_length=2, max_length=100, description="Crop variety (mandatory)")
     quantity: Optional[float] = Field(default=None, description="Raw quantity (e.g. 5, 50, 100)")
     quantity_unit: Optional[str] = Field(default="kg", max_length=50, description="Quantity unit (e.g. kg, ton, bag, custom)")
     quantity_kg: Optional[float] = Field(default=None, description="Normalized quantity in kg")
     price: Optional[float] = Field(default=None, description="Raw price (e.g. 420, 35000, 900)")
     price_unit: Optional[str] = Field(default="per kg", max_length=80, description="Pricing unit (e.g. per kg, per 2 kg, per ton, per y ton)")
     price_per_kg: Optional[float] = Field(default=None, description="Normalized price in INR per kg")
-    farmer_name: Optional[str] = Field(default="Coffee Grower", max_length=120, description="Farmer name")
+    farmer_name: str = Field(..., min_length=2, max_length=120, description="Farmer name (mandatory)")
     phone_number: str = Field(..., description="Contact phone number (must be exact 10 digits)")
-    address: Optional[str] = Field(default="Karnataka, India", max_length=300, description="Farm or town address")
+    address: str = Field(..., min_length=3, max_length=300, description="Farm or town address (mandatory)")
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     photos: Optional[List[ListingPhoto]] = []
@@ -91,19 +91,56 @@ class ListingCreate(BaseModel):
         if not v:
             raise ValueError("Phone number is required and must contain exactly 10 digits.")
         val_str = str(v).strip()
-        # Extract digits
         clean = re.sub(r'\D', '', val_str)
-        # If passed with country code 91 and total length 12, extract the 10 national digits
         if len(clean) == 12 and clean.startswith("91"):
             clean = clean[2:]
-        # Enforce exact 10 digits regex: not less, not more, no letters
         if not re.fullmatch(r'\d{10}', clean):
             raise ValueError("Phone number must contain exactly 10 digits (e.g., 9876543210).")
         return clean
 
-    @field_validator('title', 'variety', 'farmer_name', 'address', 'quantity_unit', 'price_unit', mode='before')
+    @field_validator('title', mode='before')
     @classmethod
-    def sanitize_strings(cls, v):
+    def validate_title(cls, v):
+        if not v or not str(v).strip():
+            raise ValueError("Crop title is required and cannot be empty.")
+        clean = html.escape(str(v).strip())
+        if len(clean) < 3:
+            raise ValueError("Crop title must be at least 3 characters long.")
+        return clean
+
+    @field_validator('variety', mode='before')
+    @classmethod
+    def validate_variety(cls, v):
+        if not v or not str(v).strip():
+            raise ValueError("Crop variety is required (e.g., 'Arabica Sln 795', 'Robusta CXR').")
+        clean = html.escape(str(v).strip())
+        if len(clean) < 2:
+            raise ValueError("Crop variety must be at least 2 characters long.")
+        return clean
+
+    @field_validator('farmer_name', mode='before')
+    @classmethod
+    def validate_farmer_name(cls, v):
+        if not v or not str(v).strip():
+            raise ValueError("Farmer or estate owner name is required.")
+        clean = html.escape(str(v).strip())
+        if len(clean) < 2:
+            raise ValueError("Farmer name must be at least 2 characters long.")
+        return clean
+
+    @field_validator('address', mode='before')
+    @classmethod
+    def validate_address(cls, v):
+        if not v or not str(v).strip():
+            raise ValueError("Estate address or location is required.")
+        clean = html.escape(str(v).strip())
+        if len(clean) < 3:
+            raise ValueError("Estate address must be at least 3 characters long.")
+        return clean
+
+    @field_validator('quantity_unit', 'price_unit', mode='before')
+    @classmethod
+    def sanitize_units(cls, v):
         if v is None:
             return ""
         if isinstance(v, str):
@@ -146,9 +183,10 @@ class ListingCreate(BaseModel):
             if not self.quantity_unit:
                 self.quantity_unit = "kg"
         elif self.quantity_kg is None and self.quantity is None:
-            self.quantity = 100.0
-            self.quantity_kg = 100.0
-            self.quantity_unit = "kg"
+            raise ValueError("Harvest quantity is mandatory and must be greater than 0.")
+
+        if self.quantity_kg is None or self.quantity_kg <= 0:
+            raise ValueError("Harvest quantity is mandatory and must be strictly greater than 0.")
 
         # Resolve Price
         if self.price is not None and self.price_per_kg is None:
@@ -158,9 +196,10 @@ class ListingCreate(BaseModel):
             if not self.price_unit:
                 self.price_unit = "per kg"
         elif self.price_per_kg is None and self.price is None:
-            self.price = 0.0
-            self.price_per_kg = 0.0
-            self.price_unit = "per kg"
+            raise ValueError("Crop price is mandatory and must be greater than 0.")
+
+        if self.price_per_kg is None or self.price_per_kg <= 0:
+            raise ValueError("Crop price is mandatory and must be strictly greater than 0.")
 
         # Bounds validation
         if self.price_per_kg < 0.0 or self.price < 0.0:

@@ -135,7 +135,7 @@ async function checkAuthGuard() {
     } else if (isAuthPage) {
       navigateTo("/");
     }
-  } catch(e){
+  } catch (e) {
     // If offline/server not set yet, stay on page to allow user to configure IP
     console.warn("Could not verify session with backend (check server connection)");
   }
@@ -245,7 +245,7 @@ async function updateServerStatusIndicator() {
         d.title = `Server Issue (HTTP ${res.status})`;
       });
     }
-  } catch(e) {
+  } catch (e) {
     dot.forEach(d => {
       d.style.background = "#ef4444";
       d.title = `Server Disconnected (${base || 'local'}). Click to change IP.`;
@@ -460,7 +460,7 @@ function openExternalApp(url) {
     } else {
       window.open(url, "_system") || (window.location.href = url);
     }
-  } catch(e) {
+  } catch (e) {
     window.location.href = url;
   }
 }

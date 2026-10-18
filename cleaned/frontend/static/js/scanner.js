@@ -189,7 +189,7 @@ function formatMarkdown(text) {
     .replace(/\n/g, '<br>');
 }
 
-window.refreshScannerUI = function() {
+window.refreshScannerUI = function () {
   if (currentDiagnosisData) {
     renderDiagnosisCard(currentDiagnosisData);
   }

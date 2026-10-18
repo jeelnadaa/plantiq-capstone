@@ -4,7 +4,8 @@
    PLANTIQ NEO-BRUTALISM DESIGN SYSTEM — HIGH-VOLTAGE FIELD UTILITY
    =================================================================== */
 
-:root, [data-palette="cobalt"] {
+:root,
+[data-palette="cobalt"] {
   /* Theme 1 (Default): Electric Cobalt Blue & Hot Coral */
   --primary: #2d5bff;
   --primary-hover: #1e46e8;
@@ -263,17 +264,35 @@
 /* ===================================================================
    FLUID THEME TRANSITION ANIMATION (LIGHT & DARK MODES)
    =================================================================== */
-html, body, .app-container, .page-header, .brand-icon, .btn-theme, .btn-lang,
-.card, .btn, .nav-tab, .form-control, .diagnosis-card, .upload-dropzone, 
-.stat-box, .market-filters, .listing-card, .modal-container, .bottom-nav,
-.confidence-bar-bg, .confidence-bar-fill, .advisory-box {
+html,
+body,
+.app-container,
+.page-header,
+.brand-icon,
+.btn-theme,
+.btn-lang,
+.card,
+.btn,
+.nav-tab,
+.form-control,
+.diagnosis-card,
+.upload-dropzone,
+.stat-box,
+.market-filters,
+.listing-card,
+.modal-container,
+.bottom-nav,
+.confidence-bar-bg,
+.confidence-bar-fill,
+.advisory-box {
   transition: background-color 0.32s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.32s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.32s cubic-bezier(0.4, 0, 0.2, 1),
-              color 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-color 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-input[type="range"], input[type="range"]::-webkit-slider-thumb {
+input[type="range"],
+input[type="range"]::-webkit-slider-thumb {
   transition: none !important;
 }
 
@@ -376,6 +395,7 @@ body {
   body {
     padding-top: 24px;
   }
+
   .app-container {
     min-height: 94vh;
     border-radius: var(--radius-lg);
@@ -431,7 +451,8 @@ body {
   font-weight: 900;
 }
 
-.brand-icon i, .brand-icon svg {
+.brand-icon i,
+.brand-icon svg {
   stroke: #ffffff !important;
   stroke-width: 2.8px;
   width: 22px;
@@ -469,7 +490,8 @@ body {
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
-.btn-lang i, .btn-lang svg {
+.btn-lang i,
+.btn-lang svg {
   stroke: #ffffff !important;
 }
 
@@ -885,4 +907,3 @@ body {
   color: #000000;
   box-shadow: 2px 2px 0px var(--accent);
 }
-

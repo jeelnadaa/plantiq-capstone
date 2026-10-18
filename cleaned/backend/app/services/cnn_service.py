@@ -32,9 +32,10 @@ class CNNModelWrapper:
         )
         if os.path.exists(self.weights_path):
             try:
-                state_dict = torch.load(self.weights_path, map_location=device)
+                # Security hardening: weights_only=True prevents arbitrary pickle code execution
+                state_dict = torch.load(self.weights_path, map_location=device, weights_only=True)
                 model.load_state_dict(state_dict)
-                print(f'[Cleaned CNN] Loaded weights from {self.weights_path}')
+                print(f'[Cleaned CNN] Loaded weights safely (weights_only=True) from {self.weights_path}')
             except Exception as e:
                 print(f'[Cleaned CNN] Error loading weights: {e}')
         else:

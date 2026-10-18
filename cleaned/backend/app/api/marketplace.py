@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import get_current_user_optional, get_current_user
 from app.models.user import User
-from app.models.marketplace import CropListing
-from app.schemas.marketplace import ListingCreate, ListingResponse
+from app.models.marketplace import CropListing, ListingReport
+from app.schemas.marketplace import ListingCreate, ListingResponse, ListingReportCreate
+from datetime import datetime
 
 router = APIRouter(prefix="/marketplace", tags=["Farmer Marketplace"])
 
@@ -65,6 +66,16 @@ def create_listing(
     db: Session = Depends(get_db)
 ):
     user_id = current_user.id if current_user else None
+
+    # Quota check: Limit to max 50 active listings per user to prevent database flooding
+    if user_id:
+        existing_count = db.query(CropListing).filter(CropListing.user_id == user_id).count()
+        if existing_count >= 50:
+            raise HTTPException(
+                status_code=429,
+                detail="Maximum listing limit reached (50 listings per user). Please remove old listings."
+            )
+
     photos_data = [p.dict() if hasattr(p, "dict") else p for p in (payload.photos or [])]
     item = CropListing(
         user_id=user_id,
@@ -90,12 +101,38 @@ def get_my_listings(current_user: User = Depends(get_current_user), db: Session 
     return [format_listing_response(item, current_user.id) for item in items]
 
 @router.delete("/listings/{listing_id}")
-def delete_listing(listing_id: int, current_user: Optional[User] = Depends(get_current_user_optional), db: Session = Depends(get_db)):
+def delete_listing(listing_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     item = db.query(CropListing).filter(CropListing.id == listing_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Listing not found")
-    if current_user and item.user_id and item.user_id != current_user.id:
+    if item.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to delete this listing")
     db.delete(item)
     db.commit()
     return {"status": "deleted", "id": listing_id}
+
+@router.post("/listings/{listing_id}/report")
+def report_listing(
+    listing_id: int,
+    payload: ListingReportCreate,
+    current_user: Optional[User] = Depends(get_current_user_optional),
+    db: Session = Depends(get_db)
+):
+    item = db.query(CropListing).filter(CropListing.id == listing_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Listing not found")
+    
+    report = ListingReport(
+        listing_id=listing_id,
+        reported_by_user_id=current_user.id if current_user else None,
+        reason=payload.reason,
+        created_at=datetime.utcnow()
+    )
+    db.add(report)
+    db.commit()
+    return {
+        "status": "reported",
+        "listing_id": listing_id,
+        "message": "Listing has been reported for moderation review."
+    }
+

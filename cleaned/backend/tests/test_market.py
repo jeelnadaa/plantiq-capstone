@@ -14,8 +14,12 @@ import pytest
 from sqlalchemy.orm import Session
 
 from app.core.database import SessionLocal, engine
-from app.models.marketplace import Base as MktBase, CropListing
+from app.models.marketplace import Base as MktBase, CropListing, ListingReport
 from app.api.marketplace import format_listing_response
+from app.main import app
+from fastapi.testclient import TestClient
+
+client = TestClient(app)
 
 # Ensure database tables exist
 MktBase.metadata.create_all(bind=engine)
@@ -137,4 +141,70 @@ class TestMarketModule:
             if item_id:
                 db.query(CropListing).filter(CropListing.id == item_id).delete()
                 db.commit()
+            db.close()
+
+    # --- 5. Security: Bounds Validation, XSS Neutralization & Abuse Reporting ---
+    def test_marketplace_security_bounds_and_reporting(self):
+        """TC-MKT-05: Verifies negative price bounds rejection, XSS escaping, and moderation reporting."""
+        # 1. Negative price must be rejected with 422 Unprocessable Entity
+        invalid_payload = {
+            "title": "Subsidized Crop Lot",
+            "variety": "Robusta",
+            "quantity_kg": 500.0,
+            "price_per_kg": -25.0,  # Negative price -> invalid
+            "farmer_name": "Ravi Kumar",
+            "phone_number": "9876543210",
+            "address": "Chikkamagaluru"
+        }
+        resp_bad = client.post("/api/marketplace/listings", json=invalid_payload)
+        assert resp_bad.status_code == 422, f"Expected 422 for negative price, got {resp_bad.status_code}"
+
+        # 2. Extreme quantity overflow (> 100,000 kg) must be rejected with 422
+        overflow_payload = {
+            "title": "Massive Bogus Lot",
+            "variety": "Arabica",
+            "quantity_kg": 5000000.0,  # 5,000 tons -> exceeds 100,000 kg limit
+            "price_per_kg": 400.0,
+            "farmer_name": "Ravi Kumar",
+            "phone_number": "9876543210",
+            "address": "Chikkamagaluru"
+        }
+        resp_overflow = client.post("/api/marketplace/listings", json=overflow_payload)
+        assert resp_overflow.status_code == 422, f"Expected 422 for overflow quantity, got {resp_overflow.status_code}"
+
+        # 3. Valid listing with HTML injection attempt must be safely escaped
+        xss_payload = {
+            "title": "Parchment Lot <script>alert('xss')</script>",
+            "variety": "Arabica Sln 9",
+            "quantity_kg": 250.0,
+            "price_per_kg": 420.0,
+            "farmer_name": "<b>Farmer Suresh</b>",
+            "phone_number": "9876543210",
+            "address": "Aldur, Chikkamagaluru"
+        }
+        resp_create = client.post("/api/marketplace/listings", json=xss_payload)
+        assert resp_create.status_code == 200
+        created = resp_create.json()
+        listing_id = created["id"]
+
+        try:
+            # Verify HTML characters were escaped
+            assert "<script>" not in created["title"]
+            assert "&lt;script&gt;" in created["title"]
+            assert "<b>" not in created["farmer_name"]
+            assert "&lt;b&gt;" in created["farmer_name"]
+
+            # 4. Report the listing for moderation review
+            report_resp = client.post(
+                f"/api/marketplace/listings/{listing_id}/report",
+                json={"reason": "Suspected spam or incorrect price entry"}
+            )
+            assert report_resp.status_code == 200
+            assert report_resp.json()["status"] == "reported"
+        finally:
+            # Clean up
+            db = SessionLocal()
+            db.query(ListingReport).filter(ListingReport.listing_id == listing_id).delete()
+            db.query(CropListing).filter(CropListing.id == listing_id).delete()
+            db.commit()
             db.close()

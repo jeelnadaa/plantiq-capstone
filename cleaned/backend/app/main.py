@@ -1,12 +1,18 @@
 import os
-from fastapi import FastAPI
+import uuid
+import logging
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.core.config import settings
 from app.core.database import Base, engine, init_database
 from app.api.router import api_router
 import app.models  # Register all SQLAlchemy models
+
+logger = logging.getLogger("plantiq.server")
 
 # Initialize database schema with auto-creation, auto-migration, and SQLite fallback
 init_database()
@@ -18,14 +24,42 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS Middleware
+# Explicit CORS Allowlist Middleware
+allowed_origins = settings.CORS_ORIGINS if "*" not in settings.CORS_ORIGINS else ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# Non-Functional Security: Security Response Headers Middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
+
+# Safe Global Unhandled Exception Handler (Prevents raw stack trace / secret leaks)
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    if isinstance(exc, (StarletteHTTPException, RequestValidationError)):
+        raise exc
+    error_ref = uuid.uuid4().hex[:12]
+    logger.error(f"[Unhandled Error ref={error_ref}] {request.method} {request.url.path}: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": f"Internal server error. Reference ID: {error_ref}",
+            "status": "error",
+            "reference_id": error_ref
+        }
+    )
 
 # Mount API routes under /api
 app.include_router(api_router, prefix=settings.API_V1_STR)

@@ -34,10 +34,17 @@ class Settings:
     INDIC_CONFORMER_DECODER: str = os.getenv("INDIC_CONFORMER_DECODER", "ctc")  # 'ctc' or 'rnnt'
     ENABLE_LOCAL_STT: bool = os.getenv("ENABLE_LOCAL_STT", "true").lower() in ("true", "1", "yes")
     
-    # Security
+    # Security & API Protection
     SECRET_KEY: str = os.getenv("SECRET_KEY", "plantiq-production-secret-key-change-in-env")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 # 7 days
+    DEBUG: bool = os.getenv("DEBUG", "false").lower() in ("true", "1", "yes")
+    CORS_ORIGINS: list = [
+        o.strip() for o in os.getenv(
+            "CORS_ORIGINS",
+            "http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000,http://localhost:5173"
+        ).split(",") if o.strip()
+    ]
     
     # PostgreSQL Database Configuration
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")

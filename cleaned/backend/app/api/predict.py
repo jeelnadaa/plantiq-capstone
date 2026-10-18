@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import get_current_user_optional
 from app.models.user import User
+from app.core.image_guard import validate_and_sanitize_image
 from app.services.cnn_service import get_detector
 from app.services.cache_service import compute_image_hash, get_cached_result, save_result_to_cache
 from app.services.env_service import get_env_service
@@ -27,17 +28,21 @@ async def predict_leaf(
 ):
     t_start = time.perf_counter()
     user_id = current_user.id if current_user else None
+
+    try:
+        raw_contents = await file.read()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to read image file: {e}")
+
+    # Security Guard: Magic bytes, 10MB size bound, EXIF stripping, dimension check, path traversal sanitization
+    contents, safe_filename = validate_and_sanitize_image(raw_contents, file.filename or "leaf.jpg")
+
     tracker.log_request_header(
         operation="Leaf Image Diagnosis (ResNet-50 + Hybrid RAG + LLM)",
-        filename=file.filename or "uploaded_leaf.jpg",
+        filename=safe_filename,
         user_id=user_id,
         language=language
     )
-
-    try:
-        contents = await file.read()
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to read image file: {e}")
 
     # 1. SHA-256 Deduplication Cache Check
     image_hash = compute_image_hash(contents, user_id=user_id, user_question=user_question, language=language)
@@ -80,7 +85,7 @@ async def predict_leaf(
     save_result_to_cache(
         db=db,
         image_hash=image_hash,
-        filename=file.filename or "leaf.jpg",
+        filename=safe_filename,
         disease_class=disease,
         confidence=confidence,
         distribution=distribution,
@@ -97,7 +102,7 @@ async def predict_leaf(
     return {
         "cache_hit": False,
         "sha256_hash": image_hash,
-        "filename": file.filename,
+        "filename": safe_filename,
         "disease": disease,
         "confidence": confidence,
         "is_healthy": (disease == "Healthy"),

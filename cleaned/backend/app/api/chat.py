@@ -58,7 +58,11 @@ async def send_message(
 def get_threads(current_user: Optional[User] = Depends(get_current_user_optional), db: Session = Depends(get_db)):
     query = db.query(ChatThread)
     if current_user:
-        query = query.filter((ChatThread.user_id == current_user.id) | (ChatThread.user_id.is_(None)))
+        # Authenticated users only see their own threads
+        query = query.filter(ChatThread.user_id == current_user.id)
+    else:
+        # Unauthenticated sessions only see anonymous threads; never leak private user threads
+        query = query.filter(ChatThread.user_id.is_(None))
     threads = query.order_by(ChatThread.created_at.desc()).all()
     
     result = []
@@ -72,10 +76,19 @@ def get_threads(current_user: Optional[User] = Depends(get_current_user_optional
     return result
 
 @router.get("/threads/{thread_id}/messages", response_model=List[MessageItem])
-def get_thread_messages(thread_id: str, db: Session = Depends(get_db)):
+def get_thread_messages(
+    thread_id: str,
+    current_user: Optional[User] = Depends(get_current_user_optional),
+    db: Session = Depends(get_db)
+):
     thread = db.query(ChatThread).filter(ChatThread.id == thread_id).first()
     if not thread:
         raise HTTPException(status_code=404, detail="Thread not found")
+    
+    # Ownership authorization check: only thread owner may read private conversations
+    if thread.user_id is not None:
+        if not current_user or thread.user_id != current_user.id:
+            raise HTTPException(status_code=403, detail="Not authorized to access this conversation thread.")
     
     return [
         MessageItem(

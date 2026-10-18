@@ -17,3 +17,11 @@ class CropListing(Base):
     longitude = Column(Float, nullable=True)
     photos = Column(JSON, nullable=True) # List of dicts: [{"url": "...", "caption": "..."}]
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class ListingReport(Base):
+    __tablename__ = 'listing_reports'
+    id = Column(Integer, primary_key=True, index=True)
+    listing_id = Column(Integer, nullable=False, index=True)
+    reported_by_user_id = Column(Integer, nullable=True, index=True)
+    reason = Column(String(500), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)

@@ -74,10 +74,59 @@ function initMarketplace() {
   // Multi-Photo Upload setup inside form
   initPhotoUploader();
 
+  // Dynamic Unit Selectors (Custom Unit Toggles)
+  const qtyUnitSelect = document.getElementById("sell-qty-unit-select");
+  const qtyUnitCustom = document.getElementById("sell-qty-unit-custom");
+  if (qtyUnitSelect && qtyUnitCustom) {
+    qtyUnitSelect.onchange = () => {
+      if (qtyUnitSelect.value === "custom") {
+        qtyUnitCustom.classList.remove("hidden");
+        qtyUnitCustom.focus();
+      } else {
+        qtyUnitCustom.classList.add("hidden");
+      }
+    };
+  }
+
+  const priceUnitSelect = document.getElementById("sell-price-unit-select");
+  const priceUnitCustom = document.getElementById("sell-price-unit-custom");
+  if (priceUnitSelect && priceUnitCustom) {
+    priceUnitSelect.onchange = () => {
+      if (priceUnitSelect.value === "custom") {
+        priceUnitCustom.classList.remove("hidden");
+        priceUnitCustom.focus();
+      } else {
+        priceUnitCustom.classList.add("hidden");
+      }
+    };
+  }
+
   // Sell Form submission
   if (sellForm) {
     sellForm.onsubmit = async (e) => {
       e.preventDefault();
+
+      // Phone number strict 10-digit regex check
+      const rawPhone = document.getElementById("sell-phone")?.value?.trim() || "";
+      const cleanPhone = rawPhone.replace(/\D/g, "");
+      const finalPhone = (cleanPhone.length === 12 && cleanPhone.startsWith("91")) ? cleanPhone.slice(2) : cleanPhone;
+      if (!/^\d{10}$/.test(finalPhone)) {
+        alert("Phone number must contain exactly 10 digits (e.g. 9876543210).");
+        document.getElementById("sell-phone")?.focus();
+        return;
+      }
+
+      // Quantity & Pricing Units Resolution
+      let selectedQtyUnit = qtyUnitSelect?.value || "kg";
+      if (selectedQtyUnit === "custom") {
+        selectedQtyUnit = qtyUnitCustom?.value?.trim() || "kg";
+      }
+
+      let selectedPriceUnit = priceUnitSelect?.value || "per kg";
+      if (selectedPriceUnit === "custom") {
+        selectedPriceUnit = priceUnitCustom?.value?.trim() || "per kg";
+      }
+
       const latVal = parseFloat(document.getElementById("sell-lat")?.value);
       const lngVal = parseFloat(document.getElementById("sell-lng")?.value);
       const qtyVal = parseFloat(document.getElementById("sell-qty")?.value);
@@ -86,10 +135,12 @@ function initMarketplace() {
       const payload = {
         title: document.getElementById("sell-title")?.value?.trim() || "Coffee Crop Lot",
         variety: document.getElementById("sell-variety")?.value?.trim() || "Arabica",
-        quantity_kg: !isNaN(qtyVal) ? qtyVal : 100.0,
-        price_per_kg: !isNaN(priceVal) ? priceVal : 0.0,
+        quantity: !isNaN(qtyVal) ? qtyVal : 100.0,
+        quantity_unit: selectedQtyUnit,
+        price: !isNaN(priceVal) ? priceVal : 0.0,
+        price_unit: selectedPriceUnit,
         farmer_name: document.getElementById("sell-farmer")?.value?.trim() || "Coffee Grower",
-        phone_number: document.getElementById("sell-phone")?.value?.trim() || "",
+        phone_number: finalPhone,
         address: document.getElementById("sell-address")?.value?.trim() || "Karnataka, India",
         latitude: !isNaN(latVal) ? latVal : (window.LocationManager && LocationManager.coords.allowed ? LocationManager.coords.lat : null),
         longitude: !isNaN(lngVal) ? lngVal : (window.LocationManager && LocationManager.coords.allowed ? LocationManager.coords.lng : null),
@@ -106,6 +157,8 @@ function initMarketplace() {
           sellModal.classList.add("hidden");
           sellForm.reset();
           uploadedListingPhotos = [];
+          if (qtyUnitCustom) qtyUnitCustom.classList.add("hidden");
+          if (priceUnitCustom) priceUnitCustom.classList.add("hidden");
           renderUploadedPhotosList();
           fetchListings();
         } else {
@@ -322,20 +375,36 @@ function renderListingCard(item) {
     `;
   }
 
-  return `
-    <div class="listing-card">
-      ${galleryHTML}
-      <div class="listing-header">
-        <div>
-          <div class="listing-title">${item.title}</div>
-          <div style="font-size:0.75rem; color:var(--text-muted);">${item.variety} • ${item.quantity_kg} kg</div>
+    const qtyVal = item.quantity != null ? item.quantity : item.quantity_kg;
+    const qtyUnit = item.quantity_unit || 'kg';
+    const qtyDisplay = `${qtyVal} ${qtyUnit}`;
+
+    const priceVal = item.price != null ? item.price : item.price_per_kg;
+    let pUnit = item.price_unit || '/kg';
+    if (!pUnit.startsWith('/') && !pUnit.startsWith('per')) {
+      pUnit = '/' + pUnit;
+    }
+    const priceDisplay = `₹${priceVal} ${pUnit}`;
+    const showApproxPerKg = (pUnit !== '/kg' && pUnit !== '/ kg' && pUnit !== 'per kg') && item.price_per_kg > 0;
+
+    return `
+      <div class="listing-card">
+        ${galleryHTML}
+        <div class="listing-header">
+          <div>
+            <div class="listing-title">${item.title}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">${item.variety} • ${qtyDisplay}</div>
+          </div>
+          <div class="listing-price" style="text-align:right;">
+            <div>${priceDisplay}</div>
+            ${showApproxPerKg ? `<div style="font-size:0.68rem; font-weight:normal; color:var(--text-muted);">(≈ ₹${item.price_per_kg.toFixed(1)}/kg)</div>` : ''}
+          </div>
         </div>
-        <div class="listing-price">₹${item.price_per_kg}/kg</div>
-      </div>
-      <div class="listing-meta">
-        <span>📍 ${item.address}</span>
-        <span>👨‍🌾 ${item.farmer_name}</span>
-      </div>
+        <div class="listing-meta">
+          <span>📍 ${item.address}</span>
+          <span>👨‍🌾 ${item.farmer_name}</span>
+        </div>
+
       <div class="listing-actions">
         <button type="button" onclick="openExternalApp('tel:${item.phone_number}')" class="btn btn-sm btn-secondary" style="flex:1;"><i data-lucide="phone"></i> ${t("btnContactPhone")}</button>
         <button type="button" onclick="openExternalApp('https://wa.me/${item.phone_number.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(item.farmer_name)},%20I%20saw%20your%20listing%20on%20PlantIQ%20for%20${encodeURIComponent(item.title)}')" class="btn btn-sm btn-primary" style="flex:1; background:#25D366; box-shadow:none;"><i data-lucide="message-circle"></i> ${t("btnContactWhatsapp")}</button>

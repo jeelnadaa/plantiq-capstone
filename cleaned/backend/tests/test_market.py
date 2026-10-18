@@ -208,3 +208,110 @@ class TestMarketModule:
             db.query(CropListing).filter(CropListing.id == listing_id).delete()
             db.commit()
             db.close()
+
+    # --- 6. Phone Number 10-Digit Regex & Flexible Agricultural Units ---
+    def test_marketplace_phone_regex_and_custom_units(self):
+        """TC-MKT-06: Verifies strict 10-digit phone regex checking and dynamic unit conversions (per x kg, per y ton)."""
+        created_ids = []
+        db = SessionLocal()
+        try:
+            # 1. Phone number regex rejection tests (must be exact 10 digits)
+            for bad_phone in ["12345", "987654321", "98765432101", "abcdefghij", "987654321a"]:
+                bad_resp = client.post("/api/marketplace/listings", json={
+                    "title": "Invalid Phone Test",
+                    "variety": "Arabica",
+                    "quantity": 100.0,
+                    "quantity_unit": "kg",
+                    "price": 400.0,
+                    "price_unit": "per kg",
+                    "farmer_name": "Test Farmer",
+                    "phone_number": bad_phone,
+                    "address": "Chikkamagaluru"
+                })
+                assert bad_resp.status_code == 422, f"Expected 422 for phone '{bad_phone}', got {bad_resp.status_code}"
+
+            # 2. Test Custom Quantity Units (e.g. 5 ton -> 5000 kg, 20 bags of 50kg -> 1000 kg)
+            ton_resp = client.post("/api/marketplace/listings", json={
+                "title": "Bulk Estate Parchment Lot",
+                "variety": "Arabica Sln 795",
+                "quantity": 5.0,
+                "quantity_unit": "ton",
+                "price": 35000.0,
+                "price_unit": "per ton",
+                "farmer_name": "Estate Manager",
+                "phone_number": "9448112345",
+                "address": "Balehonnur"
+            })
+            assert ton_resp.status_code == 200
+            ton_data = ton_resp.json()
+            created_ids.append(ton_data["id"])
+            assert ton_data["quantity"] == 5.0
+            assert ton_data["quantity_unit"] == "ton"
+            assert ton_data["quantity_kg"] == 5000.0  # 5 * 1000 kg
+            assert ton_data["price"] == 35000.0
+            assert ton_data["price_unit"] == "per ton"
+            assert ton_data["price_per_kg"] == 35.0  # 35000 / 1000 kg
+
+            # 3. Test Custom Price Units: "per 2 kg" (e.g. ₹900 per 2 kg -> ₹450 / kg)
+            two_kg_resp = client.post("/api/marketplace/listings", json={
+                "title": "Specialty Roasted Beans Sample",
+                "variety": "Geisha",
+                "quantity": 10.0,
+                "quantity_unit": "kg",
+                "price": 900.0,
+                "price_unit": "per 2 kg",
+                "farmer_name": "Roaster Kumar",
+                "phone_number": "9876501234",
+                "address": "Aldur"
+            })
+            assert two_kg_resp.status_code == 200
+            two_kg_data = two_kg_resp.json()
+            created_ids.append(two_kg_data["id"])
+            assert two_kg_data["price"] == 900.0
+            assert two_kg_data["price_unit"] == "per 2 kg"
+            assert two_kg_data["price_per_kg"] == 450.0  # 900 / 2 kg
+
+            # 4. Test Custom Price Units: "per 2 ton" (e.g. ₹70,000 per 2 ton -> ₹35 / kg)
+            two_ton_resp = client.post("/api/marketplace/listings", json={
+                "title": "Commercial Grade Robusta",
+                "variety": "Robusta CXR",
+                "quantity": 2.0,
+                "quantity_unit": "ton",
+                "price": 70000.0,
+                "price_unit": "per 2 ton",
+                "farmer_name": "Grower Anand",
+                "phone_number": "9123456780",
+                "address": "Sakleshpur"
+            })
+            assert two_ton_resp.status_code == 200
+            two_ton_data = two_ton_resp.json()
+            created_ids.append(two_ton_data["id"])
+            assert two_ton_data["price"] == 70000.0
+            assert two_ton_data["price_unit"] == "per 2 ton"
+            assert two_ton_data["price_per_kg"] == 35.0  # 70000 / 2000 kg
+
+            # 5. Test Bag Unit: "per 50kg bag" (e.g. ₹2,500 per 50kg bag -> ₹50 / kg)
+            bag_resp = client.post("/api/marketplace/listings", json={
+                "title": "Standard Cherry Lot",
+                "variety": "Arabica",
+                "quantity": 20.0,
+                "quantity_unit": "bag (50kg)",
+                "price": 2500.0,
+                "price_unit": "per 50kg bag",
+                "farmer_name": "Farmer Naveen",
+                "phone_number": "9845112233",
+                "address": "Mudigere"
+            })
+            assert bag_resp.status_code == 200
+            bag_data = bag_resp.json()
+            created_ids.append(bag_data["id"])
+            assert bag_data["quantity_kg"] == 1000.0  # 20 * 50 kg
+            assert bag_data["price_per_kg"] == 50.0  # 2500 / 50 kg
+
+        finally:
+            for lid in created_ids:
+                db.query(ListingReport).filter(ListingReport.listing_id == lid).delete()
+                db.query(CropListing).filter(CropListing.id == lid).delete()
+            db.commit()
+            db.close()
+

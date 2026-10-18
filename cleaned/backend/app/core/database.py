@@ -267,8 +267,26 @@ def init_database(force: bool = False):
     # Create schema tables
     Base.metadata.create_all(bind=engine)
 
+    # Ensure dynamic unit columns exist on crop_listings table
+    try:
+        with engine.connect() as conn:
+            for col_name, col_type in [
+                ("quantity", "FLOAT"),
+                ("quantity_unit", "VARCHAR(50) DEFAULT 'kg'"),
+                ("price", "FLOAT"),
+                ("price_unit", "VARCHAR(80) DEFAULT 'per kg'")
+            ]:
+                try:
+                    conn.execute(text(f"ALTER TABLE crop_listings ADD COLUMN {col_name} {col_type};"))
+                    conn.commit()
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
     # If active database is PostgreSQL, check if empty and auto-seed from SQLite
     is_sqlite = str(engine.url).startswith("sqlite")
+
     if not is_sqlite:
         try:
             with engine.connect() as conn:

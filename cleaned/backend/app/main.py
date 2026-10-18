@@ -45,6 +45,8 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-XSS-Protection"] = "1; mode=block"
     return response
 
+from fastapi.encoders import jsonable_encoder
+
 # Diagnostic 422 Validation Handler (Logs detailed field errors for developer debugging)
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -55,7 +57,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         field = " -> ".join(str(x) for x in e.get("loc", []))
         print(f"   • {field}: {e.get('msg')} (type={e.get('type')})")
     print()
-    return JSONResponse(status_code=422, content={"detail": errs})
+    return JSONResponse(status_code=422, content={"detail": jsonable_encoder(errs)})
+
 
 # Safe Global Unhandled Exception Handler (Prevents raw stack trace / secret leaks)
 @app.exception_handler(Exception)

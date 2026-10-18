@@ -12,12 +12,25 @@ router = APIRouter(prefix="/marketplace", tags=["Farmer Marketplace"])
 
 def format_listing_response(item: CropListing, current_user_id: Optional[int]) -> dict:
     maps_url = f"https://www.google.com/maps/search/?api=1&query={item.latitude},{item.longitude}" if (item.latitude and item.longitude) else None
+    q_val = getattr(item, "quantity", None)
+    if q_val is None:
+        q_val = item.quantity_kg
+    q_unit = getattr(item, "quantity_unit", None) or "kg"
+    p_val = getattr(item, "price", None)
+    if p_val is None:
+        p_val = item.price_per_kg
+    p_unit = getattr(item, "price_unit", None) or "per kg"
+
     return {
         "id": item.id,
         "user_id": item.user_id,
         "title": item.title,
         "variety": item.variety,
+        "quantity": q_val,
+        "quantity_unit": q_unit,
         "quantity_kg": item.quantity_kg,
+        "price": p_val,
+        "price_unit": p_unit,
         "price_per_kg": item.price_per_kg,
         "farmer_name": item.farmer_name,
         "phone_number": item.phone_number,
@@ -29,6 +42,7 @@ def format_listing_response(item: CropListing, current_user_id: Optional[int]) -
         "google_maps_url": maps_url,
         "is_owner": bool(current_user_id and item.user_id == current_user_id)
     }
+
 
 @router.get("/listings", response_model=List[ListingResponse])
 def get_all_listings(
@@ -81,7 +95,11 @@ def create_listing(
         user_id=user_id,
         title=payload.title,
         variety=payload.variety,
+        quantity=payload.quantity,
+        quantity_unit=payload.quantity_unit or "kg",
         quantity_kg=payload.quantity_kg,
+        price=payload.price,
+        price_unit=payload.price_unit or "per kg",
         price_per_kg=payload.price_per_kg,
         farmer_name=payload.farmer_name,
         phone_number=payload.phone_number,
@@ -90,6 +108,7 @@ def create_listing(
         longitude=payload.longitude,
         photos=photos_data
     )
+
     db.add(item)
     db.commit()
     db.refresh(item)

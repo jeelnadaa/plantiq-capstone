@@ -93,13 +93,35 @@
                 <input type="text" id="sell-variety" class="form-control" placeholder="Arabica / Robusta" required>
               </div>
               <div>
-                <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblQuantity">Quantity (kg)</label>
-                <input type="number" id="sell-qty" class="form-control" placeholder="500" required>
+                <label style="font-size:0.75rem; font-weight:700;">Quantity & Unit</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="number" step="any" min="0" id="sell-qty" class="form-control" placeholder="500" style="flex:1;" required>
+                  <select id="sell-qty-unit-select" class="form-control" style="width:115px; font-size:0.78rem; padding:6px 4px;">
+                    <option value="kg">kg</option>
+                    <option value="ton">ton</option>
+                    <option value="quintal">quintal</option>
+                    <option value="bag (50kg)">bag (50kg)</option>
+                    <option value="bag (60kg)">bag (60kg)</option>
+                    <option value="custom">Custom...</option>
+                  </select>
+                </div>
+                <input type="text" id="sell-qty-unit-custom" class="form-control hidden" placeholder="e.g. 25 kg sack, crates" style="margin-top:4px; font-size:0.76rem; padding:6px 8px;">
               </div>
             </div>
             <div>
-              <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblPricePerKg">Price per Kg (₹)</label>
-              <input type="number" id="sell-price" class="form-control" placeholder="420" required>
+              <label style="font-size:0.75rem; font-weight:700;">Price & Pricing Unit</label>
+              <div style="display:flex; gap:6px;">
+                <input type="number" step="any" min="0" id="sell-price" class="form-control" placeholder="420" style="flex:1;" required>
+                <select id="sell-price-unit-select" class="form-control" style="width:130px; font-size:0.78rem; padding:6px 4px;">
+                  <option value="per kg">/ kg</option>
+                  <option value="per ton">/ ton</option>
+                  <option value="per quintal">/ quintal</option>
+                  <option value="per 50kg bag">/ 50kg bag</option>
+                  <option value="per 60kg bag">/ 60kg bag</option>
+                  <option value="custom">Custom...</option>
+                </select>
+              </div>
+              <input type="text" id="sell-price-unit-custom" class="form-control hidden" placeholder="e.g. per 2 kg, per 5 ton, per box" style="margin-top:4px; font-size:0.76rem; padding:6px 8px;">
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
               <div>
@@ -107,14 +129,15 @@
                 <input type="text" id="sell-farmer" class="form-control" placeholder="Your Name" required>
               </div>
               <div>
-                <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblPhone">Phone / WhatsApp</label>
-                <input type="text" id="sell-phone" class="form-control" placeholder="+919876543210" required>
+                <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblPhone">Phone / WhatsApp (10 digits)</label>
+                <input type="tel" id="sell-phone" class="form-control" placeholder="10-digit number (e.g. 9876543210)" pattern="[0-9]{10}" maxlength="10" required>
               </div>
             </div>
             <div>
               <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblAddress">Estate Address</label>
               <input type="text" id="sell-address" class="form-control" placeholder="Chikmagalur, Karnataka" required>
             </div>
+
 
             <!-- Inline Estate GPS & Manual Coordinate Section -->
             <div style="background:var(--bg-card-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px;">

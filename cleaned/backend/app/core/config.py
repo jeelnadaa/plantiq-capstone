@@ -28,11 +28,29 @@ class Settings:
     GROQ_MODEL: str = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
     HF_TOKEN: str = os.getenv("HF_TOKEN", "")
 
-    # Speech-to-Text (IndicConformer Local Model & Fallbacks)
+    # Speech-to-Text (IndicConformer for Kannada & Svarah Whisper for Indian English)
     INDIC_CONFORMER_MODEL_ID: str = os.getenv("INDIC_CONFORMER_MODEL_ID", "ai4bharat/indic-conformer-600m-multilingual")
     INDIC_CONFORMER_DEVICE: str = os.getenv("INDIC_CONFORMER_DEVICE", "auto")  # 'auto', 'cuda', 'cpu'
     INDIC_CONFORMER_DECODER: str = os.getenv("INDIC_CONFORMER_DECODER", "ctc")  # 'ctc' or 'rnnt'
-    ENABLE_LOCAL_STT: bool = os.getenv("ENABLE_LOCAL_STT", "true").lower() in ("true", "1", "yes")
+    ENGLISH_STT_MODEL_ID: str = os.getenv("ENGLISH_STT_MODEL_ID", "bryandts/whisper-base-en-india-accent-svarah")
+    
+    # Master local STT switch (can be toggled in .env via ENABLE_LOCAL_STT=false)
+    ENABLE_LOCAL_STT: bool = os.getenv("ENABLE_LOCAL_STT", os.getenv("USE_LOCAL_STT", "true")).lower() in ("true", "1", "yes", "on", "t")
+
+    # Granular local STT switches (can be toggled separately in .env)
+    ENABLE_LOCAL_KANNADA_STT: bool = os.getenv("ENABLE_LOCAL_KANNADA_STT", os.getenv("USE_LOCAL_KANNADA_STT", "true")).lower() in ("true", "1", "yes", "on", "t")
+    ENABLE_LOCAL_ENGLISH_STT: bool = os.getenv("ENABLE_LOCAL_ENGLISH_STT", os.getenv("USE_LOCAL_ENGLISH_STT", "true")).lower() in ("true", "1", "yes", "on", "t")
+
+    @property
+    def is_local_kannada_stt_enabled(self) -> bool:
+        """Returns True only when both master local STT and Kannada local STT are enabled."""
+        return bool(self.ENABLE_LOCAL_STT and self.ENABLE_LOCAL_KANNADA_STT)
+
+    @property
+    def is_local_english_stt_enabled(self) -> bool:
+        """Returns True only when both master local STT and English local STT are enabled."""
+        return bool(self.ENABLE_LOCAL_STT and self.ENABLE_LOCAL_ENGLISH_STT)
+
     
     # Security & API Protection
     SECRET_KEY: str = os.getenv("SECRET_KEY", "plantiq-production-secret-key-change-in-env")

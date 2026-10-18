@@ -107,11 +107,23 @@ function renderHistoryPage() {
     return;
   }
 
-  container.innerHTML = history.map(item => `
+  const diseaseMap = {
+    "Miner": t("diseaseClassMiner"),
+    "Rust": t("diseaseClassRust"),
+    "Coffee Leaf Rust": t("diseaseClassRust"),
+    "Phoma": t("diseaseClassPhoma"),
+    "Healthy": t("diseaseClassHealthy"),
+    "Cerscospora": t("diseaseClassCercospora"),
+    "Cercospora": t("diseaseClassCercospora")
+  };
+
+  container.innerHTML = history.map(item => {
+    const dName = (currentLang === "kn" && diseaseMap[item.disease]) ? diseaseMap[item.disease] : item.disease;
+    return `
     <div class="card" style="display:flex; gap:12px; align-items:center; margin-bottom:12px; cursor:pointer; padding:12px;" onclick="openScanDetails('${item.id}')">
       <img src="${item.image}" style="width:68px; height:68px; border-radius:10px; object-fit:cover; border:1px solid var(--border-subtle);">
       <div style="flex:1;">
-        <strong style="font-size:0.95rem; color:var(--text-main); display:block; margin-bottom:2px;">${item.disease}</strong>
+        <strong style="font-size:0.95rem; color:var(--text-main); display:block; margin-bottom:2px;">${dName}</strong>
         <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">${item.date} • ${item.confidence ? Number(item.confidence).toFixed(1) : 95.0}% ${t("confidenceLabel")}</div>
         <span class="${item.is_healthy ? 'badge-healthy' : 'badge-disease'}">${item.is_healthy ? t("healthyLabel") : t("diseaseLabel")}</span>
       </div>
@@ -124,7 +136,8 @@ function renderHistoryPage() {
         </button>
       </div>
     </div>
-  `).join("");
+  `;
+  }).join("");
 
   if (window.lucide) lucide.createIcons();
 }
@@ -139,15 +152,26 @@ function openScanDetails(scanId) {
   const body = document.getElementById("scan-details-body");
   if (!modal || !body) return;
 
+  const diseaseMap = {
+    "Miner": t("diseaseClassMiner"),
+    "Rust": t("diseaseClassRust"),
+    "Coffee Leaf Rust": t("diseaseClassRust"),
+    "Phoma": t("diseaseClassPhoma"),
+    "Healthy": t("diseaseClassHealthy"),
+    "Cerscospora": t("diseaseClassCercospora"),
+    "Cercospora": t("diseaseClassCercospora")
+  };
+
   let distHtml = "";
   if (item.distribution && Object.keys(item.distribution).length > 0) {
     distHtml = `
       <div style="margin:12px 0;">
         <strong style="font-size:0.78rem; color:var(--text-muted); display:block; margin-bottom:6px;">${t("classProbabilities")}</strong>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-          ${Object.entries(item.distribution).map(([cls, pct]) => `
-            <div class="distribution-item"><span>${cls}</span><strong>${Number(pct).toFixed(1)}%</strong></div>
-          `).join('')}
+          ${Object.entries(item.distribution).map(([cls, pct]) => {
+            const clsName = (currentLang === "kn" && diseaseMap[cls]) ? diseaseMap[cls] : cls;
+            return `<div class="distribution-item"><span>${clsName}</span><strong>${Number(pct).toFixed(1)}%</strong></div>`;
+          }).join('')}
         </div>
       </div>
     `;
@@ -171,6 +195,8 @@ function openScanDetails(scanId) {
     ? window.formatMarkdown(item.advisory || "Standard CCRI coffee agronomy advisory applied.") 
     : (item.advisory || "Standard CCRI coffee agronomy advisory applied.");
 
+  const detailDiseaseName = (currentLang === "kn" && diseaseMap[item.disease]) ? diseaseMap[item.disease] : item.disease;
+
   body.innerHTML = `
     <div style="text-align:center; margin-bottom:12px;">
       <img src="${item.image}" style="max-width:100%; height:180px; object-fit:cover; border-radius:12px; border:1px solid var(--border-subtle); margin-bottom:8px;">
@@ -178,7 +204,7 @@ function openScanDetails(scanId) {
         <span class="${item.is_healthy ? 'badge-healthy' : 'badge-disease'}">${item.is_healthy ? t("healthyLabel") : t("diseaseLabel")}</span>
         <span style="font-size:0.85rem; font-weight:800;">${item.confidence ? Number(item.confidence).toFixed(1) : 95.0}% ${t("confidenceLabel")}</span>
       </div>
-      <h2 style="font-size:1.3rem; font-weight:800; color:var(--text-main); margin:0;">${item.disease}</h2>
+      <h2 style="font-size:1.3rem; font-weight:800; color:var(--text-main); margin:0;">${detailDiseaseName}</h2>
       <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">${item.date}</div>
     </div>
 

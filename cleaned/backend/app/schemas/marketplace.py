@@ -204,6 +204,8 @@ class ListingCreate(BaseModel):
         # Bounds validation
         if self.price_per_kg < 0.0 or self.price < 0.0:
             raise ValueError("Price cannot be negative.")
+        if self.price > 1000000.0 or self.price_per_kg > 1000000.0:
+            raise ValueError("Crop price cannot exceed ₹1,000,000.")
         if self.quantity_kg > 100000.0:
             raise ValueError("Total quantity cannot exceed 100,000 kg (100 metric tons).")
 
@@ -235,6 +237,7 @@ class ListingResponse(BaseModel):
     address: str
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    distance_km: Optional[float] = None
     photos: Optional[List[ListingPhoto]] = []
     created_at: datetime
     google_maps_url: Optional[str] = None

@@ -135,14 +135,27 @@ function renderDiagnosisCard(data) {
 
   badgeEl.className = data.is_healthy ? "badge-healthy" : "badge-disease";
   badgeEl.textContent = data.is_healthy ? t("healthyLabel") : t("diseaseLabel");
-  diseaseNameEl.textContent = data.disease;
+
+  const diseaseMap = {
+    "Miner": t("diseaseClassMiner"),
+    "Rust": t("diseaseClassRust"),
+    "Coffee Leaf Rust": t("diseaseClassRust"),
+    "Phoma": t("diseaseClassPhoma"),
+    "Healthy": t("diseaseClassHealthy"),
+    "Cerscospora": t("diseaseClassCercospora"),
+    "Cercospora": t("diseaseClassCercospora")
+  };
+  diseaseNameEl.textContent = (currentLang === "kn" && diseaseMap[data.disease]) ? diseaseMap[data.disease] : data.disease;
 
   confTextEl.textContent = `${data.confidence.toFixed(1)}%`;
   confFillEl.style.width = `${Math.min(data.confidence, 100)}%`;
 
   if (distGrid && data.distribution) {
     distGrid.innerHTML = Object.entries(data.distribution)
-      .map(([k, v]) => `<div class="distribution-item"><span>${k}</span><strong>${v.toFixed(1)}%</strong></div>`)
+      .map(([k, v]) => {
+        const clsName = (currentLang === "kn" && diseaseMap[k]) ? diseaseMap[k] : k;
+        return `<div class="distribution-item"><span>${clsName}</span><strong>${v.toFixed(1)}%</strong></div>`;
+      })
       .join("");
   }
 

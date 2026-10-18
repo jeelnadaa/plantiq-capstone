@@ -6,6 +6,7 @@ torch
 torchvision
 torchaudio
 soundfile
+imageio-ffmpeg
 onnx
 onnxruntime
 transformers>=4.36.0

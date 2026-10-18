@@ -51,10 +51,68 @@
         </button>
       </div>
 
-      <!-- Search & Dual Price Filters -->
+      <!-- Search & Multi-Criteria Filters -->
       <div class="market-filters">
-        <input type="text" id="market-search-input" class="form-control" placeholder="Search by crop title, variety, location, farmer..." data-i18n-placeholder="searchPlaceholder">
-        
+        <!-- Reference Location Bar -->
+        <div class="market-location-bar">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <i data-lucide="map-pin" style="width:15px; height:15px; color:var(--primary);"></i>
+            <span><span data-i18n="lblBuyerLocation">Your Location</span>: <strong id="market-buyer-loc-text">Acquiring GPS...</strong></span>
+          </div>
+          <button type="button" id="btn-refresh-market-gps" class="btn btn-sm btn-secondary" style="padding:4px 8px; font-size:0.70rem; display:inline-flex; align-items:center; gap:4px;">
+            <i data-lucide="crosshair" style="width:12px; height:12px;"></i> <span data-i18n="btnRefreshGPS">Update GPS</span>
+          </button>
+        </div>
+
+        <!-- Search Bar & Sort Dropdown -->
+        <div class="market-search-sort-row">
+          <input type="text" id="market-search-input" class="form-control" placeholder="Search by crop title, variety, location, farmer..." data-i18n-placeholder="searchPlaceholder">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <select id="market-sort-select" class="form-control" style="font-weight:700; min-width:180px;">
+              <option value="distance" data-i18n="sortNearest">📍 Nearest First (Haversine)</option>
+              <option value="newest" selected data-i18n="sortNewest">⏱️ Newest First</option>
+              <option value="price_asc" data-i18n="sortPriceAsc">💰 Price: Low to High</option>
+              <option value="price_desc" data-i18n="sortPriceDesc">💎 Price: High to Low</option>
+              <option value="qty_desc" data-i18n="sortQtyDesc">⚖️ Quantity: Largest First</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Secondary Filters Grid (Distance Radius, Variety, Min Quantity) -->
+        <div class="market-filter-grid">
+          <div class="market-filter-group">
+            <label data-i18n="lblFilterDistance">Max Distance</label>
+            <select id="filter-distance-select" class="form-control">
+              <option value="all" data-i18n="distAll">🌐 Any Distance</option>
+              <option value="15" data-i18n="dist15">Within 15 km</option>
+              <option value="30" data-i18n="dist30">Within 30 km</option>
+              <option value="60" data-i18n="dist60">Within 60 km</option>
+              <option value="120" data-i18n="dist120">Within 120 km</option>
+            </select>
+          </div>
+
+          <div class="market-filter-group">
+            <label data-i18n="lblFilterVariety">Coffee Variety</label>
+            <select id="filter-variety-select" class="form-control">
+              <option value="all" data-i18n="optAllVarieties">☕ All Varieties</option>
+              <option value="Arabica">Arabica (ಅರೇಬಿಕಾ)</option>
+              <option value="Robusta">Robusta (ರೋಬಸ್ಟಾ)</option>
+              <option value="Liberica">Liberica (ಲಿಬೇರಿಕ)</option>
+            </select>
+          </div>
+
+          <div class="market-filter-group">
+            <label data-i18n="lblFilterQty">Min Harvest Lot</label>
+            <select id="filter-qty-select" class="form-control">
+              <option value="0" data-i18n="qtyAll">📦 Any Quantity</option>
+              <option value="50" data-i18n="qty50">≥ 50 kg (Small Lots)</option>
+              <option value="200" data-i18n="qty200">≥ 200 kg (Commercial)</option>
+              <option value="1000" data-i18n="qty1000">≥ 1,000 kg (1 Ton+ Bulk)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Price Range Sliders -->
         <div class="dual-slider-container">
           <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">
             <span data-i18n="filterPriceRange">Price Filter (₹/kg)</span>
@@ -68,6 +126,17 @@
             <input type="number" id="price-max-input" class="form-control" value="1000" placeholder="Max ₹">
           </div>
         </div>
+
+        <!-- Quick Toggles & Reset Row -->
+        <div class="market-filter-options-row">
+          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:0.80rem; font-weight:700;">
+            <input type="checkbox" id="filter-has-photos" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
+            <span data-i18n="lblPhotosOnly">📸 Photos Only</span>
+          </label>
+          <button type="button" id="btn-reset-filters" class="btn btn-sm btn-outline" style="padding:4px 10px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px;">
+            <i data-lucide="rotate-ccw" style="width:12px; height:12px;"></i> <span data-i18n="btnResetFilters">Reset Filters</span>
+          </button>
+        </div>
       </div>
 
       <!-- Listings Stream -->
@@ -79,7 +148,7 @@
       <div class="card modal-overlay hidden" id="sell-crop-modal" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); z-index:1300; display:flex; align-items:center; justify-content:center;">
         <div class="modal-container" style="border-radius:18px; max-width:440px; width:92%; max-height:88vh; overflow-y:auto; padding:22px; box-shadow:var(--shadow-lg);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <h3 style="font-size:1.1rem; font-weight:800; margin:0;" data-i18n="sellModalTitle">List Coffee Crop for Sale</h3>
+            <h3 style="font-size:1.1rem; font-weight:800; margin:0;" data-i18n="sellModalTitle" id="sell-modal-title">List Coffee Crop for Sale</h3>
             <button class="btn-icon" id="btn-close-sell-modal" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
           </div>
           <form id="sell-crop-form" novalidate style="display:flex; flex-direction:column; gap:10px;">
@@ -93,32 +162,32 @@
                 <input type="text" id="sell-variety" class="form-control" placeholder="Arabica / Robusta" required>
               </div>
               <div>
-                <label style="font-size:0.75rem; font-weight:700;">Quantity & Unit</label>
+                <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblQuantityAndUnit">Quantity & Unit</label>
                 <div style="display:flex; gap:6px;">
                   <input type="number" step="any" min="0" id="sell-qty" class="form-control" placeholder="500" style="flex:1;" required>
                   <select id="sell-qty-unit-select" class="form-control" style="width:115px; font-size:0.78rem; padding:6px 4px;">
-                    <option value="kg">kg</option>
-                    <option value="ton">ton</option>
-                    <option value="quintal">quintal</option>
-                    <option value="bag (50kg)">bag (50kg)</option>
-                    <option value="bag (60kg)">bag (60kg)</option>
-                    <option value="custom">Custom...</option>
+                    <option value="kg" data-i18n="unitKg">kg</option>
+                    <option value="ton" data-i18n="unitTon">ton</option>
+                    <option value="quintal" data-i18n="unitQuintal">quintal</option>
+                    <option value="bag (50kg)" data-i18n="unitBag50">bag (50kg)</option>
+                    <option value="bag (60kg)" data-i18n="unitBag60">bag (60kg)</option>
+                    <option value="custom" data-i18n="unitCustom">Custom...</option>
                   </select>
                 </div>
                 <input type="text" id="sell-qty-unit-custom" class="form-control hidden" placeholder="e.g. 25 kg sack, crates" style="margin-top:4px; font-size:0.76rem; padding:6px 8px;">
               </div>
             </div>
             <div>
-              <label style="font-size:0.75rem; font-weight:700;">Price & Pricing Unit</label>
+              <label style="font-size:0.75rem; font-weight:700;" data-i18n="lblPriceAndUnit">Price & Pricing Unit</label>
               <div style="display:flex; gap:6px;">
                 <input type="number" step="any" min="0" id="sell-price" class="form-control" placeholder="420" style="flex:1;" required>
                 <select id="sell-price-unit-select" class="form-control" style="width:130px; font-size:0.78rem; padding:6px 4px;">
-                  <option value="per kg">/ kg</option>
-                  <option value="per ton">/ ton</option>
-                  <option value="per quintal">/ quintal</option>
-                  <option value="per 50kg bag">/ 50kg bag</option>
-                  <option value="per 60kg bag">/ 60kg bag</option>
-                  <option value="custom">Custom...</option>
+                  <option value="per kg" data-i18n="pricePerKg">/ kg</option>
+                  <option value="per ton" data-i18n="pricePerTon">/ ton</option>
+                  <option value="per quintal" data-i18n="pricePerQuintal">/ quintal</option>
+                  <option value="per 50kg bag" data-i18n="pricePer50Bag">/ 50kg bag</option>
+                  <option value="per 60kg bag" data-i18n="pricePer60Bag">/ 60kg bag</option>
+                  <option value="custom" data-i18n="unitCustom">Custom...</option>
                 </select>
               </div>
               <input type="text" id="sell-price-unit-custom" class="form-control hidden" placeholder="e.g. per 2 kg, per 5 ton, per box" style="margin-top:4px; font-size:0.76rem; padding:6px 8px;">
@@ -171,13 +240,13 @@
               <div class="photo-uploader-box" id="sell-photo-dropzone">
                 <input type="file" id="sell-photo-input" accept="image/*" multiple hidden>
                 <i data-lucide="camera" style="width:22px; height:22px; color:var(--primary); margin-bottom:4px;"></i>
-                <div style="font-size:0.78rem; font-weight:700;">+ Click to select 1 or multiple photos</div>
-                <div style="font-size:0.7rem; color:var(--text-muted);">Add lots, drying yards, parchment images</div>
+                <div style="font-size:0.78rem; font-weight:700;" data-i18n="promptSelectPhotos">+ Click to select 1 or multiple photos</div>
+                <div style="font-size:0.7rem; color:var(--text-muted);" data-i18n="hintSelectPhotos">Add lots, drying yards, parchment images</div>
               </div>
               <div id="sell-photos-preview-list"></div>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="margin-top:8px; padding:12px;" data-i18n="btnPublishListing">Publish Listing</button>
+            <button type="submit" id="btn-submit-listing" class="btn btn-primary" style="margin-top:8px; padding:12px;" data-i18n="btnPublishListing">Publish Listing</button>
           </form>
         </div>
       </div>
@@ -189,32 +258,32 @@
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <i data-lucide="server" style="color:var(--primary); width:22px; height:22px;"></i>
-            <h3 style="font-size:1.1rem; font-weight:800; margin:0;">Backend Server Connection</h3>
+            <h3 style="font-size:1.1rem; font-weight:800; margin:0;" data-i18n="serverModalTitle">Backend Server Connection</h3>
           </div>
           <button class="btn-icon" id="btn-close-server-settings" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
         </div>
 
-        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.4;">
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.4;" data-i18n="serverModalDesc">
           Connect your mobile app to your laptop or cloud server. If your Wi-Fi IP changes, simply update it below.
         </p>
 
         <div style="margin-bottom:12px;">
-          <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">Server IP / URL</label>
+          <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;" data-i18n="lblServerIp">Server IP / URL</label>
           <input type="text" id="server-ip-input" class="form-control" placeholder="e.g. 192.168.1.15:8000 or https://api.plantiq.ai">
-          <small style="font-size:0.68rem; color:var(--text-muted); margin-top:3px; display:block;">Enter your laptop's Wi-Fi IP (from <code>ipconfig</code>) with port 8000</small>
+          <small style="font-size:0.68rem; color:var(--text-muted); margin-top:3px; display:block;" data-i18n="serverIpHint">Enter your laptop's Wi-Fi IP (from <code>ipconfig</code>) with port 8000</small>
         </div>
 
         <div id="server-test-result" style="font-size:0.75rem; margin-bottom:14px; min-height:18px;"></div>
 
         <div style="display:flex; gap:8px; margin-bottom:8px;">
           <button type="button" class="btn btn-secondary" id="btn-test-server-connection" style="flex:1;">
-            <i data-lucide="activity"></i> Test Ping
+            <i data-lucide="activity"></i> <span data-i18n="btnTestPing">Test Ping</span>
           </button>
           <button type="button" class="btn btn-primary" id="btn-save-server-settings" style="flex:1;">
-            <i data-lucide="save"></i> Save & Connect
+            <i data-lucide="save"></i> <span data-i18n="btnSaveConnect">Save & Connect</span>
           </button>
         </div>
-        <button type="button" class="btn btn-text" id="btn-reset-server-settings" style="width:100%; font-size:0.75rem; color:var(--text-muted);">
+        <button type="button" class="btn btn-text" id="btn-reset-server-settings" style="width:100%; font-size:0.75rem; color:var(--text-muted);" data-i18n="btnResetDefault">
           Reset to Default
         </button>
       </div>
@@ -227,7 +296,7 @@
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <i data-lucide="map-pin" style="color:var(--primary); width:22px; height:22px;"></i>
-            <h3 style="font-size:1.05rem; font-weight:800; margin:0;">Google Maps Coordinates Guide</h3>
+            <h3 style="font-size:1.05rem; font-weight:800; margin:0;" data-i18n="gmapsGuideModalTitle">Google Maps Coordinates Guide</h3>
           </div>
           <button class="btn-icon" id="btn-close-gmaps-guide" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
         </div>
@@ -287,6 +356,45 @@
           </button>
           <button type="button" class="btn btn-secondary btn-sm" id="btn-dismiss-val-modal" style="padding:8px; font-size:0.78rem;" data-i18n="btnDismiss">
             Dismiss
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Custom Delete Confirmation Modal (English & Kannada) -->
+    <div class="card modal-overlay hidden" id="delete-confirm-modal" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.72); z-index:3100; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+      <div class="modal-container" style="border-radius:18px; max-width:420px; width:92%; padding:22px; box-shadow:var(--shadow-lg); border:2px solid var(--border-neo);">
+        
+        <!-- Header with Trash Badge -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:40px; height:40px; border-radius:10px; background:rgba(239, 68, 68, 0.15); border:1.5px solid #ef4444; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <i data-lucide="trash-2" style="color:#ef4444; width:22px; height:22px;"></i>
+            </div>
+            <div>
+              <h3 style="font-size:1.1rem; font-weight:800; margin:0; color:var(--text-main);" data-i18n="deleteModalTitle">Delete Crop Listing?</h3>
+              <span style="font-size:0.75rem; color:#ef4444; font-weight:700;" data-i18n="deleteModalSubtitle">Irreversible Action</span>
+            </div>
+          </div>
+          <button class="btn-icon" id="btn-close-delete-modal" style="width:32px; height:32px;" title="Close"><i data-lucide="x"></i></button>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-main); line-height:1.5; margin-bottom:14px;" data-i18n="deleteModalMsg">
+          Are you sure you want to delete this listing? Once deleted, verified buyers will no longer be able to find your harvest lot or contact you about it.
+        </p>
+
+        <div id="delete-listing-item-preview" style="background:var(--bg-card-subtle); border:1px solid var(--border-subtle); border-radius:8px; padding:10px 12px; margin-bottom:16px; font-size:0.8rem; font-weight:700; color:var(--text-main);">
+          <!-- Dynamic listing title & price preview -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-delete-listing" style="flex:1; padding:10px;" data-i18n="btnCancelDelete">
+            Cancel / Keep
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-confirm-delete-listing" style="flex:1; padding:10px; background:#ef4444; border-color:#b91c1c; color:#ffffff;" data-i18n="btnConfirmDeleteListing">
+            <i data-lucide="trash-2"></i> Delete
           </button>
         </div>
 

@@ -339,12 +339,12 @@ function ensurePaletteModalDOM() {
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
         <div style="display:flex; align-items:center; gap:8px;">
           <i data-lucide="palette" style="color:var(--primary); width:24px; height:24px;"></i>
-          <h3 style="font-size:1.15rem; font-weight:900; margin:0; text-transform:uppercase;">Neo-Brutalist Themes</h3>
+          <h3 style="font-size:1.15rem; font-weight:900; margin:0; text-transform:uppercase;" data-i18n="paletteModalTitle">${typeof t === "function" ? t("paletteModalTitle") : "Neo-Brutalist Themes"}</h3>
         </div>
         <button class="btn-icon" id="btn-close-palette-modal" style="width:32px; height:32px;"><i data-lucide="x"></i></button>
       </div>
-      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px; line-height:1.4; font-weight:600;">
-        Choose from 5 high-voltage dual-color palettes. Each theme is engineered with fluid transitions for both Light and Dark modes.
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px; line-height:1.4; font-weight:600;" data-i18n="paletteModalDesc">
+        ${typeof t === "function" ? t("paletteModalDesc") : "Choose from 5 high-voltage dual-color palettes. Each theme is engineered with fluid transitions for both Light and Dark modes."}
       </p>
       <div class="palette-grid" id="palette-options-container"></div>
     </div>
@@ -371,6 +371,8 @@ function updatePaletteModalUI() {
 
   const current = getCurrentPalette();
   const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  const activeText = typeof t === "function" ? t("badgeActive") : "ACTIVE";
+  const tapText = typeof t === "function" ? t("btnTapToSet") : "TAP TO SET";
 
   container.innerHTML = THEME_PALETTES.map(p => {
     const pColor = isDark ? p.darkPrimary : p.primary;
@@ -389,7 +391,7 @@ function updatePaletteModalUI() {
             <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">${p.subtitle}</div>
           </div>
         </div>
-        ${isActive ? '<span class="palette-card-badge">ACTIVE</span>' : '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:800;">TAP TO SET</span>'}
+        ${isActive ? `<span class="palette-card-badge">${activeText}</span>` : `<span style="font-size:0.75rem; color:var(--text-muted); font-weight:800;">${tapText}</span>`}
       </div>
     `;
   }).join("");
@@ -407,6 +409,11 @@ function updatePaletteModalUI() {
 
 function openPaletteModal() {
   ensurePaletteModalDOM();
+  const titleEl = document.querySelector("#theme-palette-modal [data-i18n='paletteModalTitle']");
+  if (titleEl && typeof t === "function") titleEl.textContent = t("paletteModalTitle");
+  const descEl = document.querySelector("#theme-palette-modal [data-i18n='paletteModalDesc']");
+  if (descEl && typeof t === "function") descEl.textContent = t("paletteModalDesc");
+
   updatePaletteModalUI();
   const modal = document.getElementById("theme-palette-modal");
   if (modal) {

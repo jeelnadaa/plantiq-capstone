@@ -283,7 +283,9 @@ def check_plantiq_services():
         
         print(f" * IndicConformer STT Target:     {Colors.BOLD}{stt_device.upper()}{Colors.RESET}")
         print(f"   - Configured preference:      {settings.INDIC_CONFORMER_DEVICE}")
-        print(f"   - Local STT Enabled:          {settings.ENABLE_LOCAL_STT}")
+        print(f"   - Local Master STT Enabled:   {settings.ENABLE_LOCAL_STT}")
+        print(f"   - Local Kannada STT (Indic):  {settings.is_local_kannada_stt_enabled}")
+        print(f"   - Local English STT (Svarah): {settings.is_local_english_stt_enabled}")
         print(f"   - Hugging Face Token:         {'Set' if bool(settings.HF_TOKEN) else Colors.YELLOW + 'Empty' + Colors.RESET}")
     except Exception as e:
         print(f" * Could not resolve app settings: {e}")

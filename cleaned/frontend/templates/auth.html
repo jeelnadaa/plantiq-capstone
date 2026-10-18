@@ -82,32 +82,32 @@
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <i data-lucide="server" style="color:var(--primary); width:22px; height:22px;"></i>
-            <h3 style="font-size:1.1rem; font-weight:800; margin:0;">Backend Server Connection</h3>
+            <h3 style="font-size:1.1rem; font-weight:800; margin:0;" data-i18n="serverModalTitle">Backend Server Connection</h3>
           </div>
           <button class="btn-icon" id="btn-close-server-settings" style="width:30px; height:30px;"><i data-lucide="x"></i></button>
         </div>
 
-        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.4;">
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.4;" data-i18n="serverModalDesc">
           Connect your mobile app to your laptop or cloud server. If your Wi-Fi IP changes, simply update it below.
         </p>
 
         <div style="margin-bottom:12px;">
-          <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">Server IP / URL</label>
+          <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;" data-i18n="lblServerIp">Server IP / URL</label>
           <input type="text" id="server-ip-input" class="form-control" placeholder="e.g. 192.168.1.15:8000 or https://api.plantiq.ai">
-          <small style="font-size:0.68rem; color:var(--text-muted); margin-top:3px; display:block;">Enter your laptop's Wi-Fi IP (from <code>ipconfig</code>) with port 8000</small>
+          <small style="font-size:0.68rem; color:var(--text-muted); margin-top:3px; display:block;" data-i18n="serverIpHint">Enter your laptop's Wi-Fi IP (from <code>ipconfig</code>) with port 8000</small>
         </div>
 
         <div id="server-test-result" style="font-size:0.75rem; margin-bottom:14px; min-height:18px;"></div>
 
         <div style="display:flex; gap:8px; margin-bottom:8px;">
           <button type="button" class="btn btn-secondary" id="btn-test-server-connection" style="flex:1;">
-            <i data-lucide="activity"></i> Test Ping
+            <i data-lucide="activity"></i> <span data-i18n="btnTestPing">Test Ping</span>
           </button>
           <button type="button" class="btn btn-primary" id="btn-save-server-settings" style="flex:1;">
-            <i data-lucide="save"></i> Save & Connect
+            <i data-lucide="save"></i> <span data-i18n="btnSaveConnect">Save & Connect</span>
           </button>
         </div>
-        <button type="button" class="btn btn-text" id="btn-reset-server-settings" style="width:100%; font-size:0.75rem; color:var(--text-muted);">
+        <button type="button" class="btn btn-text" id="btn-reset-server-settings" style="width:100%; font-size:0.75rem; color:var(--text-muted);" data-i18n="btnResetDefault">
           Reset to Default
         </button>
       </div>

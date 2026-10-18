@@ -50,6 +50,85 @@
   box-shadow: var(--shadow-neo);
 }
 
+.market-location-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card-subtle);
+  border: 2px solid #000000;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.market-search-sort-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .market-search-sort-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.market-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.market-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.market-filter-group label {
+  font-size: 0.70rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.market-filter-options-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px dashed #000000;
+}
+
+.badge-distance {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1.5px solid #000000;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 0.72rem;
+  box-shadow: 1px 1px 0px #000000;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+[data-theme="dark"] .badge-distance {
+  background: #1e3a8a;
+  color: #93c5fd;
+  border-color: #000000;
+}
+
 .dual-slider-container {
   margin: 16px 0 10px;
   display: flex;
@@ -245,8 +324,40 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 .listing-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 6px;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.listing-buyer-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.listing-buyer-actions .btn {
+  flex: 1 1 auto;
+  min-width: 110px;
+  justify-content: center;
+}
+
+.listing-owner-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  border-top: 1px dashed var(--border-subtle);
+  padding-top: 8px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.listing-owner-actions .btn {
+  font-size: 0.76rem;
+  padding: 5px 10px;
 }
 
 /* Sell Crop Modal Photo Uploader */

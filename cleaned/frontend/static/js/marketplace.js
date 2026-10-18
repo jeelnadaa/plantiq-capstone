@@ -80,18 +80,20 @@ function initMarketplace() {
       e.preventDefault();
       const latVal = parseFloat(document.getElementById("sell-lat")?.value);
       const lngVal = parseFloat(document.getElementById("sell-lng")?.value);
+      const qtyVal = parseFloat(document.getElementById("sell-qty")?.value);
+      const priceVal = parseFloat(document.getElementById("sell-price")?.value);
 
       const payload = {
-        title: document.getElementById("sell-title").value,
-        variety: document.getElementById("sell-variety").value,
-        quantity_kg: parseFloat(document.getElementById("sell-qty").value),
-        price_per_kg: parseFloat(document.getElementById("sell-price").value),
-        farmer_name: document.getElementById("sell-farmer").value,
-        phone_number: document.getElementById("sell-phone").value,
-        address: document.getElementById("sell-address").value,
-        latitude: !isNaN(latVal) ? latVal : (LocationManager.coords.allowed ? LocationManager.coords.lat : null),
-        longitude: !isNaN(lngVal) ? lngVal : (LocationManager.coords.allowed ? LocationManager.coords.lng : null),
-        photos: uploadedListingPhotos
+        title: document.getElementById("sell-title")?.value?.trim() || "Coffee Crop Lot",
+        variety: document.getElementById("sell-variety")?.value?.trim() || "Arabica",
+        quantity_kg: !isNaN(qtyVal) ? qtyVal : 100.0,
+        price_per_kg: !isNaN(priceVal) ? priceVal : 0.0,
+        farmer_name: document.getElementById("sell-farmer")?.value?.trim() || "Coffee Grower",
+        phone_number: document.getElementById("sell-phone")?.value?.trim() || "",
+        address: document.getElementById("sell-address")?.value?.trim() || "Karnataka, India",
+        latitude: !isNaN(latVal) ? latVal : (window.LocationManager && LocationManager.coords.allowed ? LocationManager.coords.lat : null),
+        longitude: !isNaN(lngVal) ? lngVal : (window.LocationManager && LocationManager.coords.allowed ? LocationManager.coords.lng : null),
+        photos: uploadedListingPhotos || []
       };
 
       try {
@@ -107,12 +109,22 @@ function initMarketplace() {
           renderUploadedPhotosList();
           fetchListings();
         } else {
-          alert("Failed to publish listing. Please verify your login session.");
+          const errData = await res.json().catch(() => ({}));
+          let errMsg = "Failed to publish listing.";
+          if (errData && errData.detail) {
+            if (Array.isArray(errData.detail)) {
+              errMsg += " " + errData.detail.map(d => `${d.loc?.slice(-1)[0] || 'field'}: ${d.msg}`).join(", ");
+            } else {
+              errMsg += " " + errData.detail;
+            }
+          }
+          alert(errMsg);
         }
       } catch (err) {
         console.error("Listing create error:", err);
       }
     };
+
   }
 
   fetchListings();

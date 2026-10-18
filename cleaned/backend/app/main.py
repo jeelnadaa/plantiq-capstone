@@ -45,10 +45,22 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-XSS-Protection"] = "1; mode=block"
     return response
 
+# Diagnostic 422 Validation Handler (Logs detailed field errors for developer debugging)
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errs = exc.errors()
+    logger.warning(f"[422 Validation Error on {request.method} {request.url.path}]: {errs}")
+    print(f"\n⚠️  [Validation 422 Error] {request.method} {request.url.path}:")
+    for e in errs:
+        field = " -> ".join(str(x) for x in e.get("loc", []))
+        print(f"   • {field}: {e.get('msg')} (type={e.get('type')})")
+    print()
+    return JSONResponse(status_code=422, content={"detail": errs})
+
 # Safe Global Unhandled Exception Handler (Prevents raw stack trace / secret leaks)
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    if isinstance(exc, (StarletteHTTPException, RequestValidationError)):
+    if isinstance(exc, StarletteHTTPException):
         raise exc
     error_ref = uuid.uuid4().hex[:12]
     logger.error(f"[Unhandled Error ref={error_ref}] {request.method} {request.url.path}: {exc}", exc_info=True)

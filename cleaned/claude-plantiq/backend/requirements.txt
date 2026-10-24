@@ -26,12 +26,12 @@ numpy>=1.26
 
 # --- ML: Hybrid RAG ---
 faiss-cpu>=1.8
-sentence-transformers>=3.0
+sentence-transformers==5.7.0   # pinned: newer releases need torch>=2.6
 rank-bm25>=0.2.2
 pymupdf>=1.24
 
 # --- ML: Speech-to-text (local IndicConformer + Svarah Whisper) ---
-transformers>=4.44
+transformers==5.15.0           # pinned: same as original app, works with torch 2.5.1
 soundfile>=0.12
 imageio-ffmpeg>=0.5
 onnxruntime>=1.18

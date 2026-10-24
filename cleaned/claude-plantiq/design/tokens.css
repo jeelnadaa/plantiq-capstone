@@ -1,0 +1,130 @@
+/* PlantIQ "Field Notebook" design tokens.
+   Shared by design/mockups.html and frontend/src/styles/tokens.css (copied at build time). */
+
+@font-face { font-family: "Satoshi"; src: url("./fonts/Satoshi-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Satoshi"; src: url("./fonts/Satoshi-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Satoshi"; src: url("./fonts/Satoshi-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Satoshi"; src: url("./fonts/Satoshi-Black.woff2") format("woff2"); font-weight: 900; font-display: swap; }
+
+:root {
+  /* type */
+  --font: "Satoshi", "Noto Sans Kannada", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fs-xs: 0.8125rem;   /* 13 */
+  --fs-sm: 0.9375rem;   /* 15 */
+  --fs-md: 1.0625rem;   /* 17 body */
+  --fs-lg: 1.25rem;     /* 20 */
+  --fs-xl: 1.5rem;      /* 24 */
+  --fs-2xl: 1.875rem;   /* 30 */
+  --fs-3xl: 2.25rem;    /* 36 */
+  --lh: 1.45;
+
+  /* shape */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+  --tap: 48px;          /* minimum tap target */
+  --btn-h: 54px;
+  --input-h: 54px;
+  --gutter: 16px;
+
+  /* motion */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --dur: 180ms;
+
+  /* palette: estate (default) — light */
+  --bg: #F6F1E7;
+  --surface: #FFFFFF;
+  --surface-2: #EFE7D6;
+  --surface-3: #E6DCC6;
+  --ink: #1C2620;
+  --ink-2: #46544A;
+  --muted: #76806F;
+  --line: #E1D6C1;
+  --line-strong: #CDBFA4;
+
+  --primary: #1E6B45;
+  --primary-ink: #FFFFFF;
+  --primary-soft: #DDEBDF;
+  --primary-strong: #154F33;
+
+  --accent: #B4452A;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #F6E1D9;
+
+  --success: #2E7D32;
+  --success-soft: #DDEFDD;
+  --warning: #A86A00;
+  --warning-soft: #FBEBC8;
+  --danger: #B3261E;
+  --danger-soft: #F9DEDC;
+  --info: #2C6690;
+  --info-soft: #DCE9F3;
+
+  --whatsapp: #1DA851;
+  --overlay: rgba(20, 26, 22, .55);
+  --shadow-1: 0 1px 2px rgba(40, 30, 10, .06), 0 2px 8px rgba(40, 30, 10, .06);
+  --shadow-2: 0 6px 24px rgba(40, 30, 10, .12);
+  --shadow-nav: 0 -4px 20px rgba(40, 30, 10, .08);
+  --border-w: 1px;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #101713;
+  --surface: #18221C;
+  --surface-2: #202C25;
+  --surface-3: #2A3830;
+  --ink: #EDF2EC;
+  --ink-2: #BAC7BC;
+  --muted: #8C9A8F;
+  --line: #2C3A31;
+  --line-strong: #3B4C41;
+
+  --primary: #62C08D;
+  --primary-ink: #082114;
+  --primary-soft: #1D3A2A;
+  --primary-strong: #8AD8AC;
+
+  --accent: #F08A6C;
+  --accent-ink: #2A0D04;
+  --accent-soft: #3E241C;
+
+  --success: #7BCB7F;
+  --success-soft: #1F3621;
+  --warning: #F2C14E;
+  --warning-soft: #3A2F12;
+  --danger: #F2867E;
+  --danger-soft: #3D1E1C;
+  --info: #7DB7E3;
+  --info-soft: #1A2F40;
+
+  --overlay: rgba(0, 0, 0, .65);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-2: 0 8px 28px rgba(0, 0, 0, .5);
+  --shadow-nav: 0 -4px 20px rgba(0, 0, 0, .4);
+  color-scheme: dark;
+}
+
+/* ---- palettes (light) ---- */
+[data-palette="monsoon"] { --primary: #1D5F7E; --primary-soft: #D9E9F1; --primary-strong: #13445B; --accent: #C98A0B; --accent-soft: #F8EBCB; --accent-ink: #1C1300; }
+[data-palette="harvest"] { --primary: #8A5300; --primary-soft: #F5E5C9; --primary-strong: #643C00; --accent: #2F6B45; --accent-soft: #DDEBDF; }
+[data-palette="cherry"]  { --primary: #9B2C2C; --primary-soft: #F5DCDA; --primary-strong: #721F1F; --accent: #2F6B45; --accent-soft: #DDEBDF; }
+[data-palette="sunlight"] {
+  --bg: #FFFFFF; --surface: #FFFFFF; --surface-2: #F1F1F1; --surface-3: #E4E4E4;
+  --ink: #000000; --ink-2: #1A1A1A; --muted: #3D3D3D; --line: #1A1A1A; --line-strong: #000000;
+  --primary: #0A5A1E; --primary-soft: #DFF0E2; --primary-strong: #063D14;
+  --accent: #A12A00; --accent-soft: #FBE3D8; --border-w: 2px;
+}
+
+/* ---- palettes (dark) ---- */
+[data-theme="dark"][data-palette="monsoon"] { --primary: #6EC1E4; --primary-ink: #04202D; --primary-soft: #183444; --primary-strong: #A3DBF2; --accent: #F2C14E; --accent-ink: #231800; --accent-soft: #3A2F12; }
+[data-theme="dark"][data-palette="harvest"] { --primary: #F0B455; --primary-ink: #2A1800; --primary-soft: #3B2B12; --primary-strong: #F7CF8E; --accent: #62C08D; --accent-ink: #082114; --accent-soft: #1D3A2A; }
+[data-theme="dark"][data-palette="cherry"]  { --primary: #F08F86; --primary-ink: #2C0907; --primary-soft: #3D1E1C; --primary-strong: #F7B8B1; --accent: #62C08D; --accent-ink: #082114; --accent-soft: #1D3A2A; }
+[data-theme="dark"][data-palette="sunlight"] {
+  --bg: #000000; --surface: #000000; --surface-2: #141414; --surface-3: #222222;
+  --ink: #FFFFFF; --ink-2: #F0F0F0; --muted: #CFCFCF; --line: #FFFFFF; --line-strong: #FFFFFF;
+  --primary: #7CFF9B; --primary-ink: #000000; --primary-soft: #0F2A16; --primary-strong: #B5FFC6;
+  --accent: #FFB38F; --accent-ink: #000000; --accent-soft: #3A1A0C; --border-w: 2px;
+}

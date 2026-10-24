@@ -20,3 +20,14 @@ markdown rendering (XSS), plaintext long-lived session tokens, no login rate lim
 RAG index, base64 photos in DB.
 
 **Tests**: n/a (planning).
+
+## 2026-10-25 · Phase 1 — Design
+**Done**
+- New "Field Notebook" design language for farmers (not a copy of the original neo-brutalist UI): warm paper
+  background, leaf-green primary, coffee-cherry accent, Satoshi (bundled woff2 + FFL licence) with Noto Sans Kannada
+  fallback, 54 px controls, icon+text everywhere, bottom sheets, undo toasts.
+- `design/tokens.css` (5 palettes × light/dark incl. high-contrast *Sunlight*), `design/components.css`
+  (≈60 components), `design/mockups.html` (16 phone screens at 393×852), [DESIGN.md](DESIGN.md).
+- Reviewed the mockups in the browser in light and dark; fixed FAB placement inside phone frames.
+
+**Tests**: visual review only (design phase).

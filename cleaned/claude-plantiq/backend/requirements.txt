@@ -1,0 +1,38 @@
+# --- Web / API ---
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+pydantic>=2.7
+email-validator>=2.1
+httpx>=0.27
+python-dotenv>=1.0
+
+# --- Persistence ---
+sqlalchemy>=2.0
+psycopg2-binary>=2.9.9
+
+# --- Security ---
+argon2-cffi>=23.1
+bcrypt>=4.1            # verify legacy bcrypt hashes migrated from the original app
+pyjwt>=2.8
+
+# --- ML: CNN (same ResNet-50 weights as the original app) ---
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.5.1
+torchvision==0.20.1
+torchaudio==2.5.1
+pillow>=10.3
+numpy>=1.26
+
+# --- ML: Hybrid RAG ---
+faiss-cpu>=1.8
+sentence-transformers>=3.0
+rank-bm25>=0.2.2
+pymupdf>=1.24
+
+# --- ML: Speech-to-text (local IndicConformer + Svarah Whisper) ---
+transformers>=4.44
+soundfile>=0.12
+imageio-ffmpeg>=0.5
+onnxruntime>=1.18
+scipy>=1.13

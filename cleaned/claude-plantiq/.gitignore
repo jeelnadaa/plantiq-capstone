@@ -1,0 +1,31 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+backend/.env
+backend/*.db
+backend/*.db-*
+backend/var/
+backend/data/index/
+backend/static/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+mobile/www/
+mobile/android/app/build/
+mobile/android/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/app/src/main/assets/public/
+mobile/android/.idea/
+mobile/android/capacitor-cordova-android-plugins/
+
+# Build outputs
+dist/
+*.log

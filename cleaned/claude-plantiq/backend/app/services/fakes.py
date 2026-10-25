@@ -49,7 +49,7 @@ class FakeRetriever:
     def info(self) -> dict:
         return {"profile": "fake", "embedder": "fake", "reranker": None, "chunks": len(FAKE_CHUNKS), "device": "cpu"}
 
-    def search(self, query: str, top_k: int = 3, topic_filter: str | None = None) -> list[dict]:
+    def search(self, query: str, top_k: int = 3, topic_filter: str | None = None, rerank_query: str | None = None) -> list[dict]:
         q = set(tokenize(query))
         if not q:
             return []

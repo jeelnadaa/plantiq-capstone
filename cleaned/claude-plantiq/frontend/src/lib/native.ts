@@ -3,6 +3,8 @@ import { Capacitor } from "@capacitor/core";
 
 export function isNative(): boolean {
   try {
+    const w = window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } };
+    if (w.Capacitor?.isNativePlatform?.()) return true;
     return Capacitor.isNativePlatform();
   } catch {
     return false;

@@ -206,3 +206,20 @@ def test_generate_advisory_blended_and_offline_kannada():
 def test_fake_cnn_is_deterministic():
     a, b = FakeCNN().predict(b"abc"), FakeCNN().predict(b"abc")
     assert a == b and abs(sum(a["distribution"].values()) - 100) < 0.1
+
+
+def test_gemini_disables_thinking_and_rejects_truncated_answers(monkeypatch):
+    seen = []
+
+    def handler(req):
+        seen.append(json.loads(req.content))
+        if "googleapis" in str(req.url):
+            return httpx.Response(200, json={"candidates": [{"finishReason": "MAX_TOKENS",
+                                                             "content": {"parts": [{"text": "ನಿಮ್ಮ ಕಾಫಿ"}]}}]})
+        return httpx.Response(200, json={"choices": [{"message": {"content": "full groq answer"}}]})
+
+    monkeypatch.setattr(settings, "GEMINI_MODEL", "gemini-2.5-flash")
+    res = _llm(handler, monkeypatch).generate("p", max_tokens=900)
+    gen = seen[0]["generationConfig"]
+    assert gen["thinkingConfig"] == {"thinkingBudget": 0} and gen["maxOutputTokens"] >= 1800
+    assert res.provider == "groq" and res.text == "full groq answer"

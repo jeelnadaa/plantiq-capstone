@@ -68,18 +68,24 @@ class LLMClient:
 
     # ------------------------------------------------------------------ text
     def _gemini(self, system: str, prompt: str, temperature: float, max_tokens: int, json_mode: bool) -> str:
-        body: dict = {
-            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": temperature, "maxOutputTokens": max_tokens},
-        }
+        # Gemini 2.5 "thinking" tokens count against maxOutputTokens and silently truncate answers
+        # (observed: 30–160 character advisories). Grounded advisories don't need it, so disable thinking
+        # on Flash models and give the answer itself a generous budget (Kannada is token-heavy).
+        gen: dict = {"temperature": temperature, "maxOutputTokens": max(2048, max_tokens * 2)}
+        if "flash" in settings.GEMINI_MODEL:
+            gen["thinkingConfig"] = {"thinkingBudget": 0}
+        body: dict = {"contents": [{"role": "user", "parts": [{"text": prompt}]}], "generationConfig": gen}
         if system:
             body["systemInstruction"] = {"parts": [{"text": system}]}
         if json_mode:
-            body["generationConfig"]["responseMimeType"] = "application/json"
+            gen["responseMimeType"] = "application/json"
         data = self._post(GEMINI_URL.format(model=settings.GEMINI_MODEL),
                           headers={"x-goog-api-key": settings.GEMINI_API_KEY}, json_body=body)
-        parts = (data.get("candidates") or [{}])[0].get("content", {}).get("parts", [])
-        return "".join(p.get("text", "") for p in parts if not p.get("thought")).strip()
+        cand = (data.get("candidates") or [{}])[0]
+        text = "".join(p.get("text", "") for p in cand.get("content", {}).get("parts", []) if not p.get("thought")).strip()
+        if cand.get("finishReason") == "MAX_TOKENS" and not json_mode:
+            raise RuntimeError("Gemini answer truncated (MAX_TOKENS)")  # let Groq answer instead
+        return text
 
     def _groq(self, system: str, prompt: str, temperature: float, max_tokens: int, json_mode: bool) -> str:
         messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]

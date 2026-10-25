@@ -12,6 +12,9 @@ from dotenv import load_dotenv
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 load_dotenv(BACKEND_DIR / ".env", override=False)
+# transformers 5.x loads .bin checkpoints (bge-m3, bge-reranker-v2-m3 ship no safetensors) with a thread pool
+# that intermittently segfaults on Windows. Sequential loading is stable and only a few seconds slower.
+os.environ.setdefault("HF_DEACTIVATE_ASYNC_LOAD", "1")
 
 _DEFAULT_SECRET_SENTINEL = "change-me"
 _TRUE = {"1", "true", "yes", "on", "t", "y"}

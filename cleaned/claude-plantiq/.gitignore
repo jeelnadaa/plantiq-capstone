@@ -29,3 +29,5 @@ mobile/android/capacitor-cordova-android-plugins/
 # Build outputs
 dist/
 *.log
+mobile/android/.jtmp/
+backend/data/models/hf/

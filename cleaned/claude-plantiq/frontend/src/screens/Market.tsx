@@ -100,7 +100,7 @@ export function Market() {
   return (
     <div className="screen" data-testid="market">
       <AppBar title={t("marketTitle")} icon={<Store />} />
-      <main className="screen-body">
+      <main className="screen-body" style={{ paddingBottom: 190 }}>
         <OfflineBanner />
         <div className="segmented" role="tablist">
           <button role="tab" aria-selected={tab === "all"} className={tab === "all" ? "active" : ""} onClick={() => setTab("all")} data-testid="tab-all"><Store />{t("allLots")}</button>

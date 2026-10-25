@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from pathlib import Path
 
 from app.core.config import settings
 
@@ -33,6 +34,16 @@ BALANCED = RagProfile(
     fp16=False,
 )
 PROFILES = {"quality": QUALITY, "balanced": BALANCED}
+
+
+def local_model_dir(model_id: str) -> Path:
+    return settings.DATA_DIR / "models" / "hf" / model_id.replace("/", "__")
+
+
+def resolve_model(model_id: str) -> str:
+    """Prefer a local safetensors copy (scripts/prepare_models.py) over downloading the hub checkpoint."""
+    local = local_model_dir(model_id)
+    return str(local) if (local / "config.json").exists() else model_id
 
 
 def gpu_memory_gb() -> float:

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The backend usually runs on a laptop on the farm Wi-Fi without TLS, so cleartext HTTP must be allowed.
+     Only system CAs are trusted (no user-installed CAs), which limits TLS interception for https servers. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

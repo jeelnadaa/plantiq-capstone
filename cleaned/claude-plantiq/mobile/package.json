@@ -1,0 +1,17 @@
+{
+  "name": "plantiq-mobile",
+  "private": true,
+  "version": "3.0.0",
+  "description": "PlantIQ Android app (Capacitor wrapper around ../frontend)",
+  "scripts": {
+    "sync": "cap sync android",
+    "open": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.1",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/browser": "^7.0.0",
+    "@capacitor/cli": "^7.0.1",
+    "@capacitor/core": "^7.0.1"
+  }
+}

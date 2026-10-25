@@ -50,13 +50,17 @@ def generate_advisory(*, disease: str, confidence: float, env: dict | None, ques
     route = route_query(question, llm) if question else {}
     target = "kn" if language == "kn" or route.get("target_response_language") == "kn" else "en"
     query = expand_query(question, disease, route.get("search_query_english", ""))
-    docs = rag.search(query, top_k=3, topic_filter=DISEASE_TOPIC.get(disease)) if rag else []
+    natural = route.get("search_query_english") or clean_user_text(question, 300) or "symptoms, control and spray schedule"
+    rerank_q = (f"How to keep a healthy coffee plant? {natural}" if disease == "Healthy"
+                else f"How to manage {display_name(disease)} on coffee? {natural}")
+    docs = rag.search(query, top_k=3, topic_filter=DISEASE_TOPIC.get(disease), rerank_query=rerank_q) if rag else []
     top_score = max((d["score"] for d in docs), default=0.0)
 
     reasons = []
     if confidence < settings.CONFIDENCE_THRESHOLD_CNN:
         reasons.append(f"Photo confidence {confidence:.1f}% is below {settings.CONFIDENCE_THRESHOLD_CNN:.0f}%.")
-    if top_score < settings.CONFIDENCE_THRESHOLD_RAG:
+    # A healthy leaf needs no disease protocol, so weak document matches do not make the result uncertain.
+    if disease != "Healthy" and top_score < settings.CONFIDENCE_THRESHOLD_RAG:
         reasons.append(f"Document match {top_score:.2f} is below {settings.CONFIDENCE_THRESHOLD_RAG:.2f}.")
     is_blended = bool(reasons)
 

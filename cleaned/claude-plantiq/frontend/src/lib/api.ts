@@ -67,7 +67,12 @@ export function normalizeServerUrl(input: string): string {
   let url = (input || "").trim().replace(/\s+/g, "");
   if (!url) return "";
   url = url.replace(/\/+$/, "");
-  if (!/^https?:\/\//i.test(url)) url = `http://${url}`;
+  const scheme = /^(https?):\/*/i.exec(url);
+  if (scheme) {
+    const rest = url.slice(scheme[0].length);
+    if (!rest) return "";
+    url = `${scheme[1].toLowerCase()}://${rest}`;
+  } else url = `http://${url}`;
   try {
     const u = new URL(url);
     if (!u.port && u.protocol === "http:" && isPrivateHost(u.hostname)) u.port = String(DEFAULT_PORT);

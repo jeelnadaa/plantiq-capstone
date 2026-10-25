@@ -121,7 +121,9 @@ class HybridRetriever:
                 import torch
 
                 kwargs["model_kwargs"] = {"torch_dtype": torch.float16}
-            reranker = CrossEncoder(profile.reranker, device=device, token=settings.HF_TOKEN or None, **kwargs)
+            from app.services.rag.profiles import resolve_model
+
+            reranker = CrossEncoder(resolve_model(profile.reranker), device=device, token=settings.HF_TOKEN or None, **kwargs)
         except Exception as exc:
             log.warning("Reranker %s unavailable (%s); using RRF scores.", profile.reranker, exc)
         log.info("RAG ready: profile=%s, %d chunks, device=%s", profile.name, len(chunks), device)
@@ -182,11 +184,15 @@ class HybridRetriever:
             "metadata": {"page": c.get("page", 1), "section": c.get("section", ""), "topic": c.get("topic", "")},
         }
 
-    def search(self, query: str, top_k: int = 3, topic_filter: str | None = None, pool: int = 20) -> list[dict]:
+    def search(self, query: str, top_k: int = 3, topic_filter: str | None = None, pool: int = 20,
+               rerank_query: str | None = None) -> list[dict]:
+        """`query` drives dense+BM25 recall (keyword expansion helps); `rerank_query` is the natural-language
+        question the cross-encoder scores against (cross-encoders are calibrated on questions, not keyword soup)."""
         query = (query or "").strip()
         if not query or not self.chunks:
             return []
-        key = f"{query}|{top_k}|{topic_filter}"
+        rq = (rerank_query or query).strip()
+        key = f"{query}|{rq}|{top_k}|{topic_filter}"
         with self._lock:
             if key in self._cache:
                 self._cache.move_to_end(key)
@@ -199,10 +205,10 @@ class HybridRetriever:
             return []
         ordered = sorted(fused, key=fused.get, reverse=True)
         on_topic = [(i, self.chunks[i]) for i in ordered if not topic_filter or self.chunks[i].get("topic") == topic_filter]
-        final = mmr_select(self._rerank(query, on_topic[:k], fused)[: max(top_k * 3, 6)], top_k) if on_topic else []
+        final = mmr_select(self._rerank(rq, on_topic[:k], fused)[: max(top_k * 3, 6)], top_k) if on_topic else []
         if len(final) < top_k:  # relax the topic filter rather than return too little; on-topic stays first
             off_topic = [(i, c) for i, c in ((i, self.chunks[i]) for i in ordered) if (i, c) not in on_topic][:k]
-            final += mmr_select(self._rerank(query, off_topic, fused), top_k - len(final))
+            final += mmr_select(self._rerank(rq, off_topic, fused), top_k - len(final))
         log.info("RAG search %.0f ms: dense=%d sparse=%d -> %d (top %.2f)", (time.perf_counter() - t0) * 1000,
                  len(dense), len(sparse), len(final), final[0]["score"] if final else 0)
         with self._lock:

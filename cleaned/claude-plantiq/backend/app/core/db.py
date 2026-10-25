@@ -10,6 +10,7 @@ from collections.abc import Iterator
 
 from sqlalchemy import create_engine, event, inspect, text
 from sqlalchemy.engine import Engine, make_url
+from sqlalchemy.exc import IntegrityError, ProgrammingError
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from app.core.config import settings
@@ -49,8 +50,11 @@ def _ensure_postgres_database(url: str) -> None:
         with admin.connect() as conn:
             exists = conn.execute(text("SELECT 1 FROM pg_database WHERE datname = :n"), {"n": parsed.database}).scalar()
             if not exists:
-                conn.execute(text(f'CREATE DATABASE "{parsed.database}"'))
-                log.info("Created PostgreSQL database %s", parsed.database)
+                try:
+                    conn.execute(text(f'CREATE DATABASE "{parsed.database}"'))
+                    log.info("Created PostgreSQL database %s", parsed.database)
+                except (IntegrityError, ProgrammingError):
+                    pass  # another process created it at the same moment
     finally:
         admin.dispose()
 

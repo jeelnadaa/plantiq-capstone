@@ -13,7 +13,7 @@ from pathlib import Path
 
 from app.core.config import settings
 from app.services.rag.chunking import chunk_page, detect_topic
-from app.services.rag.profiles import RagProfile, choose_profile
+from app.services.rag.profiles import RagProfile, choose_profile, resolve_model
 
 log = logging.getLogger("plantiq.rag")
 
@@ -72,7 +72,7 @@ def load_embedder(profile: RagProfile, device: str):
         import torch
 
         kwargs["model_kwargs"] = {"torch_dtype": torch.float16}
-    return SentenceTransformer(profile.embedder, device=device, token=settings.HF_TOKEN or None, **kwargs)
+    return SentenceTransformer(resolve_model(profile.embedder), device=device, token=settings.HF_TOKEN or None, **kwargs)
 
 
 def build_index(profile: RagProfile | None = None, docs_dir: Path | None = None, index_dir: Path | None = None,

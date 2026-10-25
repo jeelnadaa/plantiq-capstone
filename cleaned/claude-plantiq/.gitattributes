@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.woff2 binary
+*.pth binary
+*.pdf binary
+*.jpg binary
+*.png binary
+*.apk binary
+*.bat text eol=crlf

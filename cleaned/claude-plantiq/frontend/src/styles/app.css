@@ -1,0 +1,23 @@
+/* App-only tweaks on top of the shared design system. */
+#root { min-height: 100dvh; }
+button { -webkit-appearance: none; appearance: none; }
+button.dropzone { width: 100%; font: inherit; }
+.advice code { background: var(--surface-2); border-radius: 6px; padding: 1px 6px; font-size: .92em; }
+.msg .bubble .advice { font-size: var(--fs-md); }
+.msg .bubble .advice h4 { margin-top: 8px; }
+.msg.me .bubble .advice, .msg.me .bubble .advice h4 { color: inherit; }
+.appbar .brand { flex: 1; min-width: 0; }
+.appbar .brand > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.appbar .brand > span > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.appbar > .icon-btn, .appbar > .lang-pill, .appbar > .btn { flex: none; }
+.screen { overflow-x: hidden; }
+.lang-pill { white-space: nowrap; }
+.toast { z-index: 90; }
+.sheet .menu-item { min-height: 56px; }
+.chip[disabled] { opacity: .45; cursor: not-allowed; }
+.btn-ghost:hover { background: var(--primary-soft); }
+input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+@media (max-width: 360px) {
+  .hero-actions .btn { font-size: var(--fs-sm); }
+  .contact-row .btn { font-size: var(--fs-xs); gap: 4px; }
+}

@@ -17,21 +17,21 @@ bcrypt>=4.1            # verify legacy bcrypt hashes migrated from the original 
 pyjwt>=2.8
 
 # --- ML: CNN (same ResNet-50 weights as the original app) ---
---extra-index-url https://download.pytorch.org/whl/cu121
-torch==2.5.1
-torchvision==0.20.1
-torchaudio==2.5.1
+--extra-index-url https://download.pytorch.org/whl/cu126
+torch==2.7.1          # >=2.6 required: CVE-2025-32434 (torch.load RCE even with weights_only)
+torchvision==0.22.1
+torchaudio==2.7.1
 pillow>=10.3
 numpy>=1.26
 
 # --- ML: Hybrid RAG ---
 faiss-cpu>=1.8
-sentence-transformers==5.7.0   # pinned: newer releases need torch>=2.6
+sentence-transformers==5.7.0   # pinned: tested with transformers 5.15
 rank-bm25>=0.2.2
 pymupdf>=1.24
 
 # --- ML: Speech-to-text (local IndicConformer + Svarah Whisper) ---
-transformers==5.15.0           # pinned: same as original app, works with torch 2.5.1
+transformers==5.15.0           # pinned: same as the original app (IndicConformer remote code)
 soundfile>=0.12
 imageio-ffmpeg>=0.5
 onnxruntime>=1.18

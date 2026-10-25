@@ -54,7 +54,7 @@ RAG index, base64 photos in DB.
 
 ## 2026-10-25 · Phases 6–7 — Frontend
 **Done**: React + TS SPA (hash router → works in APK): server setup, sign-in/up, scanner, diagnosis, chat, market, history,
-profile and all sheets; EN/KN dictionaries (≈480 keys each); 5 palettes × light/dark; XSS-safe markdown.
+profile and all sheets; EN/KN dictionaries (425 keys each); 5 palettes × light/dark; XSS-safe markdown.
 **Browser testing at 375×812** found and fixed: app-bar overflow, infinite reload loop (unstable error helper), Escape closing
 every sheet, sheet re-registration order, FAB covering listing actions, `http://` URL normalisation.
 
@@ -75,3 +75,14 @@ flagged uncertain; bge models stored as safetensors (`scripts/prepare_models.py`
 Postgres create-database race.
 **Docs**: SECURITY.md, TESTING.md, API.md, docs/DEPLOYMENT.md, README; FEATURES.md all ✅.
 **Open items**: on-device APK test; moderator UI for reports; Redis rate limiter if scaled to multiple workers.
+
+## 2026-10-25 · Documentation & language switch
+**Done**
+- Language switch (EN ⇄ ಕನ್ನಡ) now on every screen's top bar (History, Profile, Chat included) and inside every bottom sheet;
+  the button names the target language. New E2E test switches language mid-form.
+- `docs/`: project overview, user flows (demo script), system architecture (diagrams, data model, request lifecycle),
+  technical documents for Module 1 CNN, Module 2 RAG + environmental data, Module 3 Chatbot, Module 4 Market discovery,
+  platform (accounts, APK, languages, design), capstone panel Q&A guide.
+- SECURITY.md rewritten: platform-wide measures + per-module measures, each mapped to the test that verifies it.
+- TESTING.md is now a generated matrix (`scripts/test_matrix.py` runs every suite and reads the JUnit reports):
+  **354 / 354 passed** (backend 286, real-model 4, vitest 52, Playwright 12).

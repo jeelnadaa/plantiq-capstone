@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
-import { Languages, Palette, Server, Sprout } from "lucide-react";
+import { Palette, Server, Sprout } from "lucide-react";
 import { useI18n } from "../lib/i18n";
+import { LangSwitch } from "./LangSwitch";
 import { useServerStatus } from "../lib/server-status";
 import { ServerSettings } from "./modals/ServerSettings";
 import { PalettePicker } from "./modals/PalettePicker";
@@ -31,18 +32,17 @@ export function AppBar({ title, icon, left, right, minimal }: Props) {
         )}
         {right}
         {!minimal && (
-          <>
-            <button className="icon-btn" onClick={() => setServerOpen(true)} aria-label={`${t("server")}: ${statusLabel}`} title={statusLabel} data-testid="server-button">
-              <Server />
-              <span className={`status-dot ${status === "ok" ? "ok" : status === "warn" ? "warn" : status === "down" ? "down" : ""}`} />
-            </button>
-            <button className="lang-pill" onClick={toggle} aria-label={t("language")} data-testid="lang-toggle">
-              <Languages /> {t("langShort")}
-            </button>
-            <button className="icon-btn" onClick={() => setPaletteOpen(true)} aria-label={t("colourTheme")}>
-              <Palette />
-            </button>
-          </>
+          <button className="icon-btn" onClick={() => setServerOpen(true)} aria-label={`${t("server")}: ${statusLabel}`} title={statusLabel} data-testid="server-button">
+            <Server />
+            <span className={`status-dot ${status === "ok" ? "ok" : status === "warn" ? "warn" : status === "down" ? "down" : ""}`} />
+          </button>
+        )}
+        {/* Language switch is on every screen; it names the language you switch TO. */}
+        <LangSwitch onClick={toggle} />
+        {!minimal && (
+          <button className="icon-btn" onClick={() => setPaletteOpen(true)} aria-label={t("colourTheme")}>
+            <Palette />
+          </button>
         )}
       </header>
       <ServerSettings open={serverOpen} onClose={() => setServerOpen(false)} />
@@ -50,3 +50,4 @@ export function AppBar({ title, icon, left, right, minimal }: Props) {
     </>
   );
 }
+

@@ -186,6 +186,16 @@ test.describe("marketplace", () => {
 });
 
 test.describe("settings, language and accessibility", () => {
+  test("language can be switched inside an open sheet (anywhere in the app)", async ({ page }) => {
+    await signUp(page);
+    await page.getByTestId("nav-navMarket").click();
+    await page.getByTestId("sell-fab").click();
+    await page.getByTestId("listing-form").getByTestId("lang-toggle").click();
+    await expect(page.getByText("ನಿಮ್ಮ ಬೆಳೆ ಮಾರಿ")).toBeVisible();
+    await page.getByTestId("listing-form").getByTestId("lang-toggle").click();
+    await expect(page.getByText("Sell your crop")).toBeVisible();
+  });
+
   test("Kannada toggle, palette, dark mode, server ping", async ({ page }) => {
     await signUp(page);
     await page.getByTestId("lang-toggle").click();
@@ -226,6 +236,7 @@ test.describe("settings, language and accessibility", () => {
       await page.getByTestId(`nav-${nav}`).click();
       await page.waitForTimeout(300);
       await noHorizontalScroll(page);
+      await expect(page.getByTestId("lang-toggle").first(), `${nav}: language switch`).toBeVisible();
       const problems = await page.evaluate(() => {
         const out: string[] = [];
         document.querySelectorAll<HTMLElement>("button, a[href], input:not([type=hidden]), select, textarea").forEach((el) => {

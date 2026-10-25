@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { pushBackHandler } from "../lib/native";
 import { useI18n } from "../lib/i18n";
+import { LangSwitch } from "./LangSwitch";
 
 type Props = {
   open: boolean;
@@ -19,7 +20,7 @@ type Props = {
 
 /** Bottom sheet (or centred dialog) with backdrop, Esc, Android back and focus handling. */
 export function Sheet({ open, onClose, title, icon, iconTone = "default", center, children, headerExtra, testId, dismissable = true }: Props) {
-  const { t } = useI18n();
+  const { t, toggle } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const closeRef = useRef(onClose);
@@ -69,6 +70,7 @@ export function Sheet({ open, onClose, title, icon, iconTone = "default", center
             {icon && <div className={`sheet-ico ${iconTone !== "default" ? iconTone : ""}`}>{icon}</div>}
             <div className="h2" id={titleId}>{title}</div>
             {headerExtra}
+            {!center && <LangSwitch onClick={toggle} compact />}
             {dismissable && (
               <button className="icon-btn" onClick={onClose} aria-label={t("close")} data-close>
                 <X />

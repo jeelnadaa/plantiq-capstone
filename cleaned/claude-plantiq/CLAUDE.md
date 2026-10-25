@@ -27,6 +27,9 @@ npm run build      # → dist/, copied into backend/static by scripts/sync_web.p
 npm test           # vitest
 npm run e2e        # Playwright, Pixel-7 viewport
 
+# all tests → TESTING.md matrix (from claude-plantiq)
+python scripts/test_matrix.py # --skip-ml to skip real-model tests, --no-run to rebuild from reports
+
 # mobile (from claude-plantiq)
 python scripts/build_apk.py   # builds frontend, syncs Capacitor, assembles → dist/PlantIQ-claude.apk
 ```
@@ -47,4 +50,5 @@ python scripts/build_apk.py   # builds frontend, syncs Capacitor, assembles → 
 
 ## Testing policy
 Markers: `unit`, `integration`, `functional`, `security`, `nonfunctional`, `ml`. A change is done when the
-relevant suite is green and a test covers it. Record suite counts in progress.md.
+relevant suite is green and a test covers it. Record suite counts in progress.md and regenerate TESTING.md with `scripts/test_matrix.py`.
+Documentation lives in docs/ (overview, flows, architecture, one file per module); update the module doc when behaviour changes.

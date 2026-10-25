@@ -35,27 +35,36 @@ Open `http://localhost:8000` for the web app, or install `release/PlantIQ-claude
 - **History**: server-side, grouped by day, filters, details, delete & clear-all with 3-second undo.
 - **Account**: sign-up with phone and/or email, strength meter, username availability, sign-in with phone/email/username,
   lockout countdown, profile edit, password change, signed-in devices, sign out everywhere, delete account.
-- **App**: EN/ಕನ್ನಡ toggle, dark mode, 5 colour themes incl. high-contrast "Sunlight", server status + ping, offline banner,
+- **App**: EN/ಕನ್ನಡ switch on every screen and in every sheet, dark mode, 5 colour themes incl. high-contrast "Sunlight", server status + ping, offline banner,
   Android back button, first-run server setup.
 
 ## Development
 ```bash
+python scripts/test_matrix.py                                # run ALL suites → regenerate TESTING.md
 cd backend  && .venv/Scripts/python -m pytest -m "not ml"   # 286 tests, ~30 s
-cd frontend && npm test && npm run e2e                       # 52 vitest + 11 Playwright (Pixel 7)
+cd frontend && npm test && npm run e2e                       # 52 vitest + 12 Playwright (Pixel 7)
 cd frontend && npm run dev                                   # Vite on :5173, proxies /api to :8000
 python scripts/build_apk.py                                  # → dist/PlantIQ-claude.apk
 ```
 Testing details: [TESTING.md](TESTING.md). Security: [SECURITY.md](SECURITY.md). Endpoints: [API.md](API.md).
 
 ## Documents
+**Start with [docs/README.md](docs/README.md)** — overview, user flows, architecture, one technical document per module
+(1 CNN · 2 RAG + environmental data · 3 Chatbot · 4 Market discovery), platform, and a capstone panel Q&A guide.
+
 | File | Purpose |
 |---|---|
+| [docs/01-project-overview.md](docs/01-project-overview.md) | Problem, solution, four modules, stack |
+| [docs/02-user-flows.md](docs/02-user-flows.md) | Normal flow screen by screen + demo script |
+| [docs/03-system-architecture.md](docs/03-system-architecture.md) | Components, data model, request lifecycle, deployment |
+| [docs/modules/](docs/modules/) | Technical deep-dive per module |
+| [docs/05-panel-guide.md](docs/05-panel-guide.md) | Likely panel questions with answers |
 | [plan.md](plan.md) | Architecture and phased plan |
 | [CLAUDE.md](CLAUDE.md) | Working agreement / commands |
 | [FEATURES.md](FEATURES.md) | Feature parity matrix vs. the original app |
 | [progress.md](progress.md) | Phase-by-phase log |
 | [DESIGN.md](DESIGN.md) | Design system and rationale |
-| [SECURITY.md](SECURITY.md) | Threats, controls, fixed vulnerabilities |
-| [TESTING.md](TESTING.md) | Test suites, coverage, real-model results |
+| [SECURITY.md](SECURITY.md) | Security measures by module, with the test that verifies each |
+| [TESTING.md](TESTING.md) | Test matrix (354 tests, module × type) with results — regenerate with `python scripts/test_matrix.py` |
 | [API.md](API.md) | Endpoint reference |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Run the server, install the APK, cloud, signing |

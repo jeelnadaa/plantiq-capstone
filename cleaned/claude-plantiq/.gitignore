@@ -32,3 +32,4 @@ dist/
 mobile/android/.jtmp/
 backend/data/models/hf/
 *.err
+test-reports/

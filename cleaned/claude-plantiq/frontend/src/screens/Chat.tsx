@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Crosshair, ImagePlus, Languages, MapPin, MessageSquareText, PanelLeft, Paperclip, Pencil, SendHorizontal, Sprout, SquarePen, Trash2, X } from "lucide-react";
+import { Crosshair, ImagePlus, MapPin, MessageSquareText, PanelLeft, Paperclip, Pencil, SendHorizontal, Sprout, SquarePen, Trash2, X } from "lucide-react";
 import { AppBar } from "../components/AppBar";
 import { BottomNav } from "../components/BottomNav";
 import { Sheet } from "../components/Sheet";
@@ -18,7 +18,7 @@ import type { ChatResponse, Handoff, Message, Scan, Thread } from "../lib/types"
 type Attachment = { name: string; preview: string; file?: File; mediaId?: string; fromHistory?: boolean; disease?: string };
 
 export function Chat() {
-  const { t, lang, toggle } = useI18n();
+  const { t, lang } = useI18n();
   const toast = useToast();
   const errText = useErrorText();
   const { coords, env, hasCoords, requestGps, setManual } = useLocation2();
@@ -139,7 +139,6 @@ export function Chat() {
         title={<span className="stack" style={{ gap: 0 }}><span style={{ fontSize: "1.05rem" }}>{current?.title ?? t("chatTitle")}</span>
           {current && <span className="caption" style={{ fontWeight: 600 }}>{t("messagesCount", { n: current.message_count })}</span>}</span>}
         right={<>
-          <button className="lang-pill" onClick={toggle} aria-label={t("language")}><Languages />{t("langShort")}</button>
           <button className="icon-btn" onClick={newChat} aria-label={t("newChat")} data-testid="new-chat"><SquarePen /></button>
         </>}
       />

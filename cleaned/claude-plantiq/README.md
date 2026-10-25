@@ -11,7 +11,7 @@ chat in English or Kannada (with voice), and buy/sell coffee lots in a local mar
 ```bash
 scripts\run_backend.bat                    # Windows (./scripts/run_backend.sh on Linux/macOS)
 ```
-Open `http://localhost:8000` for the web app, or install `release/PlantIQ-claude-3.0.0.apk` on an Android phone and enter the
+Open `http://localhost:8000` for the web app, or install `release/PlantIQ-3.0.0.apk` on an Android phone and enter the
 `Phone:` address the server prints. Full instructions: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## What's inside
@@ -44,7 +44,7 @@ python scripts/test_matrix.py                                # run ALL suites �
 cd backend  && .venv/Scripts/python -m pytest -m "not ml"   # 286 tests, ~30 s
 cd frontend && npm test && npm run e2e                       # 52 vitest + 12 Playwright (Pixel 7)
 cd frontend && npm run dev                                   # Vite on :5173, proxies /api to :8000
-python scripts/build_apk.py                                  # → dist/PlantIQ-claude.apk
+python scripts/build_apk.py                                  # → dist/PlantIQ.apk
 ```
 Testing details: [TESTING.md](TESTING.md). Security: [SECURITY.md](SECURITY.md). Endpoints: [API.md](API.md).
 

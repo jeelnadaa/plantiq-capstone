@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "ai.plantiq.claude"
+    namespace "ai.plantiq"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "ai.plantiq.claude"
+        applicationId "ai.plantiq"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3

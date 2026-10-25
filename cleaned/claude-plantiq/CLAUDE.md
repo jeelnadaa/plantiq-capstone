@@ -31,7 +31,7 @@ npm run e2e        # Playwright, Pixel-7 viewport
 python scripts/test_matrix.py # --skip-ml to skip real-model tests, --no-run to rebuild from reports
 
 # mobile (from claude-plantiq)
-python scripts/build_apk.py   # builds frontend, syncs Capacitor, assembles → dist/PlantIQ-claude.apk
+python scripts/build_apk.py   # builds frontend, syncs Capacitor, assembles → dist/PlantIQ.apk
 ```
 
 ## Conventions

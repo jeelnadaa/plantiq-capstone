@@ -201,12 +201,12 @@ GMaps guide, validation, delete confirm, report, image picker. All copy in EN an
   SQL-injection strings, prompt-injection, CORS, headers, secret redaction.
 
 ### Phase 9 — Mobile & packaging
-- Capacitor 7 Android (`ai.plantiq.claude`), plugins: App (back button), Browser, Preferences.
+- Capacitor 7 Android (`ai.plantiq`), plugins: App (back button), Browser, Preferences.
 - First-run screen asks for the backend URL (with LAN-IP hint and ping test); changeable anytime from the
   header server button; stored in Preferences/localStorage; all requests built from it at call time.
 - Android network-security-config allows cleartext only because LAN laptops have no TLS — documented, and
   HTTPS URLs are recommended/flagged in the UI.
-- `scripts/build_apk.ps1|.py` → `dist/PlantIQ-claude.apk`; `scripts/run_backend.*`, `backend/Dockerfile`.
+- `scripts/build_apk.ps1|.py` → `dist/PlantIQ.apk`; `scripts/run_backend.*`, `backend/Dockerfile`.
 
 ---
 
@@ -222,6 +222,6 @@ GMaps guide, validation, delete confirm, report, image picker. All copy in EN an
 ## 7. Definition of done
 - FEATURES.md: every row ✅.
 - All test suites green; numbers recorded in progress.md and TESTING.md.
-- `dist/PlantIQ-claude.apk` built; backend starts with `scripts/run_backend` and the APK connects via the
+- `dist/PlantIQ.apk` built; backend starts with `scripts/run_backend` and the APK connects via the
   server settings screen.
 - README quick-start reproducible; all work committed locally, not pushed.

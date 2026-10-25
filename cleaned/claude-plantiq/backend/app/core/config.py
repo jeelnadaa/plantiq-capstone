@@ -166,7 +166,7 @@ class Settings:
         if pg_host:
             user = os.getenv("POSTGRES_USER", "postgres")
             port = os.getenv("POSTGRES_PORT", "5432")
-            db = os.getenv("POSTGRES_DB", "plantiq_claude")
+            db = os.getenv("POSTGRES_DB", "plantiq_app")
             auth = f"{user}:{quote_plus(pg_password)}" if pg_password else user
             return f"postgresql+psycopg2://{auth}@{pg_host}:{port}/{db}"
         return f"sqlite:///{(self.VAR_DIR / 'plantiq.db').as_posix()}"

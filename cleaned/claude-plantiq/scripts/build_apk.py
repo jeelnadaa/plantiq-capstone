@@ -1,6 +1,6 @@
 """Build the PlantIQ Android APK.
 
-    python scripts/build_apk.py            # debug-signed APK  → dist/PlantIQ-claude.apk
+    python scripts/build_apk.py            # debug-signed APK  → dist/PlantIQ.apk
     python scripts/build_apk.py --release  # unsigned release APK (sign with your keystore, see docs/DEPLOYMENT.md)
 
 Steps: npm run build (frontend) → copy dist into mobile/www → cap sync android → gradle assemble.
@@ -88,7 +88,7 @@ def main() -> None:
         sys.exit(f"No APK produced in {out_dir}")
     dist = ROOT / "dist"
     dist.mkdir(exist_ok=True)
-    target = dist / ("PlantIQ-claude-release-unsigned.apk" if args.release else "PlantIQ-claude.apk")
+    target = dist / ("PlantIQ-release-unsigned.apk" if args.release else "PlantIQ.apk")
     shutil.copy2(apks[0], target)
     print(f"\nAPK ready: {target}  ({target.stat().st_size / 1e6:.1f} MB)")
 

@@ -86,3 +86,9 @@ Postgres create-database race.
 - SECURITY.md rewritten: platform-wide measures + per-module measures, each mapped to the test that verifies it.
 - TESTING.md is now a generated matrix (`scripts/test_matrix.py` runs every suite and reads the JUnit reports):
   **354 / 354 passed** (backend 286, real-model 4, vitest 52, Playwright 12).
+
+## 2026-10-25 · Production naming
+- Android package renamed `ai.plantiq.claude` → **`ai.plantiq`** (applicationId, namespace, MainActivity, strings, Capacitor config).
+- APK outputs renamed: `dist/PlantIQ.apk`, `release/PlantIQ-3.0.0.apk`, `dist/PlantIQ-release-unsigned.apk`.
+- Default Postgres database `plantiq_claude` → `plantiq_app` (kept separate from the original app's `plantiq` database).
+- Note: a phone with the old `ai.plantiq.claude` build installed sees this as a different app — uninstall the old one.

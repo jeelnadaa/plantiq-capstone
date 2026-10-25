@@ -1,4 +1,4 @@
-package ai.plantiq.claude;
+package ai.plantiq;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -14,7 +14,7 @@ Phone:   http://192.168.1.15:8000   ← enter this in the app's Server settings
 Allow Python through the Windows firewall for **private** networks when prompted. Port in use? `set PORT=8010` first.
 
 ## 2. Install the APK
-Copy `dist/PlantIQ-claude.apk` (or `release/PlantIQ-claude-3.0.0.apk`) to the phone and open it (allow "install unknown apps").
+Copy `dist/PlantIQ.apk` (or `release/PlantIQ-3.0.0.apk`) to the phone and open it (allow "install unknown apps").
 On first launch the app asks for the server address — type the `Phone:` address, press **Test**, then **Continue**.
 Change it any time from the server button (top bar) or Profile → Server. Nothing is baked into the APK.
 
@@ -34,7 +34,7 @@ In the app enter `https://your-domain`. A quick public URL for testing: `cloudfl
 ```bash
 keytool -genkey -v -keystore plantiq.jks -alias plantiq -keyalg RSA -keysize 2048 -validity 10000
 python scripts/build_apk.py --release
-apksigner sign --ks plantiq.jks --out PlantIQ-signed.apk dist/PlantIQ-claude-release-unsigned.apk
+apksigner sign --ks plantiq.jks --out PlantIQ-signed.apk dist/PlantIQ-release-unsigned.apk
 ```
 
 ## Configuration

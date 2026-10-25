@@ -33,7 +33,7 @@ The app refreshes transparently once on a 401; if that fails the farmer sees "Yo
 ## 4.2 The Android app
 | Topic | Design |
 |---|---|
-| Packaging | Capacitor 7 wraps the same React app in a native Android shell (`ai.plantiq.claude`, v3.0.0, 4.6 MB) |
+| Packaging | Capacitor 7 wraps the same React app in a native Android shell (`ai.plantiq`, v3.0.0, 4.6 MB) |
 | Routing | Hash router (`#/chat`) so the bundle works from the phone's local files and from the server |
 | Dynamic server URL | First launch asks for the server; **Test** pings `/health` and shows latency; saved on the phone; changeable from the top-bar server button (status dot) or Profile. No address is baked into the APK |
 | URL handling | adds `http://` and port 8000 for LAN addresses, strips trailing slashes, warns when an `http://` address is not on the private LAN |

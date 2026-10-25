@@ -8,7 +8,7 @@ htmlcov/
 backend/.env
 backend/*.db
 backend/*.db-*
-backend/var/
+backend/var*/
 backend/data/index/
 backend/static/
 
@@ -31,3 +31,4 @@ dist/
 *.log
 mobile/android/.jtmp/
 backend/data/models/hf/
+*.err

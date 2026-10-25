@@ -1,0 +1,12 @@
+**/node_modules
+**/.venv
+**/__pycache__
+backend/.env
+backend/var*
+backend/static
+backend/data/index
+frontend/dist
+frontend/test-results
+mobile
+dist
+*.log

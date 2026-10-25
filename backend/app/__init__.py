@@ -1,1 +1,0 @@
-# PlantIQ Backend App Package

@@ -51,30 +51,26 @@ experiments that have not yet been run; values in blue brackets must be filled i
 measurements taken from the implemented system.}}
 }
 
-\author{\IEEEauthorblockN{Jeel Nada}
-\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
-\textit{PES University}\\
-Bengaluru, India \\
-PES2UG23CS357 \tbd{email}}
-\and
-\IEEEauthorblockN{Nidhi N Udupa}
-\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
-\textit{PES University}\\
-Bengaluru, India \\
-PES2UG23CS384 \tbd{email}}
-\and
-\IEEEauthorblockN{Mohammed Ayaan}
-\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering (AI \& ML)} \\
-\textit{PES University}\\
-Bengaluru, India \\
-PES2UG23AM058 \tbd{email}}
-\and
-\IEEEauthorblockN{Prof. Deepti C.}
-\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
-\textit{PES University}\\
-Bengaluru, India \\
-\tbd{email}}
-}
+% Authors are set as an explicit 2 x 2 table with two equal-width columns, so both rows line up.
+% (IEEEtran's \and centres each row by its own widest line, which misaligned the "AI & ML" row.)
+% Styling matches IEEEauthorblockN/A: name in normal size, affiliation lines in italics.
+\newcommand{\authorcell}[3]{%
+  \begin{tabular}[t]{@{}c@{}}
+    {\large #1}\\[0.4ex]
+    \textit{#2}\\
+    \textit{PES University}\\
+    Bengaluru, India\\
+    #3
+  \end{tabular}}
+
+\author{%
+\begin{tabular}{@{}p{0.5\textwidth}@{}p{0.5\textwidth}@{}}
+\centering\authorcell{Jeel Nada}{Dept. of Computer Science and Engineering}{PES2UG23CS357 \tbd{email}} &
+\centering\arraybackslash\authorcell{Nidhi N Udupa}{Dept. of Computer Science and Engineering}{PES2UG23CS384 \tbd{email}} \\
+\addlinespace[3ex]
+\centering\authorcell{Mohammed Ayaan}{Dept. of Computer Science and Engineering (AI \& ML)}{PES2UG23AM058 \tbd{email}} &
+\centering\arraybackslash\authorcell{Prof. Deepti C.}{Dept. of Computer Science and Engineering}{\tbd{email}} \\
+\end{tabular}}
 
 \maketitle
 
@@ -88,7 +84,7 @@ produces a treatment plan grounded in Central Coffee Research Institute extensio
 through a hybrid retriever that fuses multilingual dense search with BM25 by reciprocal rank fusion, reranks with a
 cross-encoder and removes redundancy with maximal marginal relevance; the plan is conditioned on live weather at the
 estate, a rule-based fungal infection risk level and a three-day spray window, and every dose in the generated text is
-audited against the retrieved passages. Module 3 is a conversational assistant for English, Kannada and Kanglish with
+audited against the retrieved passages. Module 3 is a conversational assistant for English and Kannada with
 conversation memory, photo and past-scan hand-off, weather-intent detection and on-device speech recognition for
 Kannada and Indian English. Module 4 is a marketplace that normalises quantities and prices to kilograms and rupees per
 kilogram and ranks lots by great-circle distance. On the development hardware, leaf inference takes 5.3 ms on a laptop
@@ -114,7 +110,7 @@ decision: whether and when to spray also depends on the weather, because rain sh
 washes it off, while sustained high humidity at moderate temperatures favours fungal infection. Elevation and rainfall
 are also known to shape coffee growth and yield in these districts~\cite{patil2022elevation}. Printed extension material
 does not adapt to the conditions of a given day and is largely in English, whereas many growers are most comfortable in
-Kannada, often written or spoken in a mixed Kannada--English register (``Kanglish'').
+Kannada.
 
 Prior coffee-specific work has addressed parts of this problem in isolation. Image classifiers report high accuracy on
 curated datasets~\cite{anudeep2024cnn}; detection combined with retrieval-augmented generation (RAG) has been proposed
@@ -176,7 +172,7 @@ countries, supporting six languages, voice notes and images, and evaluated with 
 faithfulness, relevance and context-precision metrics as well as latency and user engagement. Sapkota
 \textit{et al.}~\cite{sapkota2024mmllm} survey multi-modal LLMs in agriculture and highlight domain-specific data,
 integration with existing systems and robust evaluation as open problems. PlantIQ's chatbot is narrower in crop scope
-but adds Kannada and Kanglish routing, a local Kannada speech model, CNN diagnosis of attached photos and hand-off of
+but adds Kannada language routing, a local Kannada speech model, CNN diagnosis of attached photos and hand-off of
 earlier scans into the conversation.
 
 \subsection{Environmental Context and Market Access}
@@ -550,10 +546,10 @@ weather intent, (viii) retrieves three passages with Module~2's retriever unless
 place name, and (ix) generates the reply with the same provider chain. Both messages are stored.
 
 \subsection{Language Router}
-A short JSON-mode prompt (temperature 0.1) asks the LLM for the detected script (Kannada, Kanglish or English), an
+A short JSON-mode prompt (temperature 0.1) asks the LLM for the detected language (Kannada or English), an
 English search query, whether the message is only a greeting or location, and the target response language. If the LLM
-is unavailable or returns invalid JSON, a heuristic router uses the Kannada Unicode block (U+0C80--U+0CFF), a list of
-common Kanglish words, greeting words, and a single capitalised word as a place name. Kannada script in the message, or
+is unavailable or returns invalid JSON, a heuristic router uses the Kannada Unicode block (U+0C80--U+0CFF), greeting
+words, and a single capitalised word as a place name. Kannada script in the message, or
 the Kannada UI setting, forces a Kannada-script reply.
 
 \subsection{Context Assembly and Safety}
@@ -679,7 +675,7 @@ confusion matrix and inference latency.
 \textit{et al.}~\cite{selvakumar2024rag}, and the LLM without retrieval. Metrics: Recall@3 and nDCG@3 for retrieval;
 RAGAS~\cite{es2023ragas} faithfulness, answer relevance and context precision for generation; the rate of unsupported
 doses; and latency. An ablation removes BM25, reranking and MMR in turn.
-\item \textbf{Module 3.} A set of \tbd{N} questions in English, Kannada and Kanglish. Comparison with the
+\item \textbf{Module 3.} A set of \tbd{N} questions in English and Kannada. Comparison with the
 Farmer.Chat~\cite{singh2024farmerchat} evaluation methodology: answered rate, faithfulness, relevance and latency, plus
 Kannada fluency rated by \tbd{N} native speakers. Speech recognition is measured by word error rate on \tbd{N} recorded
 utterances.
@@ -849,8 +845,7 @@ class and are mitigated only by the confidence gate. Out-of-distribution detecti
 class, temperature-scaling calibration and Grad-CAM visual explanations are planned. Retrieval quality depends on the
 corpus: Phoma and leaf-miner spray timing are thinly covered and one PDF needs OCR. The infection risk level is a rule
 based on fixed thresholds rather than a validated epidemiological model, and soil pH is an estimate; integrating
-soil-health-card data would remove this. Conversation memory is limited to the last eight messages, Kanglish detection
-by word list can miss rare spellings, and text-to-speech replies for low-literacy users are not yet implemented. The
+soil-health-card data would remove this. Conversation memory is limited to the last eight messages, and text-to-speech replies for low-literacy users are not yet implemented. The
 marketplace has no price-trend information or moderator dashboard. Finally, the comparative results in Section~IX are
 placeholders until the experiments in Section~VIII-C are carried out, and a field study with growers in Chikkamagaluru
 is required to assess usefulness.

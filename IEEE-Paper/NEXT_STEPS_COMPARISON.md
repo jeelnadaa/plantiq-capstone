@@ -34,8 +34,8 @@ Before submission: delete the `\thanks{DRAFT ...}` line in `main.tex` and make `
 |---|---|---|
 | Leaf test split | the held-out split from your training run (never used for training) | 5 classes: Rust, Cercospora, Phoma, Miner, Healthy |
 | Field set | 150–300 phone photos from Chikkamagaluru estates | Different phones, light and backgrounds. This is where models really differ |
-| RAG question set | 20–30 questions per disease (100–150 total), half in Kannada or Kanglish | For each question, mark which of the 931 chunks are relevant (2 annotators; agreement on a sample) |
-| Chat question set | 100–150 questions: weather, dose, timing, organic, follow-ups with photos | Mix English, Kannada, Kanglish |
+| RAG question set | 20–30 questions per disease (100–150 total), half in Kannada | For each question, mark which of the 931 chunks are relevant (2 annotators; agreement on a sample) |
+| Chat question set | 100–150 questions: weather, dose, timing, organic, follow-ups with photos | Mix of English and Kannada |
 | Speech set | 50–100 recorded utterances per language (Kannada, Indian English) with reference transcripts | Record in the field if possible (noise) |
 
 Keep all of these in a new folder, e.g. `IEEE-Paper/eval/`, with a README describing how each was collected.

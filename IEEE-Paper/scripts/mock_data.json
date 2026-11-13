@@ -1,0 +1,67 @@
+{
+  "_README": "ALL values in this file are MOCK placeholders (except the 'measured_latency' block, which is copied from TESTING.md / docs). Replace each block with real results from the experiments in NEXT_STEPS_COMPARISON.md, set its 'is_mock' to false, and re-run make_figures.py.",
+
+  "cnn_comparison": {
+    "is_mock": true,
+    "metrics": ["Accuracy", "Macro-F1", "Macro-Precision", "Macro-Recall"],
+    "systems": {
+      "PlantIQ ResNet-50": [0.950, 0.945, 0.947, 0.943],
+      "GoogLeNet TL (Anudeep K.S. et al.)": [0.930, 0.921, 0.925, 0.918],
+      "YOLOv8 (Selva Kumar et al.)": [0.910, 0.902, 0.908, 0.897]
+    }
+  },
+
+  "cnn_confusion": {
+    "is_mock": true,
+    "classes": ["Rust", "Cercospora", "Phoma", "Miner", "Healthy"],
+    "matrix": [
+      [192, 4, 2, 1, 1],
+      [6, 181, 9, 2, 2],
+      [3, 8, 184, 3, 2],
+      [1, 2, 2, 193, 2],
+      [0, 1, 1, 1, 197]
+    ]
+  },
+
+  "rag_ablation": {
+    "is_mock": true,
+    "configs": ["Dense only", "BM25 only", "Dense+BM25 (RRF)", "RRF + rerank", "Full (+topic, MMR)"],
+    "Recall@3": [0.71, 0.64, 0.78, 0.86, 0.88],
+    "nDCG@3":   [0.63, 0.57, 0.70, 0.81, 0.83]
+  },
+
+  "generation_comparison": {
+    "is_mock": true,
+    "metrics": ["Faithfulness", "Answer relevance", "Context precision"],
+    "systems": {
+      "PlantIQ (hybrid RAG + audit)": [0.91, 0.88, 0.84],
+      "Dense RAG + GPT-3.5 (Selva Kumar et al.)": [0.82, 0.83, 0.72],
+      "LLM without retrieval": [0.58, 0.79, 0.00]
+    }
+  },
+
+  "chatbot_comparison": {
+    "is_mock": true,
+    "metrics": ["Answered rate", "Faithfulness", "Answer relevance", "Kannada fluency (1-5)", "Median latency (s)"],
+    "systems": {
+      "PlantIQ chatbot": [0.86, 0.90, 0.87, 4.3, 6.1],
+      "Farmer.Chat (Singh et al.)": [0.78, 0.80, 0.70, 3.9, 9.5]
+    }
+  },
+
+  "stt_wer": {
+    "is_mock": true,
+    "languages": ["Kannada", "Indian English"],
+    "systems": {
+      "Local (IndicConformer / Svarah-Whisper)": [0.21, 0.14],
+      "Cloud fallback (whisper-large-v3)": [0.38, 0.12]
+    }
+  },
+
+  "measured_latency": {
+    "is_mock": false,
+    "_source": "TESTING.md section 2 and docs/03-system-architecture.md (RTX 3070 Laptop GPU). LLM and total are approximate (≈) in the source.",
+    "stages": ["CNN inference (GPU)", "CNN inference (CPU)", "Hybrid retrieval", "LLM generation (≈)", "Full diagnosis (≈)"],
+    "seconds": [0.0053, 0.0549, 0.4, 5.0, 6.0]
+  }
+}

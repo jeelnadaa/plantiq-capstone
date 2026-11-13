@@ -1,0 +1,5 @@
+tools/
+*.aux
+*.log
+*.bbl
+*.blg

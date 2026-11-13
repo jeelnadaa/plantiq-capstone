@@ -749,19 +749,21 @@ YOLOv8~\cite{selvakumar2024rag} & \mock{0.910} & \mock{0.902} & \mock{0.870} & \
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_cnn_comparison.pdf}
+\begin{minipage}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/fig_cnn_comparison.pdf}
 \caption{Module 1 classification metrics on the common test split \mock{(MOCK DATA)}.}
 \label{fig:cnn}
-\end{figure}
-
-\begin{figure}[t]
+\end{minipage}\hfill
+\begin{minipage}[b]{0.48\textwidth}
 \centering
-\includegraphics[width=0.85\columnwidth]{figures/fig_confusion.pdf}
+\includegraphics[width=0.85\linewidth]{figures/fig_confusion.pdf}
 \caption{Row-normalised confusion matrix of the PlantIQ classifier \mock{(MOCK DATA)}.}
 \label{fig:cm}
-\end{figure}
+\end{minipage}
+\end{figure*}
 
 \subsection{Module 2 Comparison \mock{[mock data]}}
 Fig.~\ref{fig:ablation} shows the retrieval ablation and Fig.~\ref{fig:gen} and Table~\ref{tab:m2} the generation
@@ -769,19 +771,21 @@ comparison. \mock{Placeholder discussion: expected observations are that BM25 al
 paraphrased symptom descriptions, that fusion improves over either retriever, that reranking gives the largest single
 gain, and that retrieval grounding with the dose audit reduces unsupported doses relative to the no-retrieval LLM.}
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_rag_ablation.pdf}
+\begin{minipage}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/fig_rag_ablation.pdf}
 \caption{Retrieval ablation of Module 2 \mock{(MOCK DATA)}.}
 \label{fig:ablation}
-\end{figure}
-
-\begin{figure}[t]
+\end{minipage}\hfill
+\begin{minipage}[b]{0.48\textwidth}
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_generation.pdf}
+\includegraphics[width=\linewidth]{figures/fig_generation.pdf}
 \caption{Generation quality versus baselines \mock{(MOCK DATA)}.}
 \label{fig:gen}
-\end{figure}
+\end{minipage}
+\end{figure*}
 
 \begin{table}[t]
 \caption{Module 2 comparison \mock{(MOCK)}}
@@ -862,6 +866,9 @@ retrieval stages add well under a second to an advisory whose latency is dominat
 The authors thank Prof.\ Deepti C., Department of Computer Science and Engineering, PES University, for guidance
 throughout this capstone project. \tbd{Add any other acknowledgements, e.g.\ estates that provided field images.}
 
+% Balances the last page's columns: starts a new column before this reference number.
+% Re-tune (or remove) whenever the text or the reference list changes length.
+\IEEEtriggeratref{11}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 

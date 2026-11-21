@@ -1,0 +1,137 @@
+{
+  "model": "G1",
+  "config": {
+    "name": "G1",
+    "arch": "googlenet",
+    "size": 224,
+    "train_aug": "plain",
+    "sampler": "copies",
+    "samples_per_epoch": 5000,
+    "epochs": 30,
+    "batch_size": 64,
+    "optimizer": "adam",
+    "lr": 0.0001,
+    "weight_decay": 0.0,
+    "backbone_lr_mult": 1.0,
+    "scheduler": "constant",
+    "warmup_epochs": 1.0,
+    "label_smoothing": 0.0,
+    "ema_decay": null,
+    "mixup": false,
+    "select": "val_acc",
+    "tie_break_loss": true,
+    "patience": null,
+    "workers": 3,
+    "notes": "Anudeep K.S. et al.: GoogLeNet TL, last three layers fine-tuned, 30 epochs.",
+    "extra": {}
+  },
+  "folds": {
+    "0": {
+      "best_epoch": 19,
+      "train_minutes": 3.3600178321202594,
+      "test": {
+        "n": 750,
+        "accuracy": 0.9746666666666667,
+        "macro_f1": 0.9774317174775721,
+        "macro_precision": 0.9778605112931249,
+        "macro_recall": 0.9785179957657022,
+        "balanced_accuracy": 0.9785179957657022,
+        "per_class_f1": {
+          "Miner": 0.9704510108864697,
+          "Rust": 1.0,
+          "Phoma": 0.9484536082474226,
+          "Healthy": 1.0,
+          "Cerscospora": 0.9682539682539683
+        }
+      }
+    },
+    "1": {
+      "best_epoch": 28,
+      "train_minutes": 2.659129007657369,
+      "test": {
+        "n": 750,
+        "accuracy": 0.9946666666666667,
+        "macro_f1": 0.9958467023172906,
+        "macro_precision": 0.9975903614457831,
+        "macro_recall": 0.9942028985507246,
+        "balanced_accuracy": 0.9942028985507246,
+        "per_class_f1": {
+          "Miner": 0.9939393939393939,
+          "Rust": 1.0,
+          "Phoma": 0.9852941176470589,
+          "Healthy": 1.0,
+          "Cerscospora": 1.0
+        }
+      }
+    },
+    "2": {
+      "best_epoch": 7,
+      "train_minutes": 2.8641313950220746,
+      "test": {
+        "n": 750,
+        "accuracy": 0.9946666666666667,
+        "macro_f1": 0.9906912442396314,
+        "macro_precision": 0.9943661971830986,
+        "macro_recall": 0.9875,
+        "balanced_accuracy": 0.9875,
+        "per_class_f1": {
+          "Miner": 1.0,
+          "Rust": 1.0,
+          "Phoma": 0.9857142857142858,
+          "Healthy": 1.0,
+          "Cerscospora": 0.967741935483871
+        }
+      }
+    },
+    "3": {
+      "best_epoch": 24,
+      "train_minutes": 2.660516583919525,
+      "test": {
+        "n": 757,
+        "accuracy": 0.9947159841479525,
+        "macro_f1": 0.9951540616246499,
+        "macro_precision": 0.9962264150943396,
+        "macro_recall": 0.9942028985507246,
+        "balanced_accuracy": 0.9942028985507246,
+        "per_class_f1": {
+          "Miner": 1.0,
+          "Rust": 0.9904761904761905,
+          "Phoma": 0.9852941176470589,
+          "Healthy": 1.0,
+          "Cerscospora": 1.0
+        }
+      }
+    },
+    "4": {
+      "best_epoch": 28,
+      "train_minutes": 2.4292697230974833,
+      "test": {
+        "n": 749,
+        "accuracy": 0.9839786381842457,
+        "macro_f1": 0.9784943525542105,
+        "macro_precision": 0.9894684849135617,
+        "macro_recall": 0.9692446043165468,
+        "balanced_accuracy": 0.9692446043165468,
+        "per_class_f1": {
+          "Miner": 0.9879154078549849,
+          "Rust": 1.0,
+          "Phoma": 0.9712230215827338,
+          "Healthy": 1.0,
+          "Cerscospora": 0.9333333333333333
+        }
+      }
+    }
+  },
+  "meta": {
+    "timestamp": "2026-11-17T09:17:40",
+    "git_commit": "560e9af",
+    "python": "3.11.0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "seed": 42,
+    "smoke": false,
+    "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+  }
+}

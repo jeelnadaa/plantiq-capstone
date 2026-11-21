@@ -1,0 +1,69 @@
+{
+  "files": 58549,
+  "byte_unique": 3756,
+  "source_groups": 861,
+  "per_class": {
+    "Miner": {
+      "files": 16978,
+      "byte_unique": 1639,
+      "phash_groups": 410,
+      "source_groups": 316,
+      "files_per_source": 53.7
+    },
+    "Rust": {
+      "files": 8336,
+      "byte_unique": 1042,
+      "phash_groups": 519,
+      "source_groups": 277,
+      "files_per_source": 30.1
+    },
+    "Phoma": {
+      "files": 6571,
+      "byte_unique": 691,
+      "phash_groups": 181,
+      "source_groups": 180,
+      "files_per_source": 36.5
+    },
+    "Healthy": {
+      "files": 18983,
+      "byte_unique": 62,
+      "phash_groups": 14,
+      "source_groups": 9,
+      "files_per_source": 2109.2
+    },
+    "Cerscospora": {
+      "files": 7681,
+      "byte_unique": 322,
+      "phash_groups": 82,
+      "source_groups": 79,
+      "files_per_source": 97.2
+    }
+  },
+  "merge_stats": {
+    "phash_merges": 2550,
+    "pixel_merges": 345
+  },
+  "cross_class": {
+    "md5_groups_with_2plus_labels": 0,
+    "phash_groups_with_2plus_labels": 0
+  },
+  "random_split_leak": {
+    "test_files_with_exact_copy_in_train": 0.999624188588999,
+    "test_files_with_same_source_in_train": 0.999897505978818
+  },
+  "pixel_threshold": 6.0,
+  "n_folds": 5,
+  "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb",
+  "meta": {
+    "timestamp": "2026-11-16T11:40:31",
+    "git_commit": "560e9af",
+    "python": "3.11.0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "seed": 42,
+    "smoke": false,
+    "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+  }
+}

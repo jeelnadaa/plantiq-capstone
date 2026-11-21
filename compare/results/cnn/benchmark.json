@@ -1,0 +1,596 @@
+{
+  "results": {
+    "R0": {
+      "name": "ResNet-50, current recipe",
+      "n": 3756,
+      "accuracy": 0.9707135250266241,
+      "macro_f1": 0.9628267834390078,
+      "macro_precision": 0.9704588145407962,
+      "macro_recall": 0.9560290297717362,
+      "balanced_accuracy": 0.9560290297717362,
+      "per_class_f1": {
+        "Miner": 0.975312404754648,
+        "Rust": 0.9923809523809524,
+        "Phoma": 0.9360764144011756,
+        "Healthy": 0.957983193277311,
+        "Cerscospora": 0.9523809523809523
+      },
+      "fold_macro_f1_mean": 0.9655870849493127,
+      "fold_macro_f1_std": 0.021705738904043627,
+      "ci_macro_f1": {
+        "point": 0.9628267834390078,
+        "lo": 0.9436564701912572,
+        "hi": 0.9809026470643475
+      },
+      "ci_accuracy": {
+        "point": 0.9707135250266241,
+        "lo": 0.9577932322900868,
+        "hi": 0.9807493039114753
+      },
+      "ece_raw": 0.024817193321619975,
+      "ece_calibrated": 0.0222151060733941,
+      "temperatures": [
+        0.05,
+        0.8343476011623671,
+        1.30216660961909,
+        1.5491031588674582,
+        1.1857956714006639
+      ],
+      "gate_raw": {
+        "threshold": 0.75,
+        "coverage": 0.9885516506922257,
+        "accuracy_answered": 0.9762994882844062,
+        "errors_total": 110,
+        "errors_caught_by_gate": 22,
+        "share_errors_caught": 0.2
+      },
+      "gate_calibrated": {
+        "threshold": 0.75,
+        "coverage": 0.987220447284345,
+        "accuracy_answered": 0.9765372168284789,
+        "errors_total": 110,
+        "errors_caught_by_gate": 23,
+        "share_errors_caught": 0.20909090909090908
+      },
+      "confusion": [
+        [
+          1600,
+          0,
+          33,
+          0,
+          6
+        ],
+        [
+          0,
+          1042,
+          0,
+          0,
+          0
+        ],
+        [
+          34,
+          12,
+          637,
+          0,
+          8
+        ],
+        [
+          0,
+          0,
+          0,
+          57,
+          5
+        ],
+        [
+          8,
+          4,
+          0,
+          0,
+          310
+        ]
+      ],
+      "cost": {
+        "model": "R0",
+        "input_size": 128,
+        "params": 23518277,
+        "size_mb": 94.386111,
+        "gflops": 2.669170688,
+        "cpu_threads": 10,
+        "cpu_ms_median": 85.68264999485109,
+        "cpu_ms_p95": 138.83363999775597,
+        "gpu_ms_median": 12.67954999639187,
+        "gpu_ms_p95": 38.75499000278061
+      },
+      "train_minutes_per_fold": 24.55567174355189
+    },
+    "V2": {
+      "name": "ResNet-50 V2 (ours)",
+      "n": 3756,
+      "accuracy": 0.9787007454739084,
+      "macro_f1": 0.969661852694303,
+      "macro_precision": 0.9613642009741478,
+      "macro_recall": 0.9794089859567172,
+      "balanced_accuracy": 0.9794089859567172,
+      "per_class_f1": {
+        "Miner": 0.9822954822954822,
+        "Rust": 0.9933142311365807,
+        "Phoma": 0.9489795918367347,
+        "Healthy": 0.9393939393939394,
+        "Cerscospora": 0.9843260188087775
+      },
+      "fold_macro_f1_mean": 0.9710619290892476,
+      "fold_macro_f1_std": 0.018124568773836565,
+      "ci_macro_f1": {
+        "point": 0.969661852694303,
+        "lo": 0.9379437644143223,
+        "hi": 0.9868889595833094
+      },
+      "ci_accuracy": {
+        "point": 0.9787007454739084,
+        "lo": 0.9683750190398192,
+        "hi": 0.987591164302088
+      },
+      "ece_raw": 0.01124590497039549,
+      "ece_calibrated": 0.017621932632854918,
+      "temperatures": [
+        0.358147288914986,
+        1.077246360567763,
+        0.8657949441673579,
+        0.09793078689722749,
+        0.18171338744488552
+      ],
+      "gate_raw": {
+        "threshold": 0.75,
+        "coverage": 0.9864217252396166,
+        "accuracy_answered": 0.9862348178137652,
+        "errors_total": 80,
+        "errors_caught_by_gate": 29,
+        "share_errors_caught": 0.3625
+      },
+      "gate_calibrated": {
+        "threshold": 0.75,
+        "coverage": 0.9933439829605963,
+        "accuracy_answered": 0.9812382739212008,
+        "errors_total": 80,
+        "errors_caught_by_gate": 10,
+        "share_errors_caught": 0.125
+      },
+      "confusion": [
+        [
+          1609,
+          0,
+          30,
+          0,
+          0
+        ],
+        [
+          0,
+          1040,
+          0,
+          0,
+          2
+        ],
+        [
+          20,
+          12,
+          651,
+          8,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          62,
+          0
+        ],
+        [
+          8,
+          0,
+          0,
+          0,
+          314
+        ]
+      ],
+      "cost": {
+        "model": "V2",
+        "input_size": 224,
+        "params": 23518277,
+        "size_mb": 94.386175,
+        "gflops": 8.174292992,
+        "cpu_threads": 10,
+        "cpu_ms_median": 64.16940000053728,
+        "cpu_ms_p95": 76.20046500160242,
+        "gpu_ms_median": 6.327850001980551,
+        "gpu_ms_p95": 10.098154992738271
+      },
+      "train_minutes_per_fold": 8.047162701288858
+    },
+    "G1": {
+      "name": "GoogLeNet TL (Anudeep K.S. et al.)",
+      "n": 3756,
+      "accuracy": 0.9885516506922257,
+      "macro_f1": 0.9876053708360686,
+      "macro_precision": 0.9907312555794577,
+      "macro_recall": 0.9847585002135759,
+      "balanced_accuracy": 0.9847585002135759,
+      "per_class_f1": {
+        "Miner": 0.9905458981396768,
+        "Rust": 0.9980842911877394,
+        "Phoma": 0.9748743718592965,
+        "Healthy": 1.0,
+        "Cerscospora": 0.9745222929936306
+      },
+      "fold_macro_f1_mean": 0.9875236156426708,
+      "fold_macro_f1_std": 0.008011308870600012,
+      "ci_macro_f1": {
+        "point": 0.9876053708360686,
+        "lo": 0.9788079232808666,
+        "hi": 0.9948152647427746
+      },
+      "ci_accuracy": {
+        "point": 0.9885516506922257,
+        "lo": 0.980519046925297,
+        "hi": 0.9951706369346449
+      },
+      "ece_raw": 0.0074726236576421814,
+      "ece_calibrated": 0.01049940241081365,
+      "temperatures": [
+        0.5848245167694257,
+        0.07410846737257008,
+        0.929889875637668,
+        1.0204986287486633,
+        0.059527147970332005
+      ],
+      "gate_raw": {
+        "threshold": 0.75,
+        "coverage": 0.9776357827476039,
+        "accuracy_answered": 0.9937363834422658,
+        "errors_total": 43,
+        "errors_caught_by_gate": 20,
+        "share_errors_caught": 0.46511627906976744
+      },
+      "gate_calibrated": {
+        "threshold": 0.75,
+        "coverage": 0.9864217252396166,
+        "accuracy_answered": 0.99055330634278,
+        "errors_total": 43,
+        "errors_caught_by_gate": 8,
+        "share_errors_caught": 0.18604651162790697
+      },
+      "confusion": [
+        [
+          1624,
+          0,
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          1042,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          4,
+          679,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          62,
+          0
+        ],
+        [
+          8,
+          0,
+          8,
+          0,
+          306
+        ]
+      ],
+      "cost": {
+        "model": "G1",
+        "input_size": 224,
+        "params": 5605029,
+        "size_mb": 22.593487,
+        "gflops": 2.994714624,
+        "cpu_threads": 10,
+        "cpu_ms_median": 42.41100000217557,
+        "cpu_ms_p95": 49.102010011119994,
+        "gpu_ms_median": 6.994750001467764,
+        "gpu_ms_p95": 8.954984999581935
+      },
+      "train_minutes_per_fold": 2.794612908363342
+    },
+    "Y1": {
+      "name": "YOLOv8-cls (Selva Kumar et al.)",
+      "n": 3756,
+      "accuracy": 0.9856230031948882,
+      "macro_f1": 0.9845136961728287,
+      "macro_precision": 0.9867009907230659,
+      "macro_recall": 0.9825823059969452,
+      "balanced_accuracy": 0.9825823059969452,
+      "per_class_f1": {
+        "Miner": 0.9871716554673182,
+        "Rust": 1.0,
+        "Phoma": 0.9671428571428572,
+        "Healthy": 1.0,
+        "Cerscospora": 0.9682539682539683
+      },
+      "fold_macro_f1_mean": 0.9844456162512707,
+      "fold_macro_f1_std": 0.007362299102070865,
+      "ci_macro_f1": {
+        "point": 0.9845136961728287,
+        "lo": 0.9752467625396073,
+        "hi": 0.9917774165762291
+      },
+      "ci_accuracy": {
+        "point": 0.9856230031948882,
+        "lo": 0.9774942099003797,
+        "hi": 0.9919226988529148
+      },
+      "ece_raw": 0.008294035311253715,
+      "ece_calibrated": 0.010629340293010698,
+      "temperatures": [
+        0.05,
+        2.207460302520141,
+        0.978361196702568,
+        0.8199108608298808,
+        0.8451489789466525
+      ],
+      "gate_raw": {
+        "threshold": 0.75,
+        "coverage": 0.9880191693290735,
+        "accuracy_answered": 0.9908380490433846,
+        "errors_total": 54,
+        "errors_caught_by_gate": 20,
+        "share_errors_caught": 0.37037037037037035
+      },
+      "gate_calibrated": {
+        "threshold": 0.75,
+        "coverage": 0.9880191693290735,
+        "accuracy_answered": 0.9889517650229048,
+        "errors_total": 54,
+        "errors_caught_by_gate": 13,
+        "share_errors_caught": 0.24074074074074073
+      },
+      "confusion": [
+        [
+          1616,
+          0,
+          23,
+          0,
+          0
+        ],
+        [
+          0,
+          1042,
+          0,
+          0,
+          0
+        ],
+        [
+          11,
+          0,
+          677,
+          0,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          62,
+          0
+        ],
+        [
+          8,
+          0,
+          9,
+          0,
+          305
+        ]
+      ],
+      "cost": {
+        "model": "Y1",
+        "input_size": 224,
+        "params": 5087141,
+        "size_mb": 20.444739,
+        "gflops": 1.524560384,
+        "cpu_threads": 10,
+        "cpu_ms_median": 15.96994999999879,
+        "cpu_ms_p95": 19.428155006607994,
+        "gpu_ms_median": 3.7938999957987107,
+        "gpu_ms_p95": 5.7546749885659665
+      },
+      "train_minutes_per_fold": 5.330564022858938
+    },
+    "D0": {
+      "name": "Deployed weights (reference only)",
+      "n": 3756,
+      "accuracy": 0.9709797657082002,
+      "macro_f1": 0.9752613299426185,
+      "macro_precision": 0.967100097742217,
+      "macro_recall": 0.9850251070814597,
+      "balanced_accuracy": 0.9850251070814597,
+      "per_class_f1": {
+        "Miner": 0.967032967032967,
+        "Rust": 1.0,
+        "Phoma": 0.9335161069225497,
+        "Healthy": 1.0,
+        "Cerscospora": 0.9757575757575757
+      },
+      "fold_macro_f1_mean": 0.9753989885704974,
+      "fold_macro_f1_std": 0.0080223411947744,
+      "ci_macro_f1": {
+        "point": 0.9752613299426185,
+        "lo": 0.9654916476016556,
+        "hi": 0.9835316727036765
+      },
+      "ci_accuracy": {
+        "point": 0.9709797657082002,
+        "lo": 0.959564629235475,
+        "hi": 0.9807797402597402
+      },
+      "ece_raw": 0.02209757414116978,
+      "ece_calibrated": 0.003042116716971171,
+      "temperatures": [
+        0.46677679959384455,
+        0.7981621854384292,
+        0.790680162912706,
+        0.6235595369173109,
+        0.6852336865910592
+      ],
+      "gate_raw": {
+        "threshold": 0.75,
+        "coverage": 0.9379659211927582,
+        "accuracy_answered": 0.9886460403065569,
+        "errors_total": 109,
+        "errors_caught_by_gate": 69,
+        "share_errors_caught": 0.6330275229357798
+      },
+      "gate_calibrated": {
+        "threshold": 0.75,
+        "coverage": 0.9667199148029819,
+        "accuracy_answered": 0.9832002203249793,
+        "errors_total": 109,
+        "errors_caught_by_gate": 48,
+        "share_errors_caught": 0.44036697247706424
+      },
+      "confusion": [
+        [
+          1540,
+          0,
+          87,
+          0,
+          12
+        ],
+        [
+          0,
+          1042,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          0,
+          681,
+          0,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          62,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          322
+        ]
+      ],
+      "cost": {
+        "model": "D0",
+        "input_size": 224,
+        "params": 23518277,
+        "size_mb": 94.386175,
+        "gflops": 8.174292992,
+        "cpu_threads": 10,
+        "cpu_ms_median": 55.80160000681644,
+        "cpu_ms_p95": 60.319825004262384,
+        "gpu_ms_median": 6.4102999967872165,
+        "gpu_ms_p95": 9.371225001814308
+      },
+      "train_minutes_per_fold": null
+    }
+  },
+  "paired_vs_V2": {
+    "R0": {
+      "bootstrap_macro_f1": {
+        "diff": 0.006835069255295201,
+        "lo": -0.03376103648178261,
+        "hi": 0.031689057299314705,
+        "significant": false,
+        "p_value_two_sided": 0.748
+      },
+      "mcnemar": {
+        "a_right_b_wrong": 66,
+        "a_wrong_b_right": 36,
+        "p_value": 0.003865583588338323
+      }
+    },
+    "G1": {
+      "bootstrap_macro_f1": {
+        "diff": -0.017943518141765535,
+        "lo": -0.049396032032820156,
+        "hi": 0.0003876697610330091,
+        "significant": false,
+        "p_value_two_sided": 0.056
+      },
+      "mcnemar": {
+        "a_right_b_wrong": 23,
+        "a_wrong_b_right": 60,
+        "p_value": 5.973595638605142e-05
+      }
+    },
+    "Y1": {
+      "bootstrap_macro_f1": {
+        "diff": -0.01485184347852564,
+        "lo": -0.04550359616061943,
+        "hi": 0.002228745902603314,
+        "significant": false,
+        "p_value_two_sided": 0.1
+      },
+      "mcnemar": {
+        "a_right_b_wrong": 26,
+        "a_wrong_b_right": 52,
+        "p_value": 0.004334880883507413
+      }
+    },
+    "D0": {
+      "bootstrap_macro_f1": {
+        "diff": -0.005599477248315443,
+        "lo": -0.035910924701297,
+        "hi": 0.012761322924455164,
+        "significant": false,
+        "p_value_two_sided": 0.61
+      },
+      "mcnemar": {
+        "a_right_b_wrong": 96,
+        "a_wrong_b_right": 67,
+        "p_value": 0.02798897191187911
+      }
+    }
+  },
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "meta": {
+    "timestamp": "2026-11-17T09:55:09",
+    "git_commit": "560e9af",
+    "python": "3.11.0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "seed": 42,
+    "smoke": false,
+    "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+  }
+}

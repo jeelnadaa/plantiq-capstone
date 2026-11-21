@@ -1,0 +1,54 @@
+% Figure 2 of the project summary: end-to-end flow from a leaf photo to a grounded advisory.
+% Same styles as fig_arch.tex (taken from IEEE-Paper/main.tex). Build: ../IEEE-Paper/tools/tectonic.exe fig_flow.tex
+\documentclass[border=6pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shapes.geometric}
+\tikzset{
+  box/.style={draw=black!70, rounded corners=2pt, align=center, font=\scriptsize, inner sep=3pt, fill=white},
+  mod/.style={box, fill=blue!6, minimum width=2.45cm, minimum height=0.95cm},
+  ext/.style={box, fill=black!4, dashed},
+  arr/.style={-{Stealth[length=4pt]}, black!75, line width=0.5pt},
+  grp/.style={draw=black!35, rounded corners=3pt, inner sep=5pt},
+  grplabel/.style={font=\scriptsize\bfseries, black!70},
+  stage/.style={box, minimum height=1.05cm, text width=2.75cm},
+  user/.style={stage, fill=green!6},
+  m1/.style={stage, fill=blue!6},
+  m2/.style={stage, fill=orange!8},
+  dec/.style={box, diamond, aspect=1.9, fill=yellow!10, inner sep=1pt, text width=1.35cm},
+}
+\begin{document}
+\begin{tikzpicture}
+  % ---------------- row 1: photo -> diagnosis -> gate -> query
+  \node[user] (photo) {\textbf{Leaf photo}\\app camera / gallery\\English or Kannada UI};
+  \node[m1, right=6mm of photo] (cnn) {\textbf{Diagnosis (M1)}\\upload sanitiser\\ResNet-50, 5 classes};
+  \node[dec, right=6mm of cnn] (gate) {confidence\\$\geq$ 75\,\%?};
+  \node[m2, right=6mm of gate] (query) {\textbf{Query building}\\disease-aware expansion\\\mbox{Kannada $\rightarrow$ English}};
+  \node[box, fill=red!6, text width=2.75cm, below=4.5mm of gate] (unsure) {\textbf{Flagged as uncertain}\\retake photo, check\\more leaves};
+  % ---------------- row 2: retrieval + weather -> LLM -> audit -> advice
+  \node[m2, below=21mm of query] (ret) {\textbf{Hybrid retrieval (M2)}\\\mbox{dense (bge-m3) + BM25}\\\mbox{RRF $\rightarrow$ rerank $\rightarrow$ MMR}};
+  \node[ext, text width=2.4cm, minimum height=1.05cm, right=6mm of ret] (kb) {14 CCRI extension\\and research PDFs\\(FAISS + JSON)};
+  \node[m2, left=6mm of ret] (wx) {\textbf{Field context}\\\mbox{live weather (Open-Meteo)}\\infection risk,\\3-day spray window};
+  \node[m2, left=6mm of wx] (llm) {\textbf{Advisory (M2)}\\\mbox{LLM (Gemini $\rightarrow$ Groq)}\\English / Kannada};
+  \node[m2, left=6mm of llm] (audit) {\textbf{Dose audit}\\every dose checked\\against the passages};
+  \node[user, below=7mm of audit] (out) {\textbf{Advice in the app}\\\mbox{Do today, Spray, Timing,}\\Prevent + sources};
+  % ---------------- chatbot side branch
+  \node[box, fill=violet!6, text width=3.1cm, minimum height=1.05cm, right=6mm of out] (chat)
+       {\textbf{Chat assistant (M3)}\\text or voice (Kannada STT),\\memory, photo / scan hand-off};
+  % ---------------- arrows
+  \draw[arr] (photo) -- (cnn);
+  \draw[arr] (cnn) -- (gate);
+  \draw[arr] (gate) -- node[above, font=\tiny]{yes} (query);
+  \draw[arr] (gate) -- node[right, font=\tiny]{no} (unsure);
+  \draw[arr] (query) -- (ret);
+  \draw[arr, <->] (ret) -- (kb);
+  \draw[arr] (ret) -- (wx);
+  \draw[arr] (wx) -- (llm);
+  \draw[arr] (llm) -- (audit);
+  \draw[arr] (audit) -- (out);
+  \draw[arr, dashed] (chat.east) -| node[pos=0.25, below, font=\tiny]{questions, photos} (ret.south);
+  \draw[arr, dashed] (unsure.west) -| node[pos=0.25, below, font=\tiny]{retake} (photo.south);
+\end{tikzpicture}
+\end{document}

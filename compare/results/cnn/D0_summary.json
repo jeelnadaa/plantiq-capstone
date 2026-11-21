@@ -1,0 +1,105 @@
+{
+  "model": "D0",
+  "weights": "backend\\data\\models\\best_resnet50_coffee.pth",
+  "sha256": "e1fd039fa0e357fb174fca330fb89474791dc8c6217e3a4beb39f65ca296572c",
+  "folds": {
+    "0": {
+      "test": {
+        "n": 750,
+        "accuracy": 0.988,
+        "macro_f1": 0.9908935128518973,
+        "macro_precision": 0.9877551020408163,
+        "macro_recall": 0.9944954128440366,
+        "balanced_accuracy": 0.9944954128440366,
+        "per_class_f1": {
+          "Miner": 0.986046511627907,
+          "Rust": 1.0,
+          "Phoma": 0.968421052631579,
+          "Healthy": 1.0,
+          "Cerscospora": 1.0
+        }
+      }
+    },
+    "1": {
+      "test": {
+        "n": 750,
+        "accuracy": 0.9706666666666667,
+        "macro_f1": 0.9708979705505032,
+        "macro_precision": 0.9604213273676361,
+        "macro_recall": 0.9832272887946271,
+        "balanced_accuracy": 0.9832272887946271,
+        "per_class_f1": {
+          "Miner": 0.9717868338557993,
+          "Rust": 1.0,
+          "Phoma": 0.9337979094076655,
+          "Healthy": 1.0,
+          "Cerscospora": 0.948905109489051
+        }
+      }
+    },
+    "2": {
+      "test": {
+        "n": 750,
+        "accuracy": 0.968,
+        "macro_f1": 0.9712527083488987,
+        "macro_precision": 0.9597802197802198,
+        "macro_recall": 0.9854545454545456,
+        "balanced_accuracy": 0.9854545454545456,
+        "per_class_f1": {
+          "Miner": 0.9622641509433962,
+          "Rust": 1.0,
+          "Phoma": 0.9387755102040817,
+          "Healthy": 1.0,
+          "Cerscospora": 0.9552238805970149
+        }
+      }
+    },
+    "3": {
+      "test": {
+        "n": 757,
+        "accuracy": 0.9616908850726552,
+        "macro_f1": 0.96874919720714,
+        "macro_precision": 0.9597202728081446,
+        "macro_recall": 0.9805876878074724,
+        "balanced_accuracy": 0.9805876878074724,
+        "per_class_f1": {
+          "Miner": 0.9538950715421304,
+          "Rust": 1.0,
+          "Phoma": 0.912751677852349,
+          "Healthy": 1.0,
+          "Cerscospora": 0.9770992366412213
+        }
+      }
+    },
+    "4": {
+      "test": {
+        "n": 749,
+        "accuracy": 0.9666221628838452,
+        "macro_f1": 0.9752015538940478,
+        "macro_precision": 0.9704962779156328,
+        "macro_recall": 0.9814005676192992,
+        "balanced_accuracy": 0.9814005676192992,
+        "per_class_f1": {
+          "Miner": 0.9607535321821036,
+          "Rust": 1.0,
+          "Phoma": 0.9152542372881356,
+          "Healthy": 1.0,
+          "Cerscospora": 1.0
+        }
+      }
+    }
+  },
+  "meta": {
+    "timestamp": "2026-11-17T09:51:22",
+    "git_commit": "560e9af",
+    "python": "3.11.0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "seed": 42,
+    "smoke": false,
+    "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+  },
+  "caveat": "training split unknown; likely saw copies of the test images"
+}

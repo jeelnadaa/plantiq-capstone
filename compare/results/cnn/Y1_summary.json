@@ -1,0 +1,114 @@
+{
+  "model": "Y1",
+  "config": {
+    "weights": "yolov8s-cls.pt",
+    "epochs": 60,
+    "imgsz": 224,
+    "batch": 64,
+    "augment": "fliplr 0.5, flipud 0.5, hsv_v 0.4"
+  },
+  "folds": {
+    "0": {
+      "train_minutes": 6.526006778081258,
+      "test": {
+        "n": 750,
+        "accuracy": 0.9746666666666667,
+        "macro_f1": 0.9744716632643142,
+        "macro_precision": 0.9752343626627618,
+        "macro_recall": 0.974329722929643,
+        "balanced_accuracy": 0.974329722929643,
+        "per_class_f1": {
+          "Miner": 0.9783950617283951,
+          "Rust": 1.0,
+          "Phoma": 0.9333333333333333,
+          "Healthy": 1.0,
+          "Cerscospora": 0.9606299212598425
+        }
+      }
+    },
+    "1": {
+      "train_minutes": 4.7689913511276245,
+      "test": {
+        "n": 750,
+        "accuracy": 0.992,
+        "macro_f1": 0.9901559907069366,
+        "macro_precision": 0.9889799470573305,
+        "macro_recall": 0.9913557386409984,
+        "balanced_accuracy": 0.9913557386409984,
+        "per_class_f1": {
+          "Miner": 0.9954198473282443,
+          "Rust": 1.0,
+          "Phoma": 0.9782608695652174,
+          "Healthy": 1.0,
+          "Cerscospora": 0.9770992366412213
+        }
+      }
+    },
+    "2": {
+      "train_minutes": 5.540994258721669,
+      "test": {
+        "n": 750,
+        "accuracy": 0.9866666666666667,
+        "macro_f1": 0.9862535542700265,
+        "macro_precision": 0.9892276422764228,
+        "macro_recall": 0.9838636363636365,
+        "balanced_accuracy": 0.9838636363636365,
+        "per_class_f1": {
+          "Miner": 0.9848024316109423,
+          "Rust": 1.0,
+          "Phoma": 0.9787234042553191,
+          "Healthy": 1.0,
+          "Cerscospora": 0.967741935483871
+        }
+      }
+    },
+    "3": {
+      "train_minutes": 4.997285850842794,
+      "test": {
+        "n": 757,
+        "accuracy": 0.9920739762219286,
+        "macro_f1": 0.9938173115277223,
+        "macro_precision": 0.9938173115277223,
+        "macro_recall": 0.9938173115277223,
+        "balanced_accuracy": 0.9938173115277223,
+        "per_class_f1": {
+          "Miner": 0.9908256880733946,
+          "Rust": 1.0,
+          "Phoma": 0.9782608695652174,
+          "Healthy": 1.0,
+          "Cerscospora": 1.0
+        }
+      }
+    },
+    "4": {
+      "train_minutes": 4.819541875521342,
+      "test": {
+        "n": 749,
+        "accuracy": 0.9826435246995995,
+        "macro_f1": 0.9775295614873537,
+        "macro_precision": 0.9873324283047683,
+        "macro_recall": 0.9694602116471959,
+        "balanced_accuracy": 0.9694602116471959,
+        "per_class_f1": {
+          "Miner": 0.9863429438543247,
+          "Rust": 1.0,
+          "Phoma": 0.9679715302491103,
+          "Healthy": 1.0,
+          "Cerscospora": 0.9333333333333333
+        }
+      }
+    }
+  },
+  "meta": {
+    "timestamp": "2026-11-17T09:48:44",
+    "git_commit": "560e9af",
+    "python": "3.11.0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "seed": 42,
+    "smoke": false,
+    "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+  }
+}

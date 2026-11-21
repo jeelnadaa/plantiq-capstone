@@ -99,3 +99,18 @@ Postgres create-database race.
 - The first root-level prototype (`backend/`, `cnn/`, `rag/`, `stitched/`, `model-comparator/`, `ppt/`, `mobile_app/`) removed
   from the tree; it remains in git history (no history rewritten). A local copy including untracked files was kept outside
   the repo in `D:\end-capstone-project-old-root-backup`.
+
+## 2026-11-21 — Comparison study (compare/), paper Module 1 results, one-column paper, project summary
+- **compare/** (new, self-contained): dataset audit of JMuBEN (58,549 files → 3,756 byte-unique → 861 source patches;
+  a random split leaks 99.96 % of test files), leak-free stratified group 5-fold CV, notebooks for the current ResNet-50
+  recipe (R0), the revised recipe (V2), GoogLeNet TL (Anudeep K.S. et al.), YOLOv8s-cls (Selva Kumar et al.) and the
+  deployed weights; benchmark with group-bootstrap CIs, McNemar, ECE, confidence-gate and latency.
+- **CNN results (out-of-fold macro-F1):** GoogLeNet 0.988, YOLOv8s-cls 0.985, PlantIQ V2 0.970, R0 0.963, deployed 0.975
+  (reference only, trained on an unknown split). V2 passes the pre-registered replacement rule against the deployed
+  weights; the lighter baselines are at least as accurate on this dataset.
+- **RAG notebooks** reworked for Gemini + Groq only (Gemini 3.x thinking setting fixed: `thinkingLevel` instead of
+  `thinkingBudget`), Karnataka-focused automatic question set, one judge call per answer. Smoke-tested; real run pending.
+- **IEEE paper:** text moved to `IEEE-Paper/paper_content.tex`; `main.tex` (two columns) and `main_onecol.tex`
+  (one column) both input it. Module 1 sections, Table VII and Figs. 4-5 now use real results; Modules 2-3 still mock.
+- **summary/**: one-page project summary (35.tex/35.pdf, figures 35_1.png, 35_2.png).
+- Tests: no backend/frontend code changed; compare/ notebooks all pass the smoke run (`PLANTIQ_SMOKE=1`).

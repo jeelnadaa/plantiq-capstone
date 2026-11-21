@@ -1,5 +1,10 @@
 # PlantIQ IEEE paper: what to do next
 
+> **Update 2026-11-21:** the paper text now lives in `paper_content.tex`. `main.tex` (two-column IEEE) and
+> `main_onecol.tex` (one column) both `\input` it, so edit `paper_content.tex` only. Module 1 (Section IX-B, Table VII,
+> Figs. 4-5) uses real results from `compare/`; the comparison experiments live in `compare/` (see its README).
+
+
 The paper is in [main.tex](main.tex), compiled to [main.pdf](main.pdf). Everything except the comparison results is
 written from the **current code** (`backend/`, `frontend/`) and the measured results in `TESTING.md` / `docs/`.
 

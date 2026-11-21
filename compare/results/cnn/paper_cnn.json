@@ -1,0 +1,183 @@
+{
+  "cnn_comparison": {
+    "is_mock": false,
+    "metrics": [
+      "Accuracy",
+      "Macro-F1",
+      "Macro-Precision",
+      "Macro-Recall"
+    ],
+    "systems": {
+      "GoogLeNet TL (Anudeep K.S. et al.)": [
+        0.9886,
+        0.9876,
+        0.9907,
+        0.9848
+      ],
+      "YOLOv8-cls (Selva Kumar et al.)": [
+        0.9856,
+        0.9845,
+        0.9867,
+        0.9826
+      ],
+      "ResNet-50, current recipe": [
+        0.9707,
+        0.9628,
+        0.9705,
+        0.956
+      ],
+      "ResNet-50 V2 (ours)": [
+        0.9787,
+        0.9697,
+        0.9614,
+        0.9794
+      ]
+    }
+  },
+  "cnn_confusion": {
+    "is_mock": false,
+    "model": "ResNet-50 V2 (ours)",
+    "classes": [
+      "Rust",
+      "Cercospora",
+      "Phoma",
+      "Miner",
+      "Healthy"
+    ],
+    "matrix": [
+      [
+        1040,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        314,
+        0,
+        8,
+        0
+      ],
+      [
+        12,
+        0,
+        651,
+        20,
+        8
+      ],
+      [
+        0,
+        0,
+        30,
+        1609,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        62
+      ]
+    ]
+  },
+  "table_vii": [
+    {
+      "method": "ResNet-50, current recipe",
+      "acc": 0.971,
+      "macro_f1": 0.963,
+      "phoma_f1": 0.936,
+      "params_m": 23.5,
+      "cpu_ms": 85.7
+    },
+    {
+      "method": "ResNet-50 V2 (ours)",
+      "acc": 0.979,
+      "macro_f1": 0.97,
+      "phoma_f1": 0.949,
+      "params_m": 23.5,
+      "cpu_ms": 64.2
+    },
+    {
+      "method": "GoogLeNet TL (Anudeep K.S. et al.)",
+      "acc": 0.989,
+      "macro_f1": 0.988,
+      "phoma_f1": 0.975,
+      "params_m": 5.6,
+      "cpu_ms": 42.4
+    },
+    {
+      "method": "YOLOv8-cls (Selva Kumar et al.)",
+      "acc": 0.986,
+      "macro_f1": 0.985,
+      "phoma_f1": 0.967,
+      "params_m": 5.1,
+      "cpu_ms": 16.0
+    },
+    {
+      "method": "Deployed weights (reference only)",
+      "acc": 0.971,
+      "macro_f1": 0.975,
+      "phoma_f1": 0.934,
+      "params_m": 23.5,
+      "cpu_ms": 55.8
+    }
+  ],
+  "v2_ablation": [
+    {
+      "step": "R0",
+      "change": "current recipe (02a)",
+      "kept": true,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9676312207761819,
+      "test_acc": 0.9693333333333334
+    },
+    {
+      "step": "A1",
+      "change": "224 px input + Dropout(0.4) head",
+      "kept": true,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9056344317748934,
+      "test_acc": 0.972
+    },
+    {
+      "step": "A2",
+      "change": "+ class-balanced sampling",
+      "kept": false,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9789535717841952,
+      "test_acc": 0.9786666666666667
+    },
+    {
+      "step": "A3",
+      "change": "+ leaf-patch augmentation",
+      "kept": false,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9827308425404558,
+      "test_acc": 0.9773333333333334
+    },
+    {
+      "step": "A4",
+      "change": "+ optimisation recipe",
+      "kept": false,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.976027189185084,
+      "test_acc": 0.9733333333333334
+    },
+    {
+      "step": "A5",
+      "change": "+ MixUp/CutMix",
+      "kept": false,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9879283489096572,
+      "test_acc": 0.984
+    }
+  ]
+}

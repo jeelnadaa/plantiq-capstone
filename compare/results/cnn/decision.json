@@ -1,0 +1,19 @@
+{
+  "available": true,
+  "criteria": {
+    "1_better_macro_f1_significant": true,
+    "2_no_class_f1_drop_over_0.02": true,
+    "3_calibrated_ece_not_worse": true,
+    "4_cpu_latency_within_1.25x_deployed": true
+  },
+  "replace": true,
+  "class_f1_drop_vs_R0": {
+    "Miner": -0.0069830775408342705,
+    "Rust": -0.0009332787556283195,
+    "Phoma": -0.012903177435559132,
+    "Healthy": 0.018589253883371515,
+    "Cerscospora": -0.03194506642782513
+  },
+  "v2_cpu_ms": 64.16940000053728,
+  "deployed_cpu_ms": 55.80160000681644
+}

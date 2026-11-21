@@ -1,0 +1,6 @@
+fold,train_images,train_groups,train_healthy_groups,val_images,val_groups,val_healthy_groups,test_images,test_groups,test_healthy_groups
+0,2507,577,6,499,112,1,750,172,2
+1,2506,577,6,500,113,1,750,171,2
+2,2503,575,5,503,114,2,750,172,2
+3,2500,573,7,499,114,1,757,174,1
+4,2507,576,6,500,113,1,749,172,2

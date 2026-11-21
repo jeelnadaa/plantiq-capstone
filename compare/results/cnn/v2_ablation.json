@@ -1,0 +1,72 @@
+{
+  "fold": 0,
+  "min_gain": 0.002,
+  "rows": [
+    {
+      "step": "R0",
+      "change": "current recipe (02a)",
+      "kept": true,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9676312207761819,
+      "test_acc": 0.9693333333333334
+    },
+    {
+      "step": "A1",
+      "change": "224 px input + Dropout(0.4) head",
+      "kept": true,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9056344317748934,
+      "test_acc": 0.972
+    },
+    {
+      "step": "A2",
+      "change": "+ class-balanced sampling",
+      "kept": false,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9789535717841952,
+      "test_acc": 0.9786666666666667
+    },
+    {
+      "step": "A3",
+      "change": "+ leaf-patch augmentation",
+      "kept": false,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9827308425404558,
+      "test_acc": 0.9773333333333334
+    },
+    {
+      "step": "A4",
+      "change": "+ optimisation recipe",
+      "kept": false,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.976027189185084,
+      "test_acc": 0.9733333333333334
+    },
+    {
+      "step": "A5",
+      "change": "+ MixUp/CutMix",
+      "kept": false,
+      "val_macro_f1": 1.0,
+      "val_acc": 1.0,
+      "test_macro_f1": 0.9879283489096572,
+      "test_acc": 0.984
+    }
+  ],
+  "meta": {
+    "timestamp": "2026-11-17T08:19:22",
+    "git_commit": "560e9af",
+    "python": "3.11.0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "seed": 42,
+    "smoke": false,
+    "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+  }
+}

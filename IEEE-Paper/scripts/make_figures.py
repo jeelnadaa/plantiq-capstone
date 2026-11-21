@@ -69,8 +69,8 @@ def grouped_bars(ax, groups: list[str], series: dict[str, list[float]], ylim=(0,
 def fig_cnn_comparison() -> None:
     d = DATA["cnn_comparison"]
     fig, ax = plt.subplots(figsize=(COL_W, 2.1))
-    grouped_bars(ax, d["metrics"], d["systems"], ylim=(0.80, 1.0), fmt="{:.3f}")
-    ax.set_ylabel("Score (test split)")
+    grouped_bars(ax, d["metrics"], d["systems"], ylim=(0.90, 1.0), fmt="{:.3f}")
+    ax.set_ylabel("Score (out-of-fold, 5-fold CV)")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=1, frameon=False)
     watermark(fig, d["is_mock"])
     save(fig, "fig_cnn_comparison")

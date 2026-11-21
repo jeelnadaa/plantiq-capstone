@@ -1,0 +1,21 @@
+# environment and secrets
+.venv/
+.env
+
+# raw data (1.9 GB) - its exact content is pinned by 01_dataset_audit/outputs/files.csv (MD5 per file)
+dataset-coffee-leaves-images/
+
+# large / regenerable
+_cache/
+_smoke/
+02_cnn/runs/
+03_rag/index/
+03_rag/llm_cache/
+03_rag/kb/*.pdf
+*.pt
+*.pth
+.ipynb_checkpoints/
+__pycache__/
+
+# results replaced after a fix (kept for reference, not used)
+**/_superseded_*/

@@ -128,3 +128,14 @@ Postgres create-database race.
   (4 ml deselected). Run in a temporary venv because `backend/.venv` is missing on this machine; ML, vitest and
   Playwright suites not re-run (no frontend change); TESTING.md not regenerated.
 - Open: measure keywords vs full question vs raw Kannada (bge-m3) on the Kannada question set in compare/03_rag.
+
+## 2026-11-22 — RAG benchmark (no API), Kannada router included, paper Module 2 results
+- Question set: 54 English + 21 Kannada Karnataka coffee questions written from the KB with verified gold evidence
+  (`compare/03_rag/make_questions.py`); no Phoma (its only KB document extracts as garbled text).
+- Retrieval (no API; Kannada router outputs for backend b421009 stored in `router_outputs.jsonl`): PlantIQ Recall@3
+  0.813 vs Selva Kumar dense 0.500 (Kannada 0.857 vs 0.095; 0.524 with the router offline). Topic filter + MMR lowers
+  Recall@3 vs rerank alone (0.893, p=0.014).
+- Generation (same LLM for all systems; answers and per-answer scores by Claude Opus 5.5 from the exported prompts,
+  stored in `compare/03_rag/answers/`): correctness PlantIQ 0.898, Selva Kumar 0.824, no retrieval 0.611; unsupported
+  doses 1.9% / 0% / 20.4%.
+- Paper: Module 2 protocol, Section IX-C, Table VIII, Figs. 6-7 and abstract updated (both layouts). Module 3 still mock.

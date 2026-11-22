@@ -85,51 +85,56 @@
     ]
   },
   "rag_ablation": {
-    "is_mock": true,
+    "is_mock": false,
+    "_source": "compare/results/rag/retrieval.json (75 questions, EN+KN)",
     "configs": [
+      "Selva Kumar (dense)",
       "Dense only",
       "BM25 only",
       "Dense+BM25 (RRF)",
       "RRF + rerank",
-      "Full (+topic, MMR)"
+      "Full PlantIQ"
     ],
     "Recall@3": [
-      0.71,
-      0.64,
-      0.78,
-      0.86,
-      0.88
+      0.5,
+      0.7067,
+      0.6267,
+      0.7067,
+      0.8933,
+      0.8133
     ],
     "nDCG@3": [
-      0.63,
-      0.57,
-      0.7,
-      0.81,
-      0.83
+      0.3901,
+      0.5777,
+      0.5126,
+      0.6266,
+      0.7645,
+      0.7223
     ]
   },
   "generation_comparison": {
-    "is_mock": true,
+    "is_mock": false,
+    "_source": "compare/results/rag/generation.json (54 EN questions)",
     "metrics": [
-      "Faithfulness",
-      "Answer relevance",
-      "Context precision"
+      "Correctness",
+      "Relevance",
+      "Faithfulness"
     ],
     "systems": {
-      "PlantIQ (hybrid RAG + audit)": [
-        0.91,
-        0.88,
-        0.84
+      "PlantIQ hybrid RAG": [
+        0.8981481481481481,
+        0.9537037037037037,
+        0.9863756613756615
       ],
-      "Dense RAG + GPT-3.5 (Selva Kumar et al.)": [
-        0.82,
-        0.83,
-        0.72
+      "Dense RAG (Selva Kumar et al.)": [
+        0.8240740740740741,
+        0.9166666666666666,
+        0.99
       ],
-      "LLM without retrieval": [
-        0.58,
-        0.79,
-        0.0
+      "LLM, no retrieval": [
+        0.6111111111111112,
+        1.0,
+        null
       ]
     }
   },

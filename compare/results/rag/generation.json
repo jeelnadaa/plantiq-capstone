@@ -1,0 +1,104 @@
+{
+  "systems": {
+    "PQ": {
+      "name": "PlantIQ hybrid RAG",
+      "faithfulness": {
+        "mean": 0.9863756613756615,
+        "lo": 0.9695767195767196,
+        "hi": 1.0,
+        "n": 54
+      },
+      "correctness": {
+        "mean": 0.8981481481481481,
+        "lo": 0.8148148148148148,
+        "hi": 0.9629629629629629,
+        "n": 54
+      },
+      "relevance": {
+        "mean": 0.9537037037037037,
+        "lo": 0.9074074074074074,
+        "hi": 0.9907407407407407,
+        "n": 54
+      },
+      "unsupported_dose_rate": 0.018518518518518517,
+      "answers_with_doses": 0.5,
+      "mean_words": 63.46296296296296
+    },
+    "SK": {
+      "name": "Selva Kumar et al. (dense LangChain RAG)",
+      "faithfulness": {
+        "mean": 0.99,
+        "lo": 0.97,
+        "hi": 1.0,
+        "n": 50
+      },
+      "correctness": {
+        "mean": 0.8240740740740741,
+        "lo": 0.7314814814814815,
+        "hi": 0.9074074074074074,
+        "n": 54
+      },
+      "relevance": {
+        "mean": 0.9166666666666666,
+        "lo": 0.8425925925925926,
+        "hi": 0.9814814814814815,
+        "n": 54
+      },
+      "unsupported_dose_rate": 0.0,
+      "answers_with_doses": 0.25925925925925924,
+      "mean_words": 27.166666666666668
+    },
+    "L0": {
+      "name": "LLM, no retrieval",
+      "faithfulness": {
+        "mean": NaN,
+        "lo": NaN,
+        "hi": NaN,
+        "n": 0
+      },
+      "correctness": {
+        "mean": 0.6111111111111112,
+        "lo": 0.5277777777777778,
+        "hi": 0.6851851851851852,
+        "n": 54
+      },
+      "relevance": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 54
+      },
+      "unsupported_dose_rate": 0.2037037037037037,
+      "answers_with_doses": 0.2037037037037037,
+      "mean_words": 43.833333333333336
+    }
+  },
+  "wilcoxon_pq_vs": {
+    "SK": {
+      "faithfulness": 0.7150006546880893,
+      "correctness": 0.08517902784495152,
+      "relevance": 0.10247043485974941
+    },
+    "L0": {
+      "faithfulness": NaN,
+      "correctness": 1.8161380321652397e-05,
+      "relevance": 0.025347318677468252
+    }
+  },
+  "n_prompts": 162,
+  "generator": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "rubric": "faithfulness = supported/claims vs retrieved passages; correctness and relevance 0/0.5/1 vs gold",
+  "meta": {
+    "timestamp": "2026-11-22T18:03:24",
+    "git_commit": "92bb2d3",
+    "python": "3.11.0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "seed": 42,
+    "smoke": false,
+    "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+  }
+}

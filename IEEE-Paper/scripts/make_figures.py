@@ -103,7 +103,7 @@ def fig_rag_ablation() -> None:
     d = DATA["rag_ablation"]
     fig, ax = plt.subplots(figsize=(COL_W, 2.2))
     labels = [c.replace(" (", "\n(").replace(" + ", "\n+ ") for c in d["configs"]]
-    grouped_bars(ax, labels, {"Recall@3": d["Recall@3"], "nDCG@3": d["nDCG@3"]}, ylim=(0.4, 1.0))
+    grouped_bars(ax, labels, {"Recall@3": d["Recall@3"], "nDCG@3": d["nDCG@3"]}, ylim=(0.3, 1.0))
     ax.set_ylabel("Retrieval score")
     ax.tick_params(axis="x", labelsize=6)
     ax.legend(loc="upper left", ncol=2, frameon=False)
@@ -114,8 +114,9 @@ def fig_rag_ablation() -> None:
 def fig_generation() -> None:
     d = DATA["generation_comparison"]
     fig, ax = plt.subplots(figsize=(COL_W, 2.1))
-    grouped_bars(ax, d["metrics"], d["systems"], ylim=(0, 1.05))
-    ax.set_ylabel("RAGAS-style score")
+    systems = {k: [np.nan if v is None else v for v in vals] for k, vals in d["systems"].items()}
+    grouped_bars(ax, d["metrics"], systems, ylim=(0, 1.05))
+    ax.set_ylabel("Mean score")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=1, frameon=False)
     watermark(fig, d["is_mock"])
     save(fig, "fig_generation")

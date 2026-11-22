@@ -142,3 +142,21 @@
 {"key": "k12|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "weekly-ish watering, no 5-10 litre amount", "judge": "claude-opus-5-5"}
 {"key": "k12|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k12|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k13|L0", "claims": 2, "supported": 0, "correct": 0, "relevant": 1, "note": "30-40 kg instead of 58 kg", "judge": "claude-opus-5-5"}
+{"key": "k13|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k13|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k14|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "north and east; avoid west/south", "judge": "claude-opus-5-5"}
+{"key": "k14|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k14|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k15|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "right ingredients, ratio 3:1:1 instead of 6:2:1", "judge": "claude-opus-5-5"}
+{"key": "k15|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k15|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k16|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "25-50 leaves (not pairs) per block", "judge": "claude-opus-5-5"}
+{"key": "k16|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k16|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k17|L0", "claims": 1, "supported": 0, "correct": 1, "relevant": 1, "note": "10-11%", "judge": "claude-opus-5-5"}
+{"key": "k17|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k17|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k18|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "late February to March; no exact window", "judge": "claude-opus-5-5"}
+{"key": "k18|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k18|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}

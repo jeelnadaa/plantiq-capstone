@@ -1,0 +1,126 @@
+{
+  "rag_ablation": {
+    "is_mock": false,
+    "configs": [
+      "Dense only",
+      "BM25 only",
+      "Dense+BM25 (RRF)",
+      "RRF + rerank",
+      "Full (+topic, MMR)"
+    ],
+    "Recall@3": [
+      0.7067,
+      0.6267,
+      0.7067,
+      0.8933,
+      0.8133
+    ],
+    "nDCG@3": [
+      0.5777,
+      0.5126,
+      0.6266,
+      0.7645,
+      0.7223
+    ],
+    "selva_kumar_dense": {
+      "Recall@3": 0.5,
+      "nDCG@3": 0.3901
+    },
+    "plantiq_router_offline": {
+      "recall@3": 0.72,
+      "ndcg@3": 0.6375
+    },
+    "by_lang": {
+      "Selva Kumar et al. (dense, LangChain)": {
+        "recall@3 (en)": 0.6574074074074074,
+        "recall@3 (kn)": 0.09523809523809523,
+        "ndcg@3 (en)": 0.5140241532445534,
+        "ndcg@3 (kn)": 0.07142857142857142
+      },
+      "Dense only": {
+        "recall@3 (en)": 0.7777777777777778,
+        "recall@3 (kn)": 0.5238095238095238,
+        "ndcg@3 (en)": 0.62431655289436,
+        "ndcg@3 (kn)": 0.45776891394121233
+      },
+      "BM25 only": {
+        "recall@3 (en)": 0.6666666666666666,
+        "recall@3 (kn)": 0.5238095238095238,
+        "ndcg@3 (en)": 0.5344429866444579,
+        "ndcg@3 (kn)": 0.4564864602062687
+      },
+      "Dense+BM25 (RRF)": {
+        "recall@3 (en)": 0.7407407407407407,
+        "recall@3 (kn)": 0.6190476190476191,
+        "ndcg@3 (en)": 0.6530573855726739,
+        "ndcg@3 (kn)": 0.5583949707395675
+      },
+      "RRF + rerank": {
+        "recall@3 (en)": 0.8703703703703703,
+        "recall@3 (kn)": 0.9523809523809523,
+        "ndcg@3 (en)": 0.7492818956340743,
+        "ndcg@3 (kn)": 0.8035717476146844
+      },
+      "Full PlantIQ (+topic, MMR)": {
+        "recall@3 (en)": 0.7962962962962963,
+        "recall@3 (kn)": 0.8571428571428571,
+        "ndcg@3 (en)": 0.7118061138812534,
+        "ndcg@3 (kn)": 0.7491538494767023
+      },
+      "Full PlantIQ, router offline": {
+        "recall@3 (en)": 0.7962962962962963,
+        "recall@3 (kn)": 0.5238095238095238,
+        "ndcg@3 (en)": 0.7118061138812534,
+        "ndcg@3 (kn)": 0.4464288904718273
+      }
+    }
+  },
+  "generation_comparison": {
+    "is_mock": false,
+    "metrics": [
+      "Faithfulness",
+      "Correctness",
+      "Relevance"
+    ],
+    "systems": {
+      "PlantIQ hybrid RAG": [
+        0.9864,
+        0.8981,
+        0.9537
+      ],
+      "Selva Kumar et al. (dense LangChain RAG)": [
+        0.99,
+        0.8241,
+        0.9167
+      ],
+      "LLM, no retrieval": [
+        0.0,
+        0.6111,
+        1.0
+      ]
+    }
+  },
+  "table_viii": [
+    {
+      "system": "LLM, no retrieval",
+      "recall@3": null,
+      "faithfulness": null,
+      "correctness": 0.611,
+      "unsupported_doses_pct": 20.4
+    },
+    {
+      "system": "Selva Kumar et al. (dense LangChain RAG)",
+      "recall@3": 0.5,
+      "faithfulness": 0.99,
+      "correctness": 0.824,
+      "unsupported_doses_pct": 0.0
+    },
+    {
+      "system": "PlantIQ hybrid RAG",
+      "recall@3": 0.813,
+      "faithfulness": 0.986,
+      "correctness": 0.898,
+      "unsupported_doses_pct": 1.9
+    }
+  ]
+}

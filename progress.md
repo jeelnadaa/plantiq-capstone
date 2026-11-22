@@ -151,3 +151,17 @@ Postgres create-database race.
 - Benchmark re-run: Recall@3 0.813 → 0.867 (Kannada 0.857 → 0.905); 23 affected PlantIQ answers regenerated and re-scored;
   correctness 0.898 → 0.944 (vs Selva Kumar 0.824, p = 0.021 now significant); unsupported doses 1.9% → 0%.
 - Paper (both layouts), docs/modules/module-2-rag-environment.md, architecture and panel docs, README updated.
+
+## 2026-11-22 — Chatbot (Module 3) benchmark; paper finalised (no mock data)
+- `compare/05_chat/`: 43 test conversations (53 turns) — follow-ups, Kannada/Kanglish, leaf photos + past scans,
+  weather with/without location, greetings, prompt injection. `plantiq_chat_snapshot` is checked identical to backend
+  `chat.process_message` on 20 turns (`verify_snapshot.py`). Baseline: Selva Kumar pipeline as a LangChain
+  ConversationalRetrievalChain (+ YOLOv8s-cls for photos). Weather: recorded Open-Meteo responses. Speech not tested.
+- Results (same LLM, answers/judgments by Claude Opus 5.5): expected behaviour 43/43 vs 15/43 (p < 1e-6);
+  correctness 0.88 vs 0.38 on 29 knowledge questions; Kannada script 17/17; live weather values 6/6; pipeline without
+  LLM median 0.26 s.
+- Found in PlantIQ (not fixed yet): router ignores history (2/10 follow-ups wrong: Bordeaux pH); weather keywords fire
+  on Kannada compounds ಹೂಮಳೆ / ಪರಿಸರ ಸ್ನೇಹಿ (2/35); offline reply for Kannada users is English excerpts (1/17 Kannada).
+- Paper (both layouts): Module 3 protocol, Section IX-D with Table IX, abstract, limitations, conclusion; DRAFT banner,
+  mock table, mock speech-recognition figure and email/acknowledgement placeholders removed; Sapkota bib entry fixed.
+

@@ -10,6 +10,7 @@ compare/
   02_cnn/            02a … 02h                           CNN training, benchmark, export (runs/ = checkpoints)
   03_rag/            03a … 03d, plantiq_rag_snapshot/   RAG question set, benchmarks, report
   04_export/         04_paper_numbers.ipynb              everything → results/paper_numbers.json
+  05_chat/           05a, 05b, plantiq_chat_snapshot/   chatbot (Module 3) test conversations, prompts, report
   common/            shared Python code (data, training loop, metrics, LLM client, RAG scoring)
   results/           every number (JSON/CSV), figures/, RESULTS.md
 ```
@@ -102,6 +103,8 @@ The `.env` / Gemini settings are only needed if you want an LLM to answer the pr
 | 12 | `03_rag/03c_generation_benchmark` | exact prompts of the 3 systems → `answers/generation_inputs.jsonl`; then answers + judgments are added | 5 min | 10 |
 | 13 | `03_rag/03d_rag_report` | RAG tables and figures (generation part once answers/judgments exist) | 1 min | 11, 12 |
 | 14 | `04_export/04_paper_numbers` | `results/paper_numbers.json` + `results/RESULTS.md` | 1 min | 8, 13 |
+| 15 | `05_chat/05a_build_chat_prompts` | 43 chat conversations → exact prompts of PlantIQ, the LangChain Selva Kumar chatbot and PlantIQ offline (`05_chat/answers/chat_inputs.jsonl`); re-run once per turn depth after its answers are added (`05_chat/add.py`) | 2 min | 11 |
+| 16 | `05_chat/05b_chat_report` | Module 3 scores → `results/chat/chat.json`, `chat_rows.csv`, `figures/fig_chat.png` | 1 min | 15 |
 
 \*RTX 3070 Laptop estimates; the GPU part (2-7) is about 3-3.5 h in total and can run unattended. Every training
 notebook **resumes**: if you stop it, finished folds are skipped on the next run. To redo a fold, delete

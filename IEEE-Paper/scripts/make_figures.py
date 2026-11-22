@@ -1,4 +1,4 @@
-"""Generate the paper's data figures from mock_data.json.
+"""Generate the paper's data figures from mock_data.json (real results; the file name is historical).
 
 Usage (from IEEE-Paper/):  python scripts/make_figures.py
 Requires: matplotlib.  Output: figures/*.pdf (vector, for LaTeX) + figures/*.png (preview).
@@ -122,16 +122,6 @@ def fig_generation() -> None:
     save(fig, "fig_generation")
 
 
-def fig_stt() -> None:
-    d = DATA["stt_wer"]
-    fig, ax = plt.subplots(figsize=(COL_W, 1.8))
-    grouped_bars(ax, d["languages"], d["systems"], ylim=(0, 0.5))
-    ax.set_ylabel("Word error rate (lower is better)")
-    ax.legend(loc="upper right", frameon=False)
-    watermark(fig, d["is_mock"])
-    save(fig, "fig_stt_wer")
-
-
 def fig_latency() -> None:
     d = DATA["measured_latency"]
     fig, ax = plt.subplots(figsize=(COL_W, 1.7))
@@ -155,5 +145,4 @@ if __name__ == "__main__":
     fig_confusion()
     fig_rag_ablation()
     fig_generation()
-    fig_stt()
     fig_latency()

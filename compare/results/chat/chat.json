@@ -1,0 +1,745 @@
+{
+  "systems": {
+    "PQ": {
+      "n": 43,
+      "task_ok": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 43
+      },
+      "correct": {
+        "mean": 0.8793103448275862,
+        "lo": 0.7586206896551724,
+        "hi": 0.9655172413793104,
+        "n": 29
+      },
+      "faithfulness": {
+        "mean": 0.8476890756302522,
+        "lo": 0.7527836134453781,
+        "hi": 0.9271752450980392,
+        "n": 34
+      },
+      "answered": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 29
+      },
+      "evidence_in_context": {
+        "mean": 0.7619047619047619,
+        "lo": 0.5714285714285714,
+        "hi": 0.9047619047619048,
+        "n": 21
+      },
+      "kannada_reply": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 17
+      },
+      "weather_numbers_ok": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 6
+      },
+      "diagnosis_correct": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 6
+      },
+      "disease_named": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 8
+      },
+      "retrieval_skipped": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 4
+      }
+    },
+    "SK": {
+      "n": 43,
+      "task_ok": {
+        "mean": 0.3488372093023256,
+        "lo": 0.20930232558139536,
+        "hi": 0.4883720930232558,
+        "n": 43
+      },
+      "correct": {
+        "mean": 0.3793103448275862,
+        "lo": 0.22413793103448276,
+        "hi": 0.5517241379310345,
+        "n": 29
+      },
+      "faithfulness": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 20
+      },
+      "answered": {
+        "mean": 0.5517241379310345,
+        "lo": 0.3793103448275862,
+        "hi": 0.7241379310344828,
+        "n": 29
+      },
+      "evidence_in_context": {
+        "mean": 0.3333333333333333,
+        "lo": 0.14285714285714285,
+        "hi": 0.5714285714285714,
+        "n": 21
+      },
+      "kannada_reply": {
+        "mean": 0.8823529411764706,
+        "lo": 0.7058823529411765,
+        "hi": 1.0,
+        "n": 17
+      },
+      "weather_numbers_ok": {
+        "mean": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "n": 6
+      },
+      "diagnosis_correct": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 6
+      },
+      "disease_named": {
+        "mean": 0.875,
+        "lo": 0.625,
+        "hi": 1.0,
+        "n": 8
+      }
+    },
+    "PQoff": {
+      "n": 43,
+      "evidence_in_context": {
+        "mean": 0.5238095238095238,
+        "lo": 0.3333333333333333,
+        "hi": 0.7142857142857143,
+        "n": 21
+      },
+      "kannada_reply": {
+        "mean": 0.058823529411764705,
+        "lo": 0.0,
+        "hi": 0.17647058823529413,
+        "n": 17
+      },
+      "weather_numbers_ok": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 6
+      },
+      "diagnosis_correct": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 6
+      },
+      "disease_named": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 8
+      },
+      "retrieval_skipped": {
+        "mean": 1.0,
+        "lo": 1.0,
+        "hi": 1.0,
+        "n": 4
+      },
+      "evidence_in_reply": {
+        "mean": 0.23809523809523808,
+        "lo": 0.047619047619047616,
+        "hi": 0.42857142857142855,
+        "n": 21
+      }
+    }
+  },
+  "by_group": {
+    "PQ": {
+      "memory": {
+        "n": 10,
+        "task_ok": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 10
+        },
+        "correct": {
+          "mean": 0.8,
+          "lo": 0.5,
+          "hi": 1.0,
+          "n": 10
+        },
+        "faithfulness": {
+          "mean": 0.7083333333333333,
+          "lo": 0.5,
+          "hi": 0.9000000000000001,
+          "n": 10
+        },
+        "answered": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 10
+        },
+        "evidence_in_context": {
+          "mean": 0.6,
+          "lo": 0.3,
+          "hi": 0.9,
+          "n": 10
+        },
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 3
+        }
+      },
+      "kannada": {
+        "n": 10,
+        "task_ok": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 10
+        },
+        "correct": {
+          "mean": 0.85,
+          "lo": 0.6,
+          "hi": 1.0,
+          "n": 10
+        },
+        "faithfulness": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 10
+        },
+        "answered": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 10
+        },
+        "evidence_in_context": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 10
+        },
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 10
+        }
+      },
+      "photo": {
+        "n": 8,
+        "task_ok": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 8
+        },
+        "correct": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 8
+        },
+        "faithfulness": {
+          "mean": 0.7328869047619048,
+          "lo": 0.5609374999999999,
+          "hi": 0.8869047619047619,
+          "n": 8
+        },
+        "answered": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 8
+        },
+        "evidence_in_context": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 1
+        },
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        },
+        "diagnosis_correct": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 6
+        },
+        "disease_named": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 8
+        }
+      },
+      "weather": {
+        "n": 8,
+        "task_ok": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 8
+        },
+        "correct": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        },
+        "faithfulness": {
+          "mean": 0.9791666666666666,
+          "lo": 0.9375,
+          "hi": 1.0,
+          "n": 6
+        },
+        "answered": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        },
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 2
+        },
+        "weather_numbers_ok": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 6
+        }
+      },
+      "routing": {
+        "n": 4,
+        "task_ok": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 4
+        },
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        },
+        "retrieval_skipped": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 4
+        }
+      },
+      "safety": {
+        "n": 3,
+        "task_ok": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 3
+        }
+      }
+    },
+    "SK": {
+      "memory": {
+        "n": 10,
+        "task_ok": {
+          "mean": 0.7,
+          "lo": 0.4,
+          "hi": 1.0,
+          "n": 10
+        },
+        "correct": {
+          "mean": 0.7,
+          "lo": 0.4,
+          "hi": 1.0,
+          "n": 10
+        },
+        "faithfulness": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 7
+        },
+        "answered": {
+          "mean": 0.7,
+          "lo": 0.4,
+          "hi": 1.0,
+          "n": 10
+        },
+        "evidence_in_context": {
+          "mean": 0.6,
+          "lo": 0.3,
+          "hi": 0.9,
+          "n": 10
+        },
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 3
+        }
+      },
+      "kannada": {
+        "n": 10,
+        "task_ok": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 10
+        },
+        "correct": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 10
+        },
+        "faithfulness": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        },
+        "answered": {
+          "mean": 0.1,
+          "lo": 0.0,
+          "hi": 0.3,
+          "n": 10
+        },
+        "evidence_in_context": {
+          "mean": 0.1,
+          "lo": 0.0,
+          "hi": 0.3,
+          "n": 10
+        },
+        "kannada_reply": {
+          "mean": 0.8,
+          "lo": 0.5,
+          "hi": 1.0,
+          "n": 10
+        }
+      },
+      "photo": {
+        "n": 8,
+        "task_ok": {
+          "mean": 0.375,
+          "lo": 0.125,
+          "hi": 0.75,
+          "n": 8
+        },
+        "correct": {
+          "mean": 0.4375,
+          "lo": 0.1875,
+          "hi": 0.6875,
+          "n": 8
+        },
+        "faithfulness": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 7
+        },
+        "answered": {
+          "mean": 0.875,
+          "lo": 0.625,
+          "hi": 1.0,
+          "n": 8
+        },
+        "evidence_in_context": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 1
+        },
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        },
+        "diagnosis_correct": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 6
+        },
+        "disease_named": {
+          "mean": 0.875,
+          "lo": 0.625,
+          "hi": 1.0,
+          "n": 8
+        }
+      },
+      "weather": {
+        "n": 8,
+        "task_ok": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 8
+        },
+        "correct": {
+          "mean": 0.5,
+          "lo": 0.5,
+          "hi": 0.5,
+          "n": 1
+        },
+        "faithfulness": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 4
+        },
+        "answered": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        },
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 2
+        },
+        "weather_numbers_ok": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 6
+        }
+      },
+      "routing": {
+        "n": 4,
+        "task_ok": {
+          "mean": 0.75,
+          "lo": 0.25,
+          "hi": 1.0,
+          "n": 4
+        },
+        "faithfulness": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        },
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        }
+      },
+      "safety": {
+        "n": 3,
+        "task_ok": {
+          "mean": 0.6666666666666666,
+          "lo": 0.0,
+          "hi": 1.0,
+          "n": 3
+        }
+      }
+    },
+    "PQoff": {
+      "memory": {
+        "n": 10,
+        "evidence_in_context": {
+          "mean": 0.5,
+          "lo": 0.2,
+          "hi": 0.8,
+          "n": 10
+        },
+        "kannada_reply": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 3
+        },
+        "evidence_in_reply": {
+          "mean": 0.2,
+          "lo": 0.0,
+          "hi": 0.5,
+          "n": 10
+        }
+      },
+      "kannada": {
+        "n": 10,
+        "evidence_in_context": {
+          "mean": 0.6,
+          "lo": 0.3,
+          "hi": 0.9,
+          "n": 10
+        },
+        "kannada_reply": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 10
+        },
+        "evidence_in_reply": {
+          "mean": 0.3,
+          "lo": 0.0,
+          "hi": 0.6,
+          "n": 10
+        }
+      },
+      "photo": {
+        "n": 8,
+        "evidence_in_context": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 1
+        },
+        "kannada_reply": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 1
+        },
+        "diagnosis_correct": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 6
+        },
+        "disease_named": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 8
+        },
+        "evidence_in_reply": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 1
+        }
+      },
+      "weather": {
+        "n": 8,
+        "kannada_reply": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "n": 2
+        },
+        "weather_numbers_ok": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 6
+        }
+      },
+      "routing": {
+        "n": 4,
+        "kannada_reply": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 1
+        },
+        "retrieval_skipped": {
+          "mean": 1.0,
+          "lo": 1.0,
+          "hi": 1.0,
+          "n": 4
+        }
+      },
+      "safety": {
+        "n": 3
+      }
+    }
+  },
+  "notes": {},
+  "wilcoxon_pq_vs_sk": {
+    "task_ok": 1.2131545083660686e-07,
+    "correct": 0.0004792165925029787,
+    "evidence_in_context": 0.006655605482949377
+  },
+  "latency_without_llm_s": {
+    "median": 0.2562698000110686,
+    "p95": 0.5473268799833021,
+    "n": 43
+  },
+  "weather_false_positives": {
+    "n": 2,
+    "of": 35,
+    "cases": [
+      "kn_r06",
+      "kn_c05"
+    ]
+  },
+  "memory": {
+    "PQ": {
+      "evidence_in_context": 0.6,
+      "correct": 0.8,
+      "correct_en": 0.8571428571428571,
+      "correct_kn": 0.6666666666666666
+    },
+    "SK": {
+      "evidence_in_context": 0.6,
+      "correct": 0.7,
+      "correct_en": 1.0,
+      "correct_kn": 0.0
+    }
+  },
+  "meta": {
+    "cases": 43,
+    "turns": 53,
+    "generator_and_judge": "claude-opus-5-5",
+    "weather_recorded": [
+      {
+        "name": "chikkamagaluru",
+        "lat": 13.3161,
+        "lng": 75.772,
+        "utc": "2026-11-22T13:38:29.313646+00:00"
+      },
+      {
+        "name": "kodagu",
+        "lat": 12.4244,
+        "lng": 75.7382,
+        "utc": "2026-11-22T13:38:30.622587+00:00"
+      }
+    ],
+    "run": {
+      "timestamp": "2026-11-22T19:30:53",
+      "git_commit": "d19d29a",
+      "python": "3.11.0",
+      "torch": "2.11.0+cu128",
+      "cuda": "12.8",
+      "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+      "seed": 42,
+      "smoke": false,
+      "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+    }
+  }
+}

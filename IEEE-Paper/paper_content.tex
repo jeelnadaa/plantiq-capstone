@@ -22,13 +22,6 @@
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
-% ---------------------------------------------------------------------------
-% DRAFT MARKERS — remove both macros' colour before submission.
-%   \mock{...}  : MOCK comparison value (placeholder until the experiment is run)
-%   \tbd{...}   : fact the team must fill in from its own records (e.g. training run)
-% ---------------------------------------------------------------------------
-\newcommand{\mock}[1]{\textcolor{red}{#1}}
-\newcommand{\tbd}[1]{\textcolor{blue}{[#1]}}
 \newcommand{\yes}{\checkmark}
 \newcommand{\no}{$\times$}
 \newcommand{\part}{$\sim$}
@@ -48,11 +41,7 @@
 % coffee CNN paper is [1] and the coffee RAG paper is [2]; all other references follow in citation order.
 \nocite{anudeep2024cnn,selvakumar2024rag}
 
-\title{PlantIQ: A Multimodal, Retrieval-Grounded Decision-Support Platform for Smallholder Coffee Growers in Karnataka
-\thanks{\textcolor{red}{DRAFT. Values printed in red and figures stamped ``MOCK DATA'' are placeholders for comparison
-experiments that have not yet been run; values in blue brackets must be filled in by the authors. All other numbers are
-measurements taken from the implemented system.}}
-}
+\title{PlantIQ: A Multimodal, Retrieval-Grounded Decision-Support Platform for Smallholder Coffee Growers in Karnataka}
 
 % Authors are set as an explicit 2 x 2 table with two equal-width columns, so both rows line up.
 % (IEEEtran's \and centres each row by its own widest line, which misaligned the "AI & ML" row.)
@@ -68,11 +57,11 @@ measurements taken from the implemented system.}}
 
 \author{%
 \begin{tabular}{@{}p{0.5\textwidth}@{}p{0.5\textwidth}@{}}
-\centering\authorcell{Jeel Nada}{Dept. of Computer Science and Engineering}{PES2UG23CS357 \tbd{email}} &
-\centering\arraybackslash\authorcell{Nidhi N Udupa}{Dept. of Computer Science and Engineering}{PES2UG23CS384 \tbd{email}} \\
+\centering\authorcell{Jeel Nada}{Dept. of Computer Science and Engineering}{PES2UG23CS357} &
+\centering\arraybackslash\authorcell{Nidhi N Udupa}{Dept. of Computer Science and Engineering}{PES2UG23CS384} \\
 \addlinespace[3ex]
-\centering\authorcell{Mohammed Ayaan}{Dept. of Computer Science and Engineering (AI \& ML)}{PES2UG23AM058 \tbd{email}} &
-\centering\arraybackslash\authorcell{Prof. Deepti C.}{Dept. of Computer Science and Engineering}{\tbd{email}} \\
+\centering\authorcell{Mohammed Ayaan}{Dept. of Computer Science and Engineering (AI \& ML)}{PES2UG23AM058} &
+\centering\arraybackslash\authorcell{Prof. Deepti C.}{Dept. of Computer Science and Engineering}{} \\
 \end{tabular}}
 
 \maketitle
@@ -99,7 +88,9 @@ YOLOv8 baselines from prior coffee work reach 0.988 and 0.985 with a quarter of 
 On 75 Karnataka coffee questions (21 in Kannada) the hybrid retriever finds the gold evidence in its top three
 passages for 0.87 of questions against 0.50 for a re-implemented dense LangChain retriever, and
 with the same language model its answers are correct for 0.94 of questions against 0.82 for that pipeline and
-0.61 without retrieval, which states an unsupported dose in 20\% of answers against none for PlantIQ. \mock{The Module 3 comparison is in progress.}
+0.61 without retrieval, which states an unsupported dose in 20\% of answers against none for PlantIQ. On 43 test conversations covering follow-up questions, Kannada, leaf photographs, weather and
+prompt injection, the chatbot met the expected behaviour in all 43 against 15 for the same pipeline run as a LangChain
+conversational chain, and answered 0.88 of its knowledge questions correctly against 0.38.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -713,10 +704,18 @@ from the exact prompts each system builds, without access to the gold answers, a
 gold answer and the passages that system retrieved: faithfulness (supported claims over all factual claims), correctness
 and relevance (0, 0.5 or 1). As a judge-free check, PlantIQ's dose audit is applied to every answer. PlantIQ's language
 router, which rewrites a Kannada question as one English question, was run on the same model.
-\item \textbf{Module 3.} A set of \tbd{N} questions in English and Kannada. Comparison with the
-Farmer.Chat~\cite{singh2024farmerchat} evaluation methodology: answered rate, faithfulness, relevance and latency, plus
-Kannada fluency rated by \tbd{N} native speakers. Speech recognition is measured by word error rate on \tbd{N} recorded
-utterances.
+\item \textbf{Module 3.} 43 test conversations (53 turns) written by the authors in six groups: follow-up questions
+that only make sense with the previous turn, Kannada (two typed in Latin letters), leaf photographs and past scans
+handed into the chat, weather questions with GPS, with coordinates typed in the text or with no location, greetings
+and a place name, and prompt injection. Knowledge questions reuse the gold answers and evidence of the Module~2 set.
+PlantIQ's chat pipeline, checked to build exactly the prompts of the deployed code, is compared with the Selva
+Kumar \textit{et al.}~\cite{selvakumar2024rag} pipeline run as a LangChain conversational retrieval chain (a follow-up
+is first rewritten as a standalone question; dense top four; default prompt; the YOLOv8s-cls label for a photograph),
+with the same language model, and with PlantIQ's offline fallback. Weather is one recorded Open-Meteo response each for
+Chikkamagaluru and Kodagu, so every system sees the same readings. Each final answer is judged for the expected
+behaviour, for correctness against the gold answer and for faithfulness to what the system was given (passages, and
+for PlantIQ also weather, diagnosis, scan and history); reply script, weather values, diagnosis and evidence retrieval
+are checked automatically. Speech recognition is not evaluated, because it needs recorded utterances.
 \item \textbf{Module 4} is evaluated functionally and for latency; it is not compared with the forecasting
 works~\cite{santhosha2023yield, xavier2023price} because it does not forecast.
 \end{itemize}
@@ -878,33 +877,58 @@ Dense RAG~\cite{selvakumar2024rag} & 0.500 & 0.824 & 0.990 & 0.0\% \\
 \end{tabular}
 \end{table}
 
-\subsection{Module 3 Comparison \mock{[mock data]}}
-Table~\ref{tab:m3} compares the chatbot with the Farmer.Chat evaluation methodology, and Fig.~\ref{fig:stt} reports the
-speech-recognition error rates. \mock{Placeholder discussion of answered rate, faithfulness, latency, Kannada fluency, and
-whether the local Kannada model outperforms the cloud fallback.}
+\subsection{Module 3 Comparison}
+Table~\ref{tab:m3} reports, per group, whether the expected behaviour was met and, where a gold answer exists, whether
+the answer was correct. The PlantIQ chatbot met the expected behaviour in all 43 conversations, against 15 (0.35) for
+the LangChain version of the Selva Kumar pipeline (Wilcoxon $p<10^{-6}$), and answered the 29 knowledge questions
+correctly in 0.88 of cases against 0.38 ($p<0.001$). The gap comes from what the baseline lacks: it has no live weather
+(0 of 8 weather turns), cannot use a past scan, answers no Kannada question because dense search on Kannada text
+returns unreadable PDF text, and prints its own instructions when asked to. Both chatbots classified all six
+photographs correctly. PlantIQ replied in Kannada script in all 17 turns that required it, reported the live
+temperature and humidity in all six weather turns with a location (including coordinates typed in the message), and in
+the two turns without a location said that weather was unavailable without inventing values. Greeting and place-name
+turns skipped retrieval, and the closing \texttt{</user\_query>} tag of an injected message was removed by input cleaning
+before it reached the prompt.
+
+The evaluation also exposed three weaknesses. First, the language router sees only the current message, so a follow-up
+such as ``What pH should it have?'' is searched as written. Evidence for the ten follow-ups was retrieved in six cases by
+both systems; the model resolved ``it'' from the history in every case, but PlantIQ gave a wrong value twice (pH~7
+instead of 9--10 for Bordeaux mixture, in English and in Kannada), while LangChain's history-aware rewrite answered all
+seven English follow-ups correctly. Passing recent turns to the router is a direct fix. Second, weather intent is
+detected by keyword substrings, and two Kannada compounds triggered it (the word for blossom shower contains the word
+for rain, and the word for eco-friendly the word for environment), which added a needless note about missing weather.
+Third, without any language model the offline reply quotes English passages, so only 0.06 of the replies that should be
+in Kannada were; it still named the disease in every photograph turn and reported the live weather correctly. When
+retrieval misses, PlantIQ answers from the model's knowledge instead of abstaining, so its answers are less strictly
+grounded (faithfulness 0.85 against 1.00) while the baseline answered only 0.55 of the knowledge questions. Without the
+language model, a PlantIQ chat turn (CNN, routing, weather and retrieval) took a median of 0.26~s (95th percentile
+0.55~s) on the laptop GPU. Answers and judgments were produced by the same model as in Module~2.
 
 \begin{table}[t]
-\caption{Module 3 comparison \mock{(MOCK)}}
+\caption{Module 3 comparison (same language model for every system): share of conversations with the expected
+behaviour and, for questions with a gold answer, correctness}
 \label{tab:m3}
 \centering
 \scriptsize
 \setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{@{}lccccc@{}}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-System & Answered & Faithful. & Relev. & \makecell{Kannada\\fluency} & \makecell{Median\\latency (s)} \\
+ & \multicolumn{2}{c}{Expected behaviour} & \multicolumn{2}{c}{Correct} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Group ($n$) & PlantIQ & \makecell{Dense RAG\\(LangChain)} & PlantIQ & \makecell{Dense RAG\\(LangChain)} \\
 \midrule
-Farmer.Chat~\cite{singh2024farmerchat} & \mock{0.78} & \mock{0.80} & \mock{0.70} & \mock{3.9} & \mock{9.5} \\
-\textbf{PlantIQ chatbot} & \mock{0.86} & \mock{0.90} & \mock{0.87} & \mock{4.3} & \mock{6.1} \\
+Follow-up questions (10) & 1.00 & 0.70 & 0.80 & 0.70 \\
+Kannada (10) & 1.00 & 0.00 & 0.85 & 0.00 \\
+Photo and past scan (8) & 1.00 & 0.38 & 1.00 & 0.44 \\
+Weather (8) & 1.00 & 0.00 & 1.00$^\ast$ & 0.50$^\ast$ \\
+Greeting, place name (4) & 1.00 & 0.75 & -- & -- \\
+Prompt injection (3) & 1.00 & 0.67 & -- & -- \\
+\midrule
+\textbf{All (43; correct: 29)} & \textbf{1.00} & 0.35 & \textbf{0.88} & 0.38 \\
 \bottomrule
+\multicolumn{5}{@{}l@{}}{\tiny $^\ast$One weather question (orange powder under the leaves) has a gold answer.}
 \end{tabular}
 \end{table}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\plantiqfigw]{figures/fig_stt_wer.pdf}
-\caption{Speech-recognition word error rate by language \mock{(MOCK DATA)}.}
-\label{fig:stt}
-\end{figure}
 
 \subsection{Module 4}
 The market module is covered by integration tests of unit conversion, photos, every filter and sort order, owner rules,
@@ -924,8 +948,10 @@ marketplace has no price-trend information or moderator dashboard. The classifie
 dataset of close-up patches with only nine distinct healthy patches; a test set of field photographs from Karnataka
 estates is needed, and since lighter GoogLeNet and YOLOv8 classifiers matched or exceeded the ResNet-50 on JMuBEN, the
 choice of backbone should be revisited on that field set. The knowledge base has no readable Phoma document, and the retrieval questions were written by the authors from the
-same documents; a question set collected from growers is needed. \mock{The Module 3 comparison in Section~IX is still a
-placeholder,} and a field study with growers in Chikkamagaluru is required to assess usefulness.
+same documents; a question set collected from growers is needed. The chatbot was tested on author-written
+conversations with recorded weather; its router does not yet use the conversation history, weather intent is detected by
+keywords, the offline reply is not translated, and speech recognition has not been evaluated on recorded utterances. A
+field study with growers in Chikkamagaluru is required to assess usefulness.
 
 % =========================================================================================
 \section{Conclusion}
@@ -938,12 +964,14 @@ external service, and server-side normalisation of market data. Measurements on 
 retrieval stages add well under a second to an advisory whose latency is dominated by generation.
 On a leak-free evaluation the diagnosis module reaches a macro-F1 of 0.970, within two points of the best
 re-implemented baseline. The hybrid retriever finds the right passage far more often than a dense LangChain pipeline, especially for Kannada
-questions, and grounding cuts unsupported doses from 20\% of answers to none. \mock{The comparative claims for
-Module 3 will be finalised once its evaluation has been run.}
+questions, and grounding cuts unsupported doses from 20\% of answers to none. In conversation, the chatbot met the
+expected behaviour in all 43 test conversations against 15 for a LangChain chatbot built on the dense pipeline, because
+it adds live weather, scan hand-off, Kannada routing and safety rules; making the language router aware of the
+conversation history is the main remaining fix.
 
 \section*{Acknowledgment}
 The authors thank Prof.\ Deepti C., Department of Computer Science and Engineering, PES University, for guidance
-throughout this capstone project. \tbd{Add any other acknowledgements, e.g.\ estates that provided field images.}
+throughout this capstone project.
 
 % Balances the last page's columns: starts a new column before this reference number.
 % Re-tune (or remove) whenever the text or the reference list changes length.

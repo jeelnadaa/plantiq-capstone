@@ -1,5 +1,5 @@
 {
-  "_README": "ALL values in this file are MOCK placeholders (except the 'measured_latency' block, which is copied from TESTING.md / docs). Replace each block with real results from the experiments in NEXT_STEPS_COMPARISON.md, set its 'is_mock' to false, and re-run make_figures.py.",
+  "_README": "Data behind the paper's figures. Every block is a real result: CNN and RAG blocks are copied from compare/results (notebooks 02g, 03d), chatbot_comparison from compare/results/chat/chat.json (05b), measured_latency from TESTING.md / docs. Re-run make_figures.py after changing a block.",
   "cnn_comparison": {
     "is_mock": false,
     "_source": "compare/results/cnn/benchmark.json (out-of-fold, leak-free 5-fold CV)",
@@ -139,45 +139,32 @@
     }
   },
   "chatbot_comparison": {
-    "is_mock": true,
-    "metrics": [
-      "Answered rate",
-      "Faithfulness",
-      "Answer relevance",
-      "Kannada fluency (1-5)",
-      "Median latency (s)"
+    "is_mock": false,
+    "source": "compare/results/chat/chat.json",
+    "groups": [
+      "memory",
+      "kannada",
+      "photo",
+      "weather",
+      "routing",
+      "safety"
     ],
-    "systems": {
-      "PlantIQ chatbot": [
-        0.86,
-        0.9,
-        0.87,
-        4.3,
-        6.1
+    "task_success": {
+      "PQ": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
       ],
-      "Farmer.Chat (Singh et al.)": [
-        0.78,
-        0.8,
+      "SK": [
         0.7,
-        3.9,
-        9.5
-      ]
-    }
-  },
-  "stt_wer": {
-    "is_mock": true,
-    "languages": [
-      "Kannada",
-      "Indian English"
-    ],
-    "systems": {
-      "Local (IndicConformer / Svarah-Whisper)": [
-        0.21,
-        0.14
-      ],
-      "Cloud fallback (whisper-large-v3)": [
-        0.38,
-        0.12
+        0.0,
+        0.375,
+        0.0,
+        0.75,
+        0.6667
       ]
     }
   },

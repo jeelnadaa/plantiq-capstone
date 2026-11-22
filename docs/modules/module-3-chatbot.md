@@ -108,9 +108,20 @@ flowchart LR
 | Provider fallback | Gemini 429 → Groq answered automatically |
 | Local STT | Whisper (English) and IndicConformer (Kannada) loaded on CUDA |
 
+**Comparison benchmark** (`compare/05_chat/`, 43 conversations, same LLM for every system): expected behaviour met in
+43/43 conversations vs 15/43 for the Selva Kumar pipeline run as a LangChain conversational chain; correct answers
+0.88 vs 0.38 on 29 knowledge questions; Kannada-script replies 17/17; live temperature and humidity reported in 6/6
+weather turns with a location; no invented weather without one; greetings skip retrieval; chat turn without the LLM
+median 0.26 s on the laptop GPU. Speech recognition was not part of the benchmark.
+
 ## 7. Limitations and future work
 - Conversation memory is the last 8 messages (no long-term summary).
 - Kanglish detection by word list can miss rare spellings (the LLM router covers most cases).
+- The router sees only the current message, so a follow-up such as "What pH should it have?" is searched as written
+  (benchmark: 2 of 10 follow-ups answered with a wrong value). Fix: pass the last turns to the router.
+- Weather intent is a keyword substring match; Kannada compounds such as ಹೂಮಳೆ (blossom shower) and ಪರಿಸರ ಸ್ನೇಹಿ
+  (eco-friendly) trigger it (2 of 35 non-weather turns). Fix: match whole words or let the router decide.
+- The offline reply quotes English passages even for Kannada users (1 of 17 such replies in Kannada).
 - Future: text-to-speech replies for low-literacy users; streaming responses; measured STT accuracy on recorded farmer speech.
 
 **Tests:** `tests/integration/test_chat_api.py` (threads, history in prompt, photos, media reuse, scan hand-off, coordinates,

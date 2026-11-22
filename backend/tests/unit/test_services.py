@@ -92,7 +92,7 @@ def test_router_greeting_and_location():
 
 def test_router_uses_llm_json_and_falls_back():
     r = route_query("When to spray for rust?", FakeLLM())
-    assert r["search_query_english"] == "coffee rust spray timing" and r["source"] == "fake"
+    assert r["search_query_english"] == "When should coffee leaf rust be sprayed?" and r["source"] == "fake"
 
     class Broken(FakeLLM):
         def generate(self, *a, **k):
@@ -101,6 +101,30 @@ def test_router_uses_llm_json_and_falls_back():
 
     assert route_query("When to spray?", Broken())["source"] == "heuristic"
     assert route_query("When to spray?", None)["source"] == "heuristic"
+
+
+def test_router_asks_for_full_english_question_not_keywords():
+    """Retrieval query is a self-contained English question (embedders/reranker are sentence-trained)."""
+    from app.services.lang_router import ROUTER_PROMPT
+    from app.services.llm import LLMResult
+
+    assert "ONE short, self-contained English question" in ROUTER_PROMPT
+    assert "Not a keyword list" in ROUTER_PROMPT
+    seen = {}
+
+    class Rewriter(FakeLLM):
+        def generate(self, prompt, **k):
+            seen["prompt"] = prompt
+            return LLMResult(json.dumps({
+                "detected_script": "kannada_script",
+                "search_query_english": "How much lime should be applied per coffee plant to correct acidic soil?",
+                "is_greeting_or_location_only": False, "target_response_language": "kn"}), "fake", "fake")
+
+    q = "ಆಮ್ಲೀಯ ಮಣ್ಣಿಗೆ ಪ್ರತಿ ಗಿಡಕ್ಕೆ ಎಷ್ಟು ಸುಣ್ಣ ಹಾಕಬೇಕು?"
+    r = route_query(q, Rewriter())
+    assert q in seen["prompt"]
+    assert r["search_query_english"].endswith("?") and len(r["search_query_english"].split()) > 5
+    assert r["detected_script"] == "kannada_script" and r["target_response_language"] == "kn"
 
 
 @pytest.mark.parametrize("text,coords", [

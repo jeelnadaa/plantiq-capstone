@@ -36,6 +36,27 @@ def test_history_is_included_in_prompt(client, farmer):
     assert "Farmer: My rust problem is severe" in llm.calls[-1]
 
 
+def test_kannada_question_retrieves_with_english_question_and_reranks_on_it(client, farmer):
+    """Kannada in → router's English question drives retrieval and is the reranker's query; reply stays Kannada."""
+    from app.services.fakes import FakeRetriever
+
+    calls = []
+
+    class Spy(FakeRetriever):
+        def search(self, query, top_k=3, topic_filter=None, rerank_query=None):
+            calls.append((query, rerank_query))
+            return super().search(query, top_k=top_k, topic_filter=topic_filter, rerank_query=rerank_query)
+
+    registry.override("llm", FakeLLM())
+    registry.override("rag", Spy())
+    r = send(client, farmer["headers"], "ಕಾಫಿ ಎಲೆ ತುಕ್ಕು ರೋಗಕ್ಕೆ ಯಾವಾಗ ಸಿಂಪಡಿಸಬೇಕು?")
+    assert r.status_code == 200, r.text
+    query, rerank = calls[-1]
+    assert rerank == "When should coffee leaf rust be sprayed?" and rerank in query
+    assert not any("ಀ" <= ch <= "೿" for ch in query)
+    assert r.json()["language"] == "kn"
+
+
 def test_attach_uploaded_image_runs_cnn_and_is_persisted(client, farmer):
     h = farmer["headers"]
     d = send(client, h, "What is wrong with this leaf?", files={"image_file": ("leaf.png", image_bytes("PNG"), "image/png")}).json()

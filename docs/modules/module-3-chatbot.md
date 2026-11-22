@@ -41,7 +41,10 @@ flowchart TD
 
 ### 2.1 Language router (`services/lang_router.py`)
 Each message is classified into **Kannada script**, **Kanglish** (Kannada written in English letters, e.g.
-*"Coffee beliyalu yaava gobbara beku?"*) or **English**, and turned into English search keywords.
+*"Coffee beliyalu yaava gobbara beku?"*) or **English**, and rewritten as one self-contained English question that is
+used only for retrieval. A full question (not a keyword list) keeps negations, quantities, timing and the question type,
+which the sentence-trained embedders and the cross-encoder reranker need. The LLM still answers the farmer's original
+text, directly in Kannada script when Kannada is requested; there is no translate-back step.
 1. A small JSON prompt to the LLM (temperature 0.1) returns `{detected_script, search_query_english, is_greeting_or_location_only,
    target_response_language}`.
 2. If the LLM is unavailable or returns invalid JSON, a **heuristic router** decides: Kannada Unicode range (U+0C80–U+0CFF),

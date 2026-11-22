@@ -114,3 +114,17 @@ Postgres create-database race.
   (one column) both input it. Module 1 sections, Table VII and Figs. 4-5 now use real results; Modules 2-3 still mock.
 - **summary/**: one-page project summary (35.tex/35.pdf, figures 35_1.png, 35_2.png).
 - Tests: no backend/frontend code changed; compare/ notebooks all pass the smoke run (`PLANTIQ_SMOKE=1`).
+
+## 2026-11-22 — Chat retrieval: full English question instead of keywords
+- **Router** (`services/lang_router.py`): `search_query_english` is now one short, self-contained English question
+  (meaning-preserving; keeps crop, disease, symptoms, negations, quantities, timing, question type) instead of a keyword
+  list. Kannada / Kanglish questions are still answered directly in Kannada script; nothing is translated back.
+- **Chat** (`services/chat.py`): the router's English question is also passed as `rerank_query`, so the cross-encoder
+  scores the plain question while keyword prefixes (weather / disease) only widen dense+BM25 recall — the same split the
+  advisory path already used. The heuristic fallback now uses the cleaned message.
+- Fake LLM router output updated to a full question; docs/modules/module-3-chatbot.md §2.1 updated.
+- Tests: +2 (`test_router_asks_for_full_english_question_not_keywords`,
+  `test_kannada_question_retrieves_with_english_question_and_reranks_on_it`). Backend fast suite **288 passed**
+  (4 ml deselected). Run in a temporary venv because `backend/.venv` is missing on this machine; ML, vitest and
+  Playwright suites not re-run (no frontend change); TESTING.md not regenerated.
+- Open: measure keywords vs full question vs raw Kannada (bge-m3) on the Kannada question set in compare/03_rag.

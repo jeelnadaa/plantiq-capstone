@@ -79,7 +79,7 @@ class FakeLLM:
             kannada = any("ಀ" <= ch <= "೿" for ch in prompt)
             return LLMResult(json.dumps({
                 "detected_script": "kannada_script" if kannada else "english",
-                "search_query_english": "coffee rust spray timing",
+                "search_query_english": "When should coffee leaf rust be sprayed?",
                 "is_greeting_or_location_only": False,
                 "target_response_language": "kn" if kannada else "en",
             }), "fake", "fake-llm")

@@ -139,13 +139,16 @@ def process_message(db: Session, inp: ChatInput, *, cnn, rag, llm, env_service) 
 
         docs: list[dict] = []
         if not greeting or image_info or disease:
-            q = route.get("search_query_english") or inp.message
+            # Router gives one self-contained English question; keyword prefixes widen dense+BM25 recall, while the
+            # cross-encoder scores the plain question (it is calibrated on questions, not keyword lists).
+            question = route.get("search_query_english") or clean_user_text(inp.message, 300)
+            q = question
             if weather_q:
                 q = f"coffee microclimate weather humidity rainfall disease risk {q}"
             elif disease:
                 q = f"coffee {disease} {q}"
             with p.step("Retrieval"):
-                docs = rag.search(q, top_k=3) if rag else []
+                docs = rag.search(q, top_k=3, rerank_query=question) if rag else []
 
         lang_rule = ("Reply ONLY in Kannada script (ಕನ್ನಡ ಲಿಪಿ), never Kannada in Latin letters. Keep numbers and units "
                      "normal (27.1°C, 56%, 200 L, 0.5%)." if target == "kn" else "Reply in clear, simple English.")

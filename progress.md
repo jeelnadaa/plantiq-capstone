@@ -183,3 +183,13 @@ Postgres create-database race.
   the 11 references added earlier (ImageNet, BM25, RRF, MMR, bge-m3, FAISS, reranker, Whisper, RAGAS, haversine,
   Argon2) removed with their citations; JMuBEN dataset citation kept (CC BY licence requires it).
 
+## 2026-11-22 — Paper humanized; short paper (two layouts, 12 pt)
+- Full paper (`paper_content.tex`): edited with the humanizer skill (bold contribution labels, roadmap paragraph and
+  staged phrases removed; stock words replaced); stale statements fixed (router output is one English question; test
+  count 373 with backend re-run at 305); reference balancing now only in the two-column build (one-column 15 → 14 pages).
+- Short paper (`short_content.tex`, `short.tex`, `short_onecol.tex`): 12 pt, 6 / 7 pages; abstract, method, evaluation
+  setup, the three comparisons (Tables II-IV, Fig. 2), limitations, conclusion; same authors and references.
+- Hidden Unicode: sources are plain ASCII; equations rewritten (no large braces, `\hat`, `
+eq`) so none of the four
+  PDFs yields private-use, combining or format characters in copied text.
+

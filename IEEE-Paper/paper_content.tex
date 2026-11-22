@@ -69,8 +69,8 @@
 \begin{abstract}
 Coffee growers in the Chikkamagaluru, Kodagu and Hassan districts of Karnataka face three recurring problems: foliar
 diseases that spread quickly during the monsoon, treatment advice that is generic, English-only and blind to the day's
-weather, and weak access to buyers for small lots. This paper presents PlantIQ, an Android and web platform backed by a
-self-hostable server, organised as four modules. Module 1 diagnoses a single leaf photograph into leaf rust, Cercospora
+weather, and weak access to buyers for small lots. PlantIQ is an Android and web app backed by a self-hostable server
+and built as four modules. Module 1 classifies a single leaf photograph as leaf rust, Cercospora
 leaf spot, Phoma leaf spot, leaf miner or healthy with a transfer-learned ResNet-50 and a confidence gate. Module 2
 produces a treatment plan grounded in Central Coffee Research Institute extension documents and research literature
 through a hybrid retriever that fuses multilingual dense search with BM25 by reciprocal rank fusion, reranks with a
@@ -81,17 +81,17 @@ conversation memory, photo and past-scan hand-off, weather-intent detection and 
 Kannada and Indian English. Module 4 is a marketplace that normalises quantities and prices to kilograms and rupees per
 kilogram and ranks lots by great-circle distance. On the development hardware, leaf inference takes 5.3 ms on a laptop
 GPU, hybrid retrieval about 0.4 s and a complete advisory about 6 s, dominated by language-model generation.
-We show that the public JMuBEN coffee-leaf dataset, whose 58,549 images derive from only 861 distinct leaf
-patches, leaks almost every test image into training under a random split, and evaluate with leak-free group-aware
-five-fold cross-validation: the PlantIQ classifier reaches a macro-F1 of 0.970, while re-implemented GoogLeNet and
+The public JMuBEN coffee-leaf dataset has 58,549 images but only 861 distinct leaf patches, so a random split puts a
+copy of almost every test image into training; we therefore evaluate with group-aware five-fold cross-validation, in
+which the PlantIQ classifier reaches a macro-F1 of 0.970, while re-implemented GoogLeNet and
 YOLOv8 baselines from prior coffee work reach 0.988 and 0.985 with a quarter of the parameters.
 On 75 Karnataka coffee questions (21 in Kannada) the hybrid retriever finds the gold evidence in its top three
 passages for 0.87 of questions against 0.50 for a re-implemented dense LangChain retriever, and
 with the same language model its answers are correct for 0.94 of questions against 0.82 for that pipeline and
 0.61 without retrieval, which states an unsupported dose in 20\% of answers against none for PlantIQ. On 43 test conversations covering follow-up questions, Kannada, leaf photographs, weather and
-prompt injection, the chatbot met the expected behaviour in all 43 against 15 for the same pipeline run as a LangChain
-conversational chain, and answered 0.91 of its knowledge questions correctly against 0.38; three faults the evaluation
-exposed were fixed.
+prompt injection, the chatbot behaved as expected in all 43, against 15 for the same pipeline run as a LangChain
+conversational chain, and answered 0.91 of its knowledge questions correctly against 0.38. The evaluation also found
+three faults in the chatbot, which we fixed.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -106,10 +106,10 @@ Karnataka produces most of India's coffee, much of it on small holdings in the W
 Chikkamagaluru, Kodagu and Hassan. Coffee leaf rust (\textit{Hemileia vastatrix}), Cercospora leaf spot
 (\textit{Cercospora coffeicola}), Phoma leaf spot (\textit{Phoma costarricensis}) and the coffee leaf miner
 (\textit{Leucoptera coffeella}) are favoured by the humid monsoon, and the time between infection and visible damage
-across a block is short compared with the interval between visits by extension staff. The disease is only half of the
-decision: whether and when to spray also depends on the weather, because rain shortly after a fungicide application
-washes it off, while sustained high humidity at moderate temperatures favours fungal infection. Elevation and rainfall
-are also known to shape coffee growth and yield in these districts~\cite{patil2022elevation}. Printed extension material
+across a block is short compared with the interval between visits by extension staff. Whether and when to spray also
+depends on the weather: rain shortly after a fungicide application washes it off, and long spells of high humidity at
+moderate temperatures favour fungal infection. Elevation and rainfall also affect coffee growth and yield in these
+districts~\cite{patil2022elevation}. Printed extension material
 does not adapt to the conditions of a given day and is largely in English, whereas many growers are most comfortable in
 Kannada.
 
@@ -117,30 +117,25 @@ Prior coffee-specific work has addressed parts of this problem in isolation. Ima
 curated datasets~\cite{anudeep2024cnn}; detection combined with retrieval-augmented generation (RAG) has been proposed
 to reduce hallucination in remediation advice~\cite{selvakumar2024rag}; and general-purpose agricultural chatbots have
 been deployed at scale~\cite{singh2024farmerchat}. A recent survey of multi-modal large language models (LLMs) in
-agriculture identifies the integration of visual, linguistic and environmental signals as an open
-challenge~\cite{sapkota2024mmllm}. To our knowledge, none of the cited systems combines leaf diagnosis, document-grounded
+agriculture lists combining image, text and environmental data as an open problem~\cite{sapkota2024mmllm}. To our knowledge, none of the cited systems combines leaf diagnosis, document-grounded
 and weather-conditioned advice, a Kannada voice interface and a market channel in a single deployable application.
 
-This paper describes PlantIQ, an implemented system that does so. Its contributions are:
+This paper describes PlantIQ, a working system that combines them. Its contributions are:
 \begin{enumerate}
-\item A \textbf{confidence-gated diagnosis pipeline} (Module 1) that wraps a five-class ResNet-50 with input
+\item A confidence-gated diagnosis pipeline (Module 1) that wraps a five-class ResNet-50 with input
 sanitisation, per-user result caching and an explicit ``blended'' state that is raised when either the image model or
 the retrieved evidence is weak, instead of silently returning a low-confidence label.
-\item A \textbf{hybrid, hardware-aware RAG advisory} (Module 2) combining multilingual dense retrieval, BM25, reciprocal
+\item A hybrid, hardware-aware RAG advisory (Module 2) combining multilingual dense retrieval, BM25, reciprocal
 rank fusion, cross-encoder reranking, a soft disease-topic preference and near-duplicate removal, conditioned on live
 microclimate, a fungal infection risk rule and a three-day spray window, with a post-generation dose audit.
-\item A \textbf{multilingual, multimodal chatbot} (Module 3) with an LLM-based language router and heuristic fallback,
+\item A multilingual, multimodal chatbot (Module 3) with an LLM-based language router and heuristic fallback,
 image and past-scan hand-off, weather-intent detection and a local-first speech-recognition cascade for Kannada and
 Indian English.
-\item A \textbf{market-discovery module} (Module 4) that normalises heterogeneous trade units to kilograms and
+\item A market-discovery module (Module 4) that normalises heterogeneous trade units to kilograms and
 rupees per kilogram and ranks lots by Haversine distance, with owner-only editing and abuse reporting.
-\item An \textbf{evaluation protocol} for comparing each module with re-implemented methods from the coffee-specific
-literature (Section~VIII), together with system-level measurements of the implementation.
+\item A comparison of each module with re-implemented methods from earlier coffee work, run on the same data
+(Section~VIII), and measurements of the running system.
 \end{enumerate}
-
-The remainder of the paper is organised as follows. Section~II reviews related work. Section~III gives the system
-architecture. Sections~IV--VII describe the four modules. Section~VIII presents the implementation and evaluation setup,
-Section~IX the results, Section~X limitations, and Section~XI concludes.
 
 % =========================================================================================
 \section{Related Work}
@@ -165,26 +160,25 @@ their work focuses on the system design and does not use environmental data. Zha
 take a structured route for \textit{Elaeagnus angustifolia} diseases, combining LLMs with an agricultural knowledge
 graph, graph neural networks and a graph attention mechanism, and report a precision of 0.94, recall of 0.92 and
 accuracy of 0.93. PlantIQ uses unstructured retrieval but replaces a single dense retriever with a hybrid of dense and
-lexical search, adds reranking and diversification, injects live weather into the prompt and audits generated doses.
+lexical search, adds reranking and near-duplicate removal, puts live weather into the prompt and audits generated doses.
 
 \subsection{Agricultural Conversational Assistants}
 Farmer.Chat~\cite{singh2024farmerchat} is a generative-AI assistant deployed over WhatsApp and Telegram in four
 countries, supporting six languages, voice notes and images, and evaluated with RAGAS-style
 faithfulness, relevance and context-precision metrics as well as latency and user engagement. Sapkota
-\textit{et al.}~\cite{sapkota2024mmllm} survey multi-modal LLMs in agriculture and highlight domain-specific data,
-integration with existing systems and robust evaluation as open problems. PlantIQ's chatbot is narrower in crop scope
+\textit{et al.}~\cite{sapkota2024mmllm} survey multi-modal LLMs in agriculture and name domain-specific data,
+integration with existing systems and reliable evaluation among the open problems. PlantIQ's chatbot is narrower in crop scope
 but adds Kannada language routing, a local Kannada speech model, CNN diagnosis of attached photos and hand-off of
 earlier scans into the conversation.
 
 \subsection{Environmental Context and Market Access}
 Patil \textit{et al.}~\cite{patil2022elevation} report significant correlations between elevation, rainfall and
-leaf growth, bean characteristics and yield of arabica and robusta in Karnataka, motivating the use of location-specific
-weather and elevation in advice. Santhosha and Umesh~\cite{santhosha2023yield} predict coffee yield from Central Coffee
+leaf growth, bean characteristics and yield of arabica and robusta in Karnataka, which is why PlantIQ uses the weather and
+elevation of the grower's own estate. Santhosha and Umesh~\cite{santhosha2023yield} predict coffee yield from Central Coffee
 Research Institute (CCRI) soil and agronomic records with ensemble classifiers, and Xavier
 \textit{et al.}~\cite{xavier2023price} forecast commodity prices with a hybrid ARIMAX and particle-swarm-optimised
-support vector regression model. These works forecast yield or price; PlantIQ's market module addresses the
-complementary problem of making individual lots discoverable to nearby buyers, and is therefore not compared
-quantitatively with them.
+support vector regression model. These works forecast yield or price. PlantIQ's market module only helps nearby buyers find individual lots, so it is
+not compared with them quantitatively.
 
 Table~\ref{tab:related} summarises the functional scope of the systems discussed.
 
@@ -339,10 +333,11 @@ p_i = \frac{e^{z_i}}{\sum_{j=1}^{5} e^{z_j}}, \qquad c = 100\cdot\max_i p_i ,
 and the full distribution is returned with the top class and its confidence $c$ (in percent). A result is marked
 \emph{blended} when
 \begin{equation}
-c < \tau_c \;\;\lor\;\; \big(\hat{y} \neq \textit{Healthy} \,\land\, s_{\max} < \tau_r\big),
+c < \tau_c \;\;\lor\;\; (y \in \mathcal{D} \,\land\, s_{\max} < \tau_r),
 \label{eq:blend}
 \end{equation}
-where $\tau_c=75\%$, $s_{\max}$ is the best reranked passage score from Module~2 and $\tau_r=0.60$. Healthy leaves are
+where $y$ is the predicted class, $\mathcal{D}$ the four disease classes, $\tau_c=75\%$, $s_{\max}$ the best reranked
+passage score from Module~2 and $\tau_r=0.60$. Healthy leaves are
 exempt from the evidence condition because they require no disease protocol. A blended result is shown to the grower
 as ``not fully sure'' and the generation prompt instructs the LLM to name look-alike conditions and to recommend
 checking more leaves, so that a low-confidence prediction is never presented as a confirmed diagnosis.
@@ -362,7 +357,7 @@ Fig.~\ref{fig:rag} shows the offline indexing and the online advisory pipeline.
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[node distance=2.2mm, every node/.style={font=\scriptsize}]
-  \node[box, minimum width=3.6cm] (q) {Diagnosis $\hat{y}$, $c$ + question + language};
+  \node[box, minimum width=3.6cm] (q) {Diagnosis $y$, $c$ + question + language};
   \node[box, below=of q, minimum width=3.6cm] (route) {Language routing + intent expansion};
   \node[box, below left=2.6mm and -1.55cm of route, minimum width=1.75cm] (dense) {Dense top-20\\bge-m3 / FAISS};
   \node[box, below right=2.6mm and -1.55cm of route, minimum width=1.75cm] (bm) {BM25 top-20};
@@ -426,8 +421,8 @@ Profile & Embedding model & Cross-encoder reranker \\
 \end{tabular}
 \end{table}
 
-bge-m3 is multilingual, so a Kannada query can be embedded directly against the English corpus; in addition, the query
-is routed to English keywords as described in Section~VI.
+bge-m3 is multilingual, so a Kannada query can be embedded directly against the English corpus; the language router
+also rewrites the question as one English question (Section~VI).
 
 \subsection{Query Construction}
 Two queries are built. The \emph{recall query} concatenates ``coffee'' and the class name, the router's English
@@ -484,12 +479,11 @@ estimate.
 A rule-based fungal infection risk level is computed from temperature $T$ (\textdegree C), relative humidity $H$ (\%)
 and today's rain $R$ (mm):
 \begin{equation}
-\mathrm{risk}=
-\begin{cases}
-\text{high}, & H \ge 80 \;\land\; 20 \le T \le 28,\\
-\text{moderate}, & H \ge 65 \;\lor\; R > 0,\\
-\text{low}, & \text{otherwise}.
-\end{cases}
+\begin{aligned}
+\mathrm{risk} &= \text{high} && \text{if } H \ge 80 \;\land\; 20 \le T \le 28,\\
+&= \text{moderate} && \text{else if } H \ge 65 \;\lor\; R > 0,\\
+&= \text{low} && \text{otherwise}.
+\end{aligned}
 \end{equation}
 The interface presents the level with an icon, a text label and a three-segment meter so that colour is never the only
 cue. A spray window is recommended by Algorithm~\ref{alg:spray}.
@@ -522,7 +516,8 @@ The LLM chain calls Google Gemini 2.5 Flash at temperature 0.2 with its ``thinki
 output tokens; in our runs the thinking tokens otherwise consumed the output budget and truncated advisories, and a
 response that ends with the \texttt{MAX\_TOKENS} finish reason is treated as a failure. On error or rate limiting the
 request falls back to Groq's gpt-oss-120b and, if no provider is reachable, to a built-in bilingual offline card per
-class (summary, actions, spray, timing and prevention) followed by excerpts of the retrieved passages. All generated text
+class (summary, actions, spray, timing and prevention) followed by excerpts of the retrieved passages, or by their
+page references in a Kannada reply. All generated text
 passes a secret-redaction filter.
 
 \subsection{Dose Audit}
@@ -561,7 +556,9 @@ place name, and (ix) generates the reply with the same provider chain. Both mess
 
 \subsection{Language Router}
 A short JSON-mode prompt (temperature 0.1) asks the LLM for the detected language (Kannada or English), an
-English search query, whether the message is only a greeting or location, and the target response language. If the LLM
+English search query, whether the message is only a greeting or location, and the target response language. In a
+conversation the prompt also carries the last two exchanges, so a follow-up such as ``what pH should it have?'' becomes
+a self-contained question about the Bordeaux mixture. If the LLM
 is unavailable or returns invalid JSON, a heuristic router uses the Kannada Unicode block (U+0C80--U+0CFF), greeting
 words, and a single capitalised word as a place name. Kannada script in the message, or
 the Kannada UI setting, forces a Kannada-script reply.
@@ -571,9 +568,11 @@ The prompt contains a \texttt{<history>} block of cleaned and length-capped turn
 explicit statement that the location is missing), the CNN diagnosis of the attached photo, the past-scan record
 (disease, confidence, earlier advice and the weather logged at scan time), the retrieved passages and the fenced user
 query. Rules forbid the model from claiming it cannot see images when a diagnosis is present and from inventing doses or
-weather numbers. Weather questions are detected with English and Kannada keyword lists and receive passages on
+weather numbers. Weather questions are detected with English and Kannada keywords that must start a word (so the
+Kannada word for blossom shower, which contains the word for rain, does not count) and receive passages on
 microclimate and disease risk together with a rule to report the readings and spray suitability. Without any LLM, the
-assistant answers with the offline disease card or a weather summary plus passage excerpts. Threads are private, and
+assistant answers with the offline disease card or a weather summary plus passage excerpts; Kannada users get page
+references in Kannada instead of English excerpts. Threads are private, and
 reading, writing or deleting another user's thread returns HTTP 403.
 
 \subsection{Speech Recognition}
@@ -650,7 +649,7 @@ Hardware & Laptop, NVIDIA RTX 3070 Laptop GPU (8 GB) \\
 \end{table}
 
 \subsection{System Testing}
-The implementation is covered by 354 automated tests, all passing at the time of writing (Table~\ref{tab:tests}):
+The implementation has 373 automated tests, all passing at their last run (Table~\ref{tab:tests}):
 backend unit, integration, functional-journey, security and non-functional tests in pytest; real-model tests that load
 the deployed CNN weights and the bge-m3 index; frontend unit and component tests in Vitest; and end-to-end tests in
 Playwright at a Pixel~7 viewport. A deterministic fake for each model allows the fast suite to run without GPUs.
@@ -666,12 +665,12 @@ Playwright at a Pixel~7 viewport. A deterministic fake for each model allows the
 Module & Unit & Integr. & Security & Real model & Frontend & E2E \\
 \midrule
 M1 CNN & 16/16 & 11/11 & 8/8 & 3/3 & 2/2 & 1/1 \\
-M2 RAG + env. & 42/42 & 1/1 & 1/1 & 1/1 & 5/5 & -- \\
-M3 Chatbot & 18/18 & 15/15 & 1/1 & -- & -- & 1/1 \\
+M2 RAG + env. & 46/46 & 1/1 & 1/1 & 1/1 & 5/5 & -- \\
+M3 Chatbot & 30/30 & 17/17 & 1/1 & -- & -- & 1/1 \\
 M4 Market & 31/31 & 9/9 & 13/13 & -- & 18/18 & 2/2 \\
-Platform & 39/39 & 33/33 & 35/35 & -- & 27/27 & 8/8 \\
+Platform & 39/39 & 33/33 & 36/36 & -- & 27/27 & 8/8 \\
 \bottomrule
-\multicolumn{7}{@{}l@{}}{\tiny Functional (3) and non-functional (10) backend tests omitted from columns; total 354/354.}
+\multicolumn{7}{@{}l@{}}{\tiny Functional (3) and non-functional (10) backend tests omitted from columns; total 373/373.}
 \end{tabular}
 \end{table}
 
@@ -962,28 +961,26 @@ field study with growers in Chikkamagaluru is required to assess usefulness.
 % =========================================================================================
 \section{Conclusion}
 % =========================================================================================
-PlantIQ integrates leaf diagnosis, document-grounded and weather-aware advice, a Kannada-capable voice and text
-assistant and a direct market channel in one deployable system for Karnataka coffee growers. Its design choices are
-aimed at trustworthiness on cheap phones in the field: an explicit uncertainty state instead of a silent low-confidence
+PlantIQ puts leaf diagnosis, document-grounded and weather-aware advice, a Kannada-capable voice and text
+assistant and a direct market channel into one deployable system for Karnataka coffee growers. Most design choices aim
+to keep the advice trustworthy on cheap phones in the field: an explicit uncertainty state instead of a silent low-confidence
 label, hybrid retrieval with citations, refusal to invent weather values, a dose audit, offline fallbacks for every
 external service, and server-side normalisation of market data. Measurements on a laptop GPU show that the vision and
 retrieval stages add well under a second to an advisory whose latency is dominated by generation.
 On a leak-free evaluation the diagnosis module reaches a macro-F1 of 0.970, within two points of the best
-re-implemented baseline. The hybrid retriever finds the right passage far more often than a dense LangChain pipeline, especially for Kannada
-questions, and grounding cuts unsupported doses from 20\% of answers to none. In conversation, the chatbot met the
-expected behaviour in all 43 test conversations against 15 for a LangChain chatbot built on the dense pipeline, because
-it adds live weather, scan hand-off, Kannada routing and safety rules, and the evaluation located three faults (a
-router blind to the conversation history, substring weather detection and English offline replies for Kannada users)
-that were fixed.
+re-implemented baseline. The hybrid retriever finds the right passage much more often than a dense LangChain
+pipeline, especially for Kannada questions, and grounding cuts unsupported doses from 20\% of answers to none. The chatbot behaved as expected in all 43 test conversations, against 15 for a LangChain chatbot built on the dense
+pipeline, mainly because it has live weather, scan hand-off, Kannada routing and safety rules. Its evaluation also found
+a router that ignored the conversation history, weather detection by substring and English offline replies for Kannada
+users; all three are fixed.
 
 \section*{Acknowledgment}
 The authors thank Prof.\ Deepti C., Department of Computer Science and Engineering, PES University, for guidance
 throughout this capstone project, and the Department of Computer Science and Engineering, PES University, for its
 support and facilities.
 
-% Balances the last page's columns: starts a new column before this reference number.
-% Re-tune (or remove) whenever the text or the reference list changes length.
-\IEEEtriggeratref{6}
+% Column balancing of the reference list; defined only by the two-column wrapper (main.tex).
+\providecommand{\plantiqbalancerefs}{}\plantiqbalancerefs
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 

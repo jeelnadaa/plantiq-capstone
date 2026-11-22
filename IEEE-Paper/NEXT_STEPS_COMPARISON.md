@@ -1,3 +1,6 @@
+> **Historical (2026-11-22):** every step below is done. The papers contain only measured results; see
+> [README.md](README.md) for the current files and build commands.
+
 # PlantIQ IEEE paper: what to do next
 
 > **Update 2026-11-21:** the paper text now lives in `paper_content.tex`. `main.tex` (two-column IEEE) and

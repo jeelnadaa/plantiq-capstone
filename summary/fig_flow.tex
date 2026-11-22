@@ -28,7 +28,7 @@
   \node[m2, right=6mm of gate] (query) {\textbf{Query building}\\disease-aware expansion\\\mbox{Kannada $\rightarrow$ English}};
   \node[box, fill=red!6, text width=2.75cm, below=4.5mm of gate] (unsure) {\textbf{Flagged as uncertain}\\retake photo, check\\more leaves};
   % ---------------- row 2: retrieval + weather -> LLM -> audit -> advice
-  \node[m2, below=21mm of query] (ret) {\textbf{Hybrid retrieval (M2)}\\\mbox{dense (bge-m3) + BM25}\\\mbox{RRF $\rightarrow$ rerank $\rightarrow$ MMR}};
+  \node[m2, below=21mm of query] (ret) {\textbf{Hybrid retrieval (M2)}\\\mbox{dense + BM25 $\rightarrow$ RRF}\\\mbox{rerank $\rightarrow$ topic $\rightarrow$ de-dup}};
   \node[ext, text width=2.4cm, minimum height=1.05cm, right=6mm of ret] (kb) {14 CCRI extension\\and research PDFs\\(FAISS + JSON)};
   \node[m2, left=6mm of ret] (wx) {\textbf{Field context}\\\mbox{live weather (Open-Meteo)}\\infection risk,\\3-day spray window};
   \node[m2, left=6mm of wx] (llm) {\textbf{Advisory (M2)}\\\mbox{LLM (Gemini $\rightarrow$ Groq)}\\English / Kannada};

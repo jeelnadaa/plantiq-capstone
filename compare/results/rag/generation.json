@@ -3,26 +3,26 @@
     "PQ": {
       "name": "PlantIQ hybrid RAG",
       "faithfulness": {
-        "mean": 0.9863756613756615,
-        "lo": 0.9695767195767196,
+        "mean": 0.9916666666666666,
+        "lo": 0.9787037037037037,
         "hi": 1.0,
         "n": 54
       },
       "correctness": {
-        "mean": 0.8981481481481481,
-        "lo": 0.8148148148148148,
-        "hi": 0.9629629629629629,
-        "n": 54
-      },
-      "relevance": {
-        "mean": 0.9537037037037037,
-        "lo": 0.9074074074074074,
+        "mean": 0.9444444444444444,
+        "lo": 0.8796296296296297,
         "hi": 0.9907407407407407,
         "n": 54
       },
-      "unsupported_dose_rate": 0.018518518518518517,
-      "answers_with_doses": 0.5,
-      "mean_words": 63.46296296296296
+      "relevance": {
+        "mean": 0.9722222222222222,
+        "lo": 0.9351851851851852,
+        "hi": 1.0,
+        "n": 54
+      },
+      "unsupported_dose_rate": 0.0,
+      "answers_with_doses": 0.5185185185185185,
+      "mean_words": 60.074074074074076
     },
     "SK": {
       "name": "Selva Kumar et al. (dense LangChain RAG)",
@@ -75,14 +75,14 @@
   },
   "wilcoxon_pq_vs": {
     "SK": {
-      "faithfulness": 0.7150006546880893,
-      "correctness": 0.08517902784495152,
-      "relevance": 0.10247043485974941
+      "faithfulness": 1.0,
+      "correctness": 0.020908637673278958,
+      "relevance": 0.08356564983357526
     },
     "L0": {
       "faithfulness": NaN,
-      "correctness": 1.8161380321652397e-05,
-      "relevance": 0.025347318677468252
+      "correctness": 2.1933232784913488e-06,
+      "relevance": 0.0832645166635504
     }
   },
   "n_prompts": 162,
@@ -90,8 +90,8 @@
   "judge": "claude-opus-5-5",
   "rubric": "faithfulness = supported/claims vs retrieved passages; correctness and relevance 0/0.5/1 vs gold",
   "meta": {
-    "timestamp": "2026-11-22T18:03:24",
-    "git_commit": "92bb2d3",
+    "timestamp": "2026-11-22T18:25:56",
+    "git_commit": "0c0eee2",
     "python": "3.11.0",
     "torch": "2.11.0+cu128",
     "cuda": "12.8",

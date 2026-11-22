@@ -38,7 +38,7 @@ terms ("0.5 %", "Bordeaux", "200 L"). Reciprocal Rank Fusion merges the two rank
 together and is far more precise, but slower — so it only re-scores the top ~20 candidates.
 
 **Q: What did you change compared with the first version's RAG?** Multilingual bge-m3 + bge-reranker-v2-m3 (Kannada queries work
-natively), table-aware chunking, disease topic filter with relaxation, MMR to remove near-duplicate passages, reranking with a
+natively), table-aware chunking, a soft disease-topic preference, removal of near-duplicate passages, reranking with a
 natural-language question (top match for Cercospora rose from 0.35 to 0.94), pickle-free index, safetensors models, and an
 automatic fallback to the original models on CPU.
 

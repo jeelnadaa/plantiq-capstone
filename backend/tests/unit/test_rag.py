@@ -5,7 +5,8 @@ from app.services.fakes import FAKE_CHUNKS
 from app.services.rag.chunking import chunk_page, detect_topic, pretty_source, split_sentences
 from app.services.rag.profiles import BALANCED, QUALITY, choose_profile, profile_for_embedder
 from app.services.rag.query import audit_dosages, expand_query
-from app.services.rag.retriever import HybridRetriever, jaccard, mmr_select, rrf_fuse, sigmoid, tokenize
+from app.services.rag.retriever import (HybridRetriever, drop_near_duplicates, jaccard, mmr_select, rrf_fuse,
+                                        sigmoid, tokenize)
 
 pytestmark = pytest.mark.unit
 
@@ -86,6 +87,14 @@ def test_dosage_audit():
     assert "label" in bad["safety_note"]
 
 
+def test_dosage_audit_reads_number_words_in_documents():
+    docs = [{"text": "Four litres of kerosene emulsified with 200 litres of water and 200 ml of wetting agent."}]
+    ok = audit_dosages("Spray 4 L kerosene in 200 L water with 200 ml wetting agent.", docs)
+    assert ok["verified"] and ok["detected_dosages"] == ["4 L", "200 L", "200 ml"]
+    worded = audit_dosages("Mix five litres of kerosene.", docs)  # doses written in words are checked too
+    assert worded["unverified_dosages"] == ["5 litres"]
+
+
 def test_profiles(monkeypatch):
     assert choose_profile("balanced") is BALANCED and choose_profile("quality") is QUALITY
     monkeypatch.setattr("app.services.rag.profiles.gpu_memory_gb", lambda: 2.0)
@@ -130,10 +139,28 @@ def test_hybrid_search_finds_relevant_chunk(retriever):
     assert 0 <= res[0]["score"] <= 1 and res[0]["metadata"]["page"] == 4
 
 
-def test_topic_filter_and_relaxation(retriever):
-    res = retriever.search("shade and nutrition", top_k=2, topic_filter="leaf_miner")
-    assert res[0]["metadata"]["topic"] == "leaf_miner"
-    assert len(res) == 2  # relaxed to fill top_k
+def test_topic_is_a_soft_preference(retriever):
+    # A clearly relevant passage tagged with another topic is kept and ranked first (it used to be filtered out) ...
+    res = retriever.search("correct soil acidity with dolomite npk split doses", top_k=2, topic_filter="leaf_rust")
+    assert res[0]["metadata"]["topic"] == "nutrition_fertilizer"
+    assert len(res) == 2
+    # ... while between comparably relevant passages the diagnosed disease's topic is preferred.
+    pref = retriever.search("bordeaux mixture 0.5% protection", top_k=2, topic_filter="cercospora_leaf_spot")
+    plain = retriever.search("bordeaux mixture 0.5% protection", top_k=2)
+    assert pref[0]["metadata"]["topic"] == "cercospora_leaf_spot"
+    assert {r["id"] for r in pref} == {r["id"] for r in plain}
+    assert {r["id"]: r["score"] for r in pref} == {r["id"]: r["score"] for r in plain}  # bonus only orders
+
+
+def test_drop_near_duplicates_keeps_order_and_distinct_passages():
+    cands = [
+        {"text": "bordeaux mixture rust spray 200 l", "score": 0.95},
+        {"text": "bordeaux mixture rust spray 200 l", "score": 0.94},
+        {"text": "bordeaux mixture copper sulphate lime recipe", "score": 0.90},
+        {"text": "shade lopping canopy drainage", "score": 0.50},
+    ]
+    picked = drop_near_duplicates(cands, 2)
+    assert [p["score"] for p in picked] == [0.95, 0.90]  # MMR would trade the 0.90 passage for the 0.50 one
 
 
 def test_search_cache_and_empty(retriever):

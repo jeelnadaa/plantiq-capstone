@@ -139,3 +139,15 @@ Postgres create-database race.
   stored in `compare/03_rag/answers/`): correctness PlantIQ 0.898, Selva Kumar 0.824, no retrieval 0.611; unsupported
   doses 1.9% / 0% / 20.4%.
 - Paper: Module 2 protocol, Section IX-C, Table VIII, Figs. 6-7 and abstract updated (both layouts). Module 3 still mock.
+
+## 2026-11-22 — RAG fixes found by the benchmark (app + paper)
+- **Dose audit** (`rag/query.py`): number words are converted to digits ("Four litres" = "4 L"); fixes a false
+  "check doses" warning; doses written in words are now audited too.
+- **Retrieval last stage** (`rag/retriever.py`): the hard disease-topic filter + MMR is replaced by a soft topic preference
+  (+0.1 for ordering only) and near-duplicate removal (Jaccard ≥ 0.8). The benchmark showed the old stage discarding
+  answers (e.g. the Bordeaux recipe tagged "nutrition").
+- Tests: 3 new unit tests (number words, near-duplicate removal, soft topic preference), 1 updated; fast suite 290/290 pass
+  (run in a new `backend/.venv` that reuses compare/.venv's PyTorch via a .pth file).
+- Benchmark re-run: Recall@3 0.813 → 0.867 (Kannada 0.857 → 0.905); 23 affected PlantIQ answers regenerated and re-scored;
+  correctness 0.898 → 0.944 (vs Selva Kumar 0.824, p = 0.021 now significant); unsupported doses 1.9% → 0%.
+- Paper (both layouts), docs/modules/module-2-rag-environment.md, architecture and panel docs, README updated.

@@ -13,22 +13,22 @@
       0.6267,
       0.7067,
       0.8933,
-      0.8133
+      0.8667
     ],
     "nDCG@3": [
       0.5777,
       0.5126,
       0.6266,
       0.7645,
-      0.7223
+      0.7575
     ],
     "selva_kumar_dense": {
       "Recall@3": 0.5,
       "nDCG@3": 0.3901
     },
     "plantiq_router_offline": {
-      "recall@3": 0.72,
-      "ndcg@3": 0.6375
+      "recall@3": 0.7867,
+      "ndcg@3": 0.6794
     },
     "by_lang": {
       "Selva Kumar et al. (dense, LangChain)": {
@@ -62,16 +62,16 @@
         "ndcg@3 (kn)": 0.8035717476146844
       },
       "Full PlantIQ (+topic, MMR)": {
-        "recall@3 (en)": 0.7962962962962963,
-        "recall@3 (kn)": 0.8571428571428571,
-        "ndcg@3 (en)": 0.7118061138812534,
-        "ndcg@3 (kn)": 0.7491538494767023
+        "recall@3 (en)": 0.8518518518518519,
+        "recall@3 (kn)": 0.9047619047619048,
+        "ndcg@3 (en)": 0.7475758712233711,
+        "ndcg@3 (kn)": 0.7830209430206675
       },
       "Full PlantIQ, router offline": {
-        "recall@3 (en)": 0.7962962962962963,
-        "recall@3 (kn)": 0.5238095238095238,
-        "ndcg@3 (en)": 0.7118061138812534,
-        "ndcg@3 (kn)": 0.4464288904718273
+        "recall@3 (en)": 0.8518518518518519,
+        "recall@3 (kn)": 0.6190476190476191,
+        "ndcg@3 (en)": 0.7475758712233711,
+        "ndcg@3 (kn)": 0.5041055078253164
       }
     }
   },
@@ -84,9 +84,9 @@
     ],
     "systems": {
       "PlantIQ hybrid RAG": [
-        0.9864,
-        0.8981,
-        0.9537
+        0.9917,
+        0.9444,
+        0.9722
       ],
       "Selva Kumar et al. (dense LangChain RAG)": [
         0.99,
@@ -117,10 +117,10 @@
     },
     {
       "system": "PlantIQ hybrid RAG",
-      "recall@3": 0.813,
-      "faithfulness": 0.986,
-      "correctness": 0.898,
-      "unsupported_doses_pct": 1.9
+      "recall@3": 0.867,
+      "faithfulness": 0.992,
+      "correctness": 0.944,
+      "unsupported_doses_pct": 0.0
     }
   ]
 }

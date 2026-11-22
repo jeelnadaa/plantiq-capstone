@@ -85,7 +85,7 @@ self-hostable server, organised as four modules. Module 1 diagnoses a single lea
 leaf spot, Phoma leaf spot, leaf miner or healthy with a transfer-learned ResNet-50 and a confidence gate. Module 2
 produces a treatment plan grounded in Central Coffee Research Institute extension documents and research literature
 through a hybrid retriever that fuses multilingual dense search with BM25 by reciprocal rank fusion, reranks with a
-cross-encoder and removes redundancy with maximal marginal relevance; the plan is conditioned on live weather at the
+cross-encoder, prefers passages on the diagnosed disease and drops near-duplicates; the plan is conditioned on live weather at the
 estate, a rule-based fungal infection risk level and a three-day spray window, and every dose in the generated text is
 audited against the retrieved passages. Module 3 is a conversational assistant for English and Kannada with
 conversation memory, photo and past-scan hand-off, weather-intent detection and on-device speech recognition for
@@ -97,9 +97,9 @@ patches, leaks almost every test image into training under a random split, and e
 five-fold cross-validation: the PlantIQ classifier reaches a macro-F1 of 0.970, while re-implemented GoogLeNet and
 YOLOv8 baselines from prior coffee work reach 0.988 and 0.985 with a quarter of the parameters.
 On 75 Karnataka coffee questions (21 in Kannada) the hybrid retriever finds the gold evidence in its top three
-passages for 0.81 of questions against 0.50 for a re-implemented dense LangChain retriever, and
-with the same language model its answers are correct for 0.90 of questions against 0.61 without retrieval, which
-states an unsupported dose in 20\% of answers. \mock{The Module 3 comparison is in progress.}
+passages for 0.87 of questions against 0.50 for a re-implemented dense LangChain retriever, and
+with the same language model its answers are correct for 0.94 of questions against 0.82 for that pipeline and
+0.61 without retrieval, which states an unsupported dose in 20\% of answers against none for PlantIQ. \mock{The Module 3 comparison is in progress.}
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -135,7 +135,7 @@ This paper describes PlantIQ, an implemented system that does so. Its contributi
 sanitisation, per-user result caching and an explicit ``blended'' state that is raised when either the image model or
 the retrieved evidence is weak, instead of silently returning a low-confidence label.
 \item A \textbf{hybrid, hardware-aware RAG advisory} (Module 2) combining multilingual dense retrieval, BM25, reciprocal
-rank fusion, a disease-topic filter, cross-encoder reranking and maximal marginal relevance, conditioned on live
+rank fusion, cross-encoder reranking, a soft disease-topic preference and near-duplicate removal, conditioned on live
 microclimate, a fungal infection risk rule and a three-day spray window, with a post-generation dose audit.
 \item A \textbf{multilingual, multimodal chatbot} (Module 3) with an LLM-based language router and heuristic fallback,
 image and past-scan hand-off, weather-intent detection and a local-first speech-recognition cascade for Kannada and
@@ -375,9 +375,9 @@ Fig.~\ref{fig:rag} shows the offline indexing and the online advisory pipeline.
   \node[box, below left=2.6mm and -1.55cm of route, minimum width=1.75cm] (dense) {Dense top-20\\bge-m3 / FAISS};
   \node[box, below right=2.6mm and -1.55cm of route, minimum width=1.75cm] (bm) {BM25 top-20};
   \node[box, below=13mm of route, minimum width=3.6cm] (rrf) {Reciprocal rank fusion ($k=60$)};
-  \node[box, below=of rrf, minimum width=3.6cm] (topic) {Disease-topic filter (relaxed if $<3$)};
-  \node[box, below=of topic, minimum width=3.6cm] (rr) {Cross-encoder rerank, $\sigma(z)$};
-  \node[box, below=of rr, minimum width=3.6cm] (mmr) {MMR ($\lambda=0.75$) $\rightarrow$ top 3};
+  \node[box, below=of rrf, minimum width=3.6cm] (topic) {Cross-encoder rerank, $\sigma(z)$};
+  \node[box, below=of topic, minimum width=3.6cm] (rr) {Topic preference ($+0.1$ for ordering)};
+  \node[box, below=of rr, minimum width=3.6cm] (mmr) {Drop near-duplicates ($J\geq0.8$) $\rightarrow$ top 3};
   \node[box, below=of mmr, minimum width=3.6cm, fill=blue!6] (prompt) {Fenced prompt};
   \node[box, right=4mm of prompt, minimum width=1.7cm, fill=green!6] (env) {Open-Meteo\\risk + spray\\window};
   \node[box, below=of prompt, minimum width=3.6cm] (llm) {Gemini $\rightarrow$ Groq $\rightarrow$ offline guide};
@@ -464,18 +464,19 @@ returns its top 20 chunks, and the two rankings are fused by reciprocal rank fus
 \end{equation}
 where a chunk missing from one list is assigned rank 1000. RRF needs no score calibration between the two retrievers.
 
-\subsection{Topic Filter, Reranking and Diversification}
-Chunks whose topic matches the diagnosed class are kept first; if fewer than three remain, the best off-topic chunks are
-appended after them. The candidates are scored by a cross-encoder~\cite{nogueira2019rerank} that reads the rerank query
-and the passage jointly and outputs a logit $z$, mapped to a bounded relevance score
+\subsection{Reranking, Topic Preference and De-duplication}
+The 20 fused candidates, plus up to six further chunks tagged with the diagnosed disease's topic, are scored by a
+cross-encoder~\cite{nogueira2019rerank} that reads the rerank query and the passage jointly and outputs a logit $z$,
+mapped to a bounded relevance score
 \begin{equation}
 s = \sigma(z) = \frac{1}{1+e^{-z}} .
 \end{equation}
-Finally, maximal marginal relevance~\cite{carbonell1998mmr} selects three passages that are relevant but not redundant,
-\begin{equation}
-d^{*}=\arg\max_{d\in C\setminus S}\Big[\lambda\, s(d)-(1-\lambda)\max_{d'\in S}J(d,d')\Big],\quad \lambda=0.75,
-\end{equation}
-where $S$ is the set already selected and $J$ is the Jaccard similarity of token sets. A least-recently-used cache holds
+The diagnosed disease acts as a soft preference: passages tagged with its topic are ordered by $s+0.1$, the others by
+$s$, while the reported score stays $s$. A relevant passage with another tag (the Bordeaux-mixture recipe is tagged
+``nutrition'' because it mentions urea) therefore still competes. Passages are then taken in this order, skipping any
+whose token set has a Jaccard similarity $J\geq0.8$ with a passage already chosen, until three are selected. This
+replaces an earlier hard topic filter followed by maximal marginal relevance~\cite{carbonell1998mmr}, which the
+evaluation in Section~IX-C showed to discard passages that held the answer. A least-recently-used cache holds
 the last 256 queries. If the reranker cannot be loaded, normalised RRF scores are used instead.
 
 \subsection{Environmental Context}
@@ -821,24 +822,28 @@ ResNet-50, earlier recipe & 0.971 & 0.963 [0.944, 0.981] & 0.936 & 23.5M & 85.7$
 
 \subsection{Module 2 Comparison}
 Fig.~\ref{fig:ablation} shows the retrieval ablation and Fig.~\ref{fig:gen} and Table~\ref{tab:m2} the generation
-comparison. PlantIQ's full retriever finds the gold evidence in its top three passages for 0.813 of the 75
-questions against 0.500 for the Selva Kumar pipeline (Wilcoxon $p<10^{-5}$), with nDCG@3 of 0.722 against
-0.390. The gap is widest for Kannada: 0.857 against 0.095, because the language router turns
-a Kannada question into one English question before search; with the router offline PlantIQ reaches only
-0.524 on Kannada. In the ablation, BM25 alone (0.627) is weaker than dense retrieval (0.707), fusion
-improves nDCG@3 (0.627 against 0.578), and the cross-encoder reranker gives the largest single gain
-(Recall@3 0.893). The final topic filter and MMR step lowers Recall@3 from 0.893 to 0.813 (Wilcoxon
-$p=0.014$): it removes near-duplicate passages but sometimes also the passage that holds the answer, so it should be
-re-tuned.
+comparison. PlantIQ's retriever finds the gold evidence in its top three passages for 0.867 of the 75 questions
+against 0.500 for the Selva Kumar pipeline (Wilcoxon $p<10^{-5}$), with nDCG@3 of 0.758 against 0.390. The gap is
+widest for Kannada: 0.905 against 0.095, because the language router turns a Kannada question into one English question
+before search; with the router offline PlantIQ reaches 0.619 on Kannada. In the ablation, BM25 alone (0.627) is weaker
+than dense retrieval (0.707), fusion improves nDCG@3 (0.627 against 0.578), and the cross-encoder
+reranker gives the largest single gain (Recall@3 0.893). The evaluation also exposed a fault in the first version of the last stage:
+a hard topic filter followed by maximal marginal relevance lowered Recall@3 from 0.893 to 0.813 (Wilcoxon $p=0.014$),
+because passages that held the answer were filtered out (for example the Bordeaux recipe, tagged ``nutrition'') or traded
+for merely different ones. With the soft topic preference and near-duplicate removal of Section~V the full retriever
+reaches 0.867, statistically indistinguishable from reranking alone ($p=0.32$). Because this change was
+motivated by the same questions, its figures are optimistic and should be confirmed on a new question set.
 
-With the same language model, PlantIQ's answers are correct for 0.898 of the 54 English questions, the Selva Kumar
-pipeline for 0.824 and the model without retrieval for 0.611 (PlantIQ against no retrieval, Wilcoxon
-$p<10^{-4}$; against Selva Kumar, $p=0.09$, not significant). Both retrieval systems stay close to their
-passages (faithfulness 0.986 and 0.990); the difference is that the dense pipeline more often
-retrieves no passage with the answer and then says it does not know (relevance 0.917 against 0.954). Without
-retrieval the model answers everything but 20\% of its answers state a dose that is not in any supplied
-document, against 1.9\% for PlantIQ. Generator and judge are the same model, which can favour fluent answers; the
-retrieval figures and the dose audit do not depend on the judge.
+With the same language model, PlantIQ's answers are correct for 0.944 of the 54 English questions, the Selva Kumar
+pipeline for 0.824 and the model without retrieval for 0.611 (Wilcoxon: PlantIQ against Selva Kumar
+$p=0.02$, against no retrieval $p<10^{-5}$). Both retrieval systems stay close to their passages (faithfulness
+0.992 and 0.990); the dense pipeline more often retrieves no passage with the answer and then says it does
+not know (relevance 0.917 against 0.972). Without retrieval the model answers everything, but
+20\% of its answers state a dose that is in no supplied document, for example pH 7 instead of 9--10 for Bordeaux mixture
+or 30--40~kg instead of 58~kg of monsoon nitrogen. No PlantIQ answer contains an unsupported dose, although PlantIQ states
+twice as many doses as the dense pipeline (52\% of answers against 26\%). The dose audit first flagged one PlantIQ
+answer because the guide writes ``four litres''; the audit now reads number words. Generator and judge are the same
+model, which can favour fluent answers; the retrieval figures and the dose audit do not depend on the judge.
 
 \begin{figure*}[t]
 \centering
@@ -868,7 +873,7 @@ System & Recall@3 & Correct & Faithful. & \makecell{Unsupported\\doses} \\
 \midrule
 LLM, no retrieval & -- & 0.611 & -- & 20.4\% \\
 Dense RAG~\cite{selvakumar2024rag} & 0.500 & 0.824 & 0.990 & 0.0\% \\
-\textbf{PlantIQ hybrid RAG} & 0.813 & 0.898 & 0.986 & 1.9\% \\
+\textbf{PlantIQ hybrid RAG} & 0.867 & 0.944 & 0.992 & 0.0\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -933,7 +938,7 @@ external service, and server-side normalisation of market data. Measurements on 
 retrieval stages add well under a second to an advisory whose latency is dominated by generation.
 On a leak-free evaluation the diagnosis module reaches a macro-F1 of 0.970, within two points of the best
 re-implemented baseline. The hybrid retriever finds the right passage far more often than a dense LangChain pipeline, especially for Kannada
-questions, and grounding cuts unsupported doses from 20\% of answers to 2\%. \mock{The comparative claims for
+questions, and grounding cuts unsupported doses from 20\% of answers to none. \mock{The comparative claims for
 Module 3 will be finalised once its evaluation has been run.}
 
 \section*{Acknowledgment}

@@ -22,10 +22,10 @@ flowchart TB
         QX --> DENSE[Dense search<br/>FAISS top-20]
         QX --> BM[BM25 keyword search<br/>top-20]
         DENSE & BM --> RRF[Reciprocal Rank Fusion]
-        RRF --> TF[Disease topic filter]
-        TF --> RR[Cross-encoder rerank<br/>bge-reranker-v2-m3]
-        RR --> MMR[MMR de-duplication → top 3]
-        MMR --> PR[Prompt]
+        RRF --> RR[Cross-encoder rerank<br/>bge-reranker-v2-m3]
+        RR --> TF[Disease topic preference<br/>+0.1 for ordering]
+        TF --> DD[Drop near-duplicates → top 3]
+        DD --> PR[Prompt]
         ENV --> PR
         PR --> LLM[Gemini → Groq → offline guide]
         LLM --> AUD[Dose audit vs passages]
@@ -99,9 +99,12 @@ Combines the two rankings without needing comparable scores:
 
 A chunk ranked high by *both* retrievers wins.
 
-### B.4 Disease topic filter
-Chunks whose topic matches the diagnosis (e.g. `leaf_rust` for Rust) are ranked first. If fewer than 3 match, the best
-off-topic chunks fill the remaining places (but always after the on-topic ones).
+### B.4 Disease topic preference
+The 20 fused candidates (plus up to 6 further chunks tagged with the diagnosis's topic, e.g. `leaf_rust` for Rust) are
+all reranked on merit. Chunks with the matching topic are then *ordered* by score + 0.1 (`TOPIC_BONUS`); the reported score
+is unchanged. It used to be a hard filter, but the comparison benchmark (`compare/`, Recall@3 0.813 → 0.867) showed it
+discarding answers: e.g. the Bordeaux-mixture recipe is tagged `nutrition_fertilizer` because it mentions urea, so a rust
+question could never retrieve it.
 
 ### B.5 Cross-encoder reranking
 A cross-encoder reads *(question, passage)* together and outputs a relevance logit *z*, converted to [0, 1]:
@@ -111,10 +114,10 @@ A cross-encoder reads *(question, passage)* together and outputs a relevance log
 It scores the **natural-language question** (B.1 step 3), not the keyword soup — cross-encoders are trained on real questions.
 Measured effect on the top match: Rust 0.85 → **0.97**, Cercospora 0.35 → **0.94**, Leaf miner 0.54 → **0.84**.
 
-### B.6 MMR de-duplication
-Maximal Marginal Relevance picks the final 3 passages so they are relevant but not repetitive:
-
-  **MMR = argmax_d [ λ · score(d) − (1 − λ) · max_s∈selected Jaccard(d, s) ]**, λ = 0.75
+### B.6 Near-duplicate removal
+The final 3 passages are taken in that order, skipping any passage whose token set has Jaccard similarity ≥ 0.8
+(`DUPLICATE_JACCARD`) with one already chosen (`drop_near_duplicates`). This replaced Maximal Marginal Relevance, which
+traded relevant passages for merely different ones (`mmr_select` is kept in the code for reference and its unit test).
 
 ### B.7 Caching
 An LRU cache of the last 256 queries makes repeated searches instant. Retrieval takes ≈ 0.4 s on the GPU.
@@ -150,6 +153,8 @@ All output passes through **secret redaction** (API keys, tokens) before reachin
 ### C.4 Dose audit
 Every number-with-unit in the advice (`0.5 %`, `1 kg`, `200 L`, `500 ml`, `ppm`…) is normalised and searched for in the retrieved
 passages. If any dose is not found, the result shows **"Check doses before mixing"** with the list; otherwise **"Doses checked"**.
+Number words are converted to digits on both sides first, so "Four litres" in a document matches "4 L" in the advice, and a
+dose written in words in the advice ("five litres") is checked too.
 
 ### C.5 Citations
 Each result lists the source document, page, section and relevance score, shown under **Sources** in the app.
@@ -210,6 +215,7 @@ for today) is recommended: *"Rain expected first. Next dry day to spray: Thursda
 - Soil pH is an estimate; integrate soil-health-card data or sensors.
 - Evaluate retrieval with a labelled question set (recall@k, nDCG).
 
-**Tests:** `tests/unit/test_rag.py` (RRF, sigmoid, MMR, chunking, topics, expansion, dose audit, retriever),
+**Tests:** `tests/unit/test_rag.py` (RRF, sigmoid, MMR, near-duplicate removal, soft topic preference, chunking, topics,
+expansion, dose audit incl. number words such as "four litres", retriever),
 `tests/unit/test_services.py` (weather parsing, risk, spray window, no-mock, cache, LLM chain/truncation, advisory),
 `tests/ml/test_real_models.py::test_real_retriever_finds_rust_guidance`.

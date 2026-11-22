@@ -136,7 +136,7 @@ sequenceDiagram
     else miss
         P->>N: 224×224 tensor → softmax over 5 classes
         P->>W: Open-Meteo (cached 60 s) → risk level, spray window
-        P->>R: dense + BM25 → RRF → topic filter → rerank → MMR → top 3 passages
+        P->>R: dense + BM25 → RRF → rerank → topic preference → drop near-duplicates → top 3 passages
         P->>L: prompt (diagnosis + weather + passages + fenced question)
         L-->>P: advice (or offline guide)
         P->>P: dose audit against passages

@@ -27,7 +27,7 @@ decks in `ppt/`) are preserved in the git history — `git log --all -- cnn/` or
 ## What's inside
 | | |
 |---|---|
-| `backend/` | FastAPI · SQLAlchemy (Postgres or SQLite) · ResNet-50 (same weights) · hybrid RAG (bge-m3 + BM25 + RRF + bge-reranker-v2-m3 + MMR) · Gemini → Groq → offline · Open-Meteo · IndicConformer / Svarah Whisper STT |
+| `backend/` | FastAPI · SQLAlchemy (Postgres or SQLite) · ResNet-50 (same weights) · hybrid RAG (bge-m3 + BM25 + RRF + bge-reranker-v2-m3 + near-duplicate removal) · Gemini → Groq → offline · Open-Meteo · IndicConformer / Svarah Whisper STT |
 | `frontend/` | React 18 + TypeScript + Vite single-page app, Satoshi + Noto Sans Kannada, EN/KN, 5 palettes × light/dark |
 | `mobile/` | Capacitor 7 Android wrapper → APK with runtime-configurable backend URL |
 | `design/` | "Field Notebook" design system and 16 phone mockups ([DESIGN.md](DESIGN.md)) |

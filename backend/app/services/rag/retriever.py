@@ -1,4 +1,4 @@
-"""Hybrid retriever: dense (FAISS) + sparse (BM25) → RRF → topic filter → cross-encoder rerank → MMR."""
+"""Hybrid retriever: dense (FAISS) + sparse (BM25) → RRF → cross-encoder rerank → topic preference → near-duplicate removal."""
 from __future__ import annotations
 
 import logging
@@ -39,6 +39,26 @@ def jaccard(a: set[str], b: set[str]) -> float:
     if not a or not b:
         return 0.0
     return len(a & b) / len(a | b)
+
+
+TOPIC_BONUS = 0.1        # ordering bonus for passages tagged with the diagnosed disease's topic (score unchanged)
+DUPLICATE_JACCARD = 0.8  # passages whose token sets overlap this much with an already chosen one are duplicates
+
+
+def drop_near_duplicates(candidates: list[dict], top_k: int, threshold: float = DUPLICATE_JACCARD) -> list[dict]:
+    """Keep candidates in the given order, skipping only near-duplicates of a passage already chosen. Unlike MMR
+    it never trades a relevant passage for a merely different one (the benchmark showed MMR losing answers)."""
+    chosen: list[dict] = []
+    toks: list[set[str]] = []
+    for c in candidates:
+        t = set(tokenize(c["text"]))
+        if any(jaccard(t, s) >= threshold for s in toks):
+            continue
+        chosen.append(c)
+        toks.append(t)
+        if len(chosen) == top_k:
+            break
+    return chosen
 
 
 def mmr_select(candidates: list[dict], top_k: int, lambda_: float = 0.75) -> list[dict]:
@@ -204,11 +224,19 @@ class HybridRetriever:
         if not fused:
             return []
         ordered = sorted(fused, key=fused.get, reverse=True)
-        on_topic = [(i, self.chunks[i]) for i in ordered if not topic_filter or self.chunks[i].get("topic") == topic_filter]
-        final = mmr_select(self._rerank(rq, on_topic[:k], fused)[: max(top_k * 3, 6)], top_k) if on_topic else []
-        if len(final) < top_k:  # relax the topic filter rather than return too little; on-topic stays first
-            off_topic = [(i, c) for i, c in ((i, self.chunks[i]) for i in ordered) if (i, c) not in on_topic][:k]
-            final += mmr_select(self._rerank(rq, off_topic, fused), top_k - len(final))
+        # Rerank the fused pool on merit, plus a few further on-topic candidates. The topic is a soft preference:
+        # on-topic passages get a small ordering bonus, but a relevant passage tagged with another topic (e.g. the
+        # Bordeaux recipe tagged "nutrition" because it mentions urea) is no longer thrown away.
+        pool_ids = ordered[:k]
+        if topic_filter:
+            pool_ids += [i for i in ordered[k:] if self.chunks[i].get("topic") == topic_filter][: top_k * 2]
+        ranked = self._rerank(rq, [(i, self.chunks[i]) for i in pool_ids], fused)
+
+        def order_key(r: dict) -> float:
+            return r["score"] + (TOPIC_BONUS if topic_filter and r["metadata"].get("topic") == topic_filter else 0.0)
+
+        ranked.sort(key=order_key, reverse=True)
+        final = drop_near_duplicates(ranked, top_k)
         log.info("RAG search %.0f ms: dense=%d sparse=%d -> %d (top %.2f)", (time.perf_counter() - t0) * 1000,
                  len(dense), len(sparse), len(final), final[0]["score"] if final else 0)
         with self._lock:

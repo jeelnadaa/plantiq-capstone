@@ -3,19 +3,19 @@
 {"key": "r01|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "April-May 0.5%, plus Feb-Mar in thin shade", "judge": "claude-opus-5-5"}
 {"key": "r02|L0", "claims": 3, "supported": 0, "correct": 1, "relevant": 1, "note": "lower surface", "judge": "claude-opus-5-5"}
 {"key": "r02|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "lower surface", "judge": "claude-opus-5-5"}
-{"key": "r02|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "lower surface only; both surfaces only for black rot", "judge": "claude-opus-5-5"}
+{"key": "r02|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "lower surface", "judge": "claude-opus-5-5"}
 {"key": "r03|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "10-15 barrels range contains the gold 15", "judge": "claude-opus-5-5"}
 {"key": "r03|SK", "claims": 0, "supported": 0, "correct": 0, "relevant": 0, "note": "abstained: passage not retrieved", "judge": "claude-opus-5-5"}
-{"key": "r03|PQ", "claims": 2, "supported": 2, "correct": 0, "relevant": 0.5, "note": "only systemic 7-8 barrels; Bordeaux volume not retrieved, says so", "judge": "claude-opus-5-5"}
+{"key": "r03|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "15 barrels per hectare now retrieved", "judge": "claude-opus-5-5"}
 {"key": "r04|L0", "claims": 3, "supported": 0, "correct": 0.5, "relevant": 1, "note": "says no, but gives a different reason (no ammonia loss)", "judge": "claude-opus-5-5"}
 {"key": "r04|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "no; ammonia loss and lower efficiency", "judge": "claude-opus-5-5"}
 {"key": "r04|PQ", "claims": 5, "supported": 4, "correct": 0.5, "relevant": 1, "note": "says no (supported); reason missing; 'apply fertilizers separately' not in passages", "judge": "claude-opus-5-5"}
 {"key": "r05|L0", "claims": 2, "supported": 0, "correct": 0, "relevant": 1, "note": "says about pH 7; gold is 9-10", "judge": "claude-opus-5-5"}
 {"key": "r05|SK", "claims": 0, "supported": 0, "correct": 0, "relevant": 0, "note": "abstained: passage not retrieved", "judge": "claude-opus-5-5"}
-{"key": "r05|PQ", "claims": 2, "supported": 2, "correct": 0, "relevant": 0.5, "note": "pH not retrieved; says so", "judge": "claude-opus-5-5"}
+{"key": "r05|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "pH 9-10 now retrieved", "judge": "claude-opus-5-5"}
 {"key": "r06|L0", "claims": 3, "supported": 0, "correct": 0.5, "relevant": 1, "note": "systemic fungicide right; no product dose or monsoon-break timing", "judge": "claude-opus-5-5"}
 {"key": "r06|SK", "claims": 2, "supported": 2, "correct": 0.5, "relevant": 1, "note": "Contaf/Bayleton right; no dose or timing", "judge": "claude-opus-5-5"}
-{"key": "r06|PQ", "claims": 3, "supported": 3, "correct": 0.5, "relevant": 1, "note": "Contaf/Bayleton right; dose and timing not in the passages", "judge": "claude-opus-5-5"}
+{"key": "r06|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "systemic dose and timing now retrieved", "judge": "claude-opus-5-5"}
 {"key": "r07|L0", "claims": 5, "supported": 0, "correct": 0.5, "relevant": 1, "note": "humidity/leaf wetness right; misses cool misty Feb-Mar weather and thin shade", "judge": "claude-opus-5-5"}
 {"key": "r07|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "full weather list + thin shade", "judge": "claude-opus-5-5"}
 {"key": "r07|PQ", "claims": 6, "supported": 6, "correct": 1, "relevant": 1, "note": "full weather list + thin shade", "judge": "claude-opus-5-5"}
@@ -30,10 +30,10 @@
 {"key": "r10|PQ", "claims": 5, "supported": 5, "correct": 0.5, "relevant": 0.5, "note": "lime quantity right; copper sulphate amount and steps not retrieved, says so", "judge": "claude-opus-5-5"}
 {"key": "r11|L0", "claims": 4, "supported": 0, "correct": 0.5, "relevant": 1, "note": "lists resistant varieties but not as the main measure", "judge": "claude-opus-5-5"}
 {"key": "r11|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "r11|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "r11|PQ", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "c01|L0", "claims": 4, "supported": 0, "correct": 0.5, "relevant": 1, "note": "carbendazim (= Bavistin) class right, no dose; Indofil missing", "judge": "claude-opus-5-5"}
 {"key": "c01|SK", "claims": 3, "supported": 3, "correct": 0, "relevant": 1, "note": "suggests Bordeaux from a field trial; nursery spray (Indofil/Bavistin) not retrieved", "judge": "claude-opus-5-5"}
-{"key": "c01|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "Indofil M-45 5 g/L or Bavistin 1 g/L", "judge": "claude-opus-5-5"}
+{"key": "c01|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "c02|L0", "claims": 4, "supported": 0, "correct": 0.5, "relevant": 1, "note": "young plants, full sun, low nitrogen right; potassium missing, drought claim extra", "judge": "claude-opus-5-5"}
 {"key": "c02|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "c02|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
@@ -48,7 +48,7 @@
 {"key": "c05|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "Bordeaux, copper toxicity", "judge": "claude-opus-5-5"}
 {"key": "m01|L0", "claims": 3, "supported": 0, "correct": 1, "relevant": 1, "note": "larvae tunnel, necrotic mines, leaf drop, lower yield", "judge": "claude-opus-5-5"}
 {"key": "m01|SK", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "m01|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m01|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "m02|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "30-50% or more; gold 30-70%", "judge": "claude-opus-5-5"}
 {"key": "m02|SK", "claims": 2, "supported": 2, "correct": 0.5, "relevant": 1, "note": "gives the 87% maximum, not the typical 30-70%", "judge": "claude-opus-5-5"}
 {"key": "m02|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "30-70% and the regional figures", "judge": "claude-opus-5-5"}
@@ -63,7 +63,7 @@
 {"key": "m05|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "m06|L0", "claims": 4, "supported": 0, "correct": 1, "relevant": 1, "note": "natural enemies, botanicals, tolerant varieties", "judge": "claude-opus-5-5"}
 {"key": "m06|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "m06|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m06|PQ", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "m07|L0", "claims": 3, "supported": 0, "correct": 1, "relevant": 1, "note": "yes, parasitoids and predators", "judge": "claude-opus-5-5"}
 {"key": "m07|SK", "claims": 2, "supported": 1, "correct": 0.5, "relevant": 1, "note": "yes, but reasoning only loosely supported (passage only cites an impact-on-parasitism study title)", "judge": "claude-opus-5-5"}
 {"key": "m07|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "conserve natural enemies", "judge": "claude-opus-5-5"}
@@ -84,10 +84,10 @@
 {"key": "p04|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "p05|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "silver oak and stem borer right; black rot not mentioned", "judge": "claude-opus-5-5"}
 {"key": "p05|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "p05|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p05|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "p06|L0", "claims": 4, "supported": 0, "correct": 0.5, "relevant": 1, "note": "stripping, gleaning, traps; no picking mats or Broca traps by name", "judge": "claude-opus-5-5"}
 {"key": "p06|SK", "claims": 6, "supported": 6, "correct": 0.5, "relevant": 1, "note": "picking mats, leftover berries; Broca traps not retrieved", "judge": "claude-opus-5-5"}
-{"key": "p06|PQ", "claims": 7, "supported": 7, "correct": 1, "relevant": 1, "note": "Broca traps, picking mats, stripping and gleaning", "judge": "claude-opus-5-5"}
+{"key": "p06|PQ", "claims": 6, "supported": 6, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "p07|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "burn badly bored berries right; no boiling-water dip", "judge": "claude-opus-5-5"}
 {"key": "p07|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "p07|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
@@ -108,13 +108,13 @@
 {"key": "p12|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k01|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "range 5.5-6.5 contains 6.1 but threshold 5.5 differs from 6.1", "judge": "claude-opus-5-5"}
 {"key": "k01|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "k01|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k01|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k02|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "every 2-3 years", "judge": "claude-opus-5-5"}
 {"key": "k02|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "k02|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k02|PQ", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k03|L0", "claims": 3, "supported": 0, "correct": 1, "relevant": 1, "note": "November-February with some moisture", "judge": "claude-opus-5-5"}
 {"key": "k03|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "k03|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k03|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k04|L0", "claims": 1, "supported": 0, "correct": 1, "relevant": 1, "note": "split over two seasons", "judge": "claude-opus-5-5"}
 {"key": "k04|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k04|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
@@ -123,7 +123,7 @@
 {"key": "k05|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k06|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "after first showers right, but also says 'soon after harvest'; no 2-inch / 3500 ft rule", "judge": "claude-opus-5-5"}
 {"key": "k06|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "k06|PQ", "claims": 7, "supported": 5, "correct": 1, "relevant": 1, "note": "'irrigated blocks' and the light-pruning list not in its passages", "judge": "claude-opus-5-5"}
+{"key": "k06|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "light-pruning list now retrieved", "judge": "claude-opus-5-5"}
 {"key": "k07|L0", "claims": 2, "supported": 0, "correct": 0, "relevant": 1, "note": "80-120 kg is not the 50:50:50 sustenance dose", "judge": "claude-opus-5-5"}
 {"key": "k07|SK", "claims": 1, "supported": 1, "correct": 0, "relevant": 0.5, "note": "figure cut off in its passage; says it does not know the amount", "judge": "claude-opus-5-5"}
 {"key": "k07|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
@@ -135,7 +135,7 @@
 {"key": "k09|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k10|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "6x6 to 7x7 and 5x5 feet", "judge": "claude-opus-5-5"}
 {"key": "k10|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "k10|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k10|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k11|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "pit size right; no quantities or rock phosphate", "judge": "claude-opus-5-5"}
 {"key": "k11|SK", "claims": 2, "supported": 2, "correct": 0.5, "relevant": 1, "note": "pit size and compost right; rock phosphate cut off in its passage", "judge": "claude-opus-5-5"}
 {"key": "k11|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
@@ -144,13 +144,13 @@
 {"key": "k12|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k13|L0", "claims": 2, "supported": 0, "correct": 0, "relevant": 1, "note": "30-40 kg instead of 58 kg", "judge": "claude-opus-5-5"}
 {"key": "k13|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "k13|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k13|PQ", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k14|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "north and east; avoid west/south", "judge": "claude-opus-5-5"}
 {"key": "k14|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k14|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k15|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "right ingredients, ratio 3:1:1 instead of 6:2:1", "judge": "claude-opus-5-5"}
 {"key": "k15|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
-{"key": "k15|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k15|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k16|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "25-50 leaves (not pairs) per block", "judge": "claude-opus-5-5"}
 {"key": "k16|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "k16|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}

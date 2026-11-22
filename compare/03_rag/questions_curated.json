@@ -1,0 +1,1225 @@
+[
+ {
+  "id": "r01",
+  "lang": "en",
+  "question": "When should I give the pre-monsoon Bordeaux mixture spray against coffee leaf rust, and at what strength?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "When should I give the pre-monsoon Bordeaux mixture spray against coffee leaf rust, and at what strength?",
+  "gold_answer": "Spray 0.5% Bordeaux mixture during April-May, when rust spreads to young leaves; finish the protection by the first week of June.",
+  "evidence": [
+   "Therefore during this period, spray of 0.5% Bordeaux mixture is very important which prevents the spread of disease and protects the young leaves."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 21,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r01_kn",
+  "lang": "kn",
+  "question": "ಕಾಫಿ ಎಲೆ ತುಕ್ಕು ರೋಗಕ್ಕೆ ಮುಂಗಾರು ಪೂರ್ವ ಬೋರ್ಡೋ ಮಿಶ್ರಣವನ್ನು ಯಾವಾಗ ಮತ್ತು ಎಷ್ಟು ಸಾಂದ್ರತೆಯಲ್ಲಿ ಸಿಂಪಡಿಸಬೇಕು?",
+  "pair": "r01",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "When should I give the pre-monsoon Bordeaux mixture spray against coffee leaf rust, and at what strength?",
+  "gold_answer": "Spray 0.5% Bordeaux mixture during April-May, when rust spreads to young leaves; finish the protection by the first week of June.",
+  "evidence": [
+   "Therefore during this period, spray of 0.5% Bordeaux mixture is very important which prevents the spread of disease and protects the young leaves."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 21,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r02",
+  "lang": "en",
+  "question": "Should Bordeaux mixture be sprayed on the upper or the lower side of coffee leaves to control rust?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "Should Bordeaux mixture be sprayed on the upper or the lower side of coffee leaves to control rust?",
+  "gold_answer": "On the lower surface of the leaves; spraying only the upper surface does not protect against the spread of rust.",
+  "evidence": [
+   "Spraying the Bordeaux on the upper surface of the leaves does not ensure protection from the spread of the disease."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r02_kn",
+  "lang": "kn",
+  "question": "ತುಕ್ಕು ರೋಗ ನಿಯಂತ್ರಣಕ್ಕೆ ಬೋರ್ಡೋ ಮಿಶ್ರಣವನ್ನು ಎಲೆಯ ಮೇಲ್ಭಾಗಕ್ಕೆ ಸಿಂಪಡಿಸಬೇಕೇ ಅಥವಾ ಕೆಳಭಾಗಕ್ಕೆ?",
+  "pair": "r02",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "Should Bordeaux mixture be sprayed on the upper or the lower side of coffee leaves to control rust?",
+  "gold_answer": "On the lower surface of the leaves; spraying only the upper surface does not protect against the spread of rust.",
+  "evidence": [
+   "Spraying the Bordeaux on the upper surface of the leaves does not ensure protection from the spread of the disease."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r03",
+  "lang": "en",
+  "question": "How many barrels of Bordeaux spray are needed to cover one hectare of coffee?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "How many barrels of Bordeaux spray are needed to cover one hectare of coffee?",
+  "gold_answer": "About 15 barrels of the spray mixture cover one hectare.",
+  "evidence": [
+   "About 15 barrels of the spray mixture adequately covers one hectare of the area."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r04",
+  "lang": "en",
+  "question": "Can I mix urea into the Bordeaux mixture when spraying for leaf rust?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "Can I mix urea into the Bordeaux mixture when spraying for leaf rust?",
+  "gold_answer": "No. Adding urea is a bad practice: nitrogen is lost as ammonia and the spray becomes less effective. Only potash (350 g MOP per barrel) is compatible.",
+  "evidence": [
+   "There is a common practice of adding urea to the Bordeaux mixture.",
+   "This is a bad practice which should be avoided."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r05",
+  "lang": "en",
+  "question": "What pH should the Bordeaux mixture have?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "What pH should the Bordeaux mixture have?",
+  "gold_answer": "Between 9 and 10 for the best efficiency.",
+  "evidence": [
+   "Please ensure that the pH of the Bordeaux mixture is maintained between 9 and 10 for the best efficiency of the sprayed mixture."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r06",
+  "lang": "en",
+  "question": "The blossom shower came late and there are no new shoots. What should I spray against leaf rust instead of Bordeaux mixture?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "The blossom shower came late and there are no new shoots. What should I spray against leaf rust instead of Bordeaux mixture?",
+  "gold_answer": "Avoid Bordeaux; spray a systemic fungicide (160 g Bayleton 25 WP or 400 ml Contaf 5EC in 200 litres of water, 7-8 barrels per hectare) during the break in the monsoon.",
+  "evidence": [
+   "In such an event, spray of 7-8 barrels per hectare systemic fungicides (160 gm of 25 WP 0.02% Bayleton or 400 ml of Contaf-5EC-0.01% in 200 litres of water) during the break in the monsoon which will help in controlling the CLR disease."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r06_kn",
+  "lang": "kn",
+  "question": "ಹೂಮಳೆ ತಡವಾಗಿ ಬಂದು ಹೊಸ ಚಿಗುರು ಇಲ್ಲದಿದ್ದರೆ ಎಲೆ ತುಕ್ಕು ರೋಗಕ್ಕೆ ಬೋರ್ಡೋ ಬದಲು ಏನು ಸಿಂಪಡಿಸಬೇಕು?",
+  "pair": "r06",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "The blossom shower came late and there are no new shoots. What should I spray against leaf rust instead of Bordeaux mixture?",
+  "gold_answer": "Avoid Bordeaux; spray a systemic fungicide (160 g Bayleton 25 WP or 400 ml Contaf 5EC in 200 litres of water, 7-8 barrels per hectare) during the break in the monsoon.",
+  "evidence": [
+   "In such an event, spray of 7-8 barrels per hectare systemic fungicides (160 gm of 25 WP 0.02% Bayleton or 400 ml of Contaf-5EC-0.01% in 200 litres of water) during the break in the monsoon which will help in controlling the CLR disease."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r07",
+  "lang": "en",
+  "question": "Which weather conditions favour the early appearance of coffee leaf rust?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "Which weather conditions favour the early appearance of coffee leaf rust?",
+  "gold_answer": "Humid cool windy weather from May to November with intermittent showers and sunshine, cloudy misty weather with drizzle in February-March, and thin or no overhead shade during the south-west monsoon.",
+  "evidence": [
+   "Thin or no overhead shade during the south-west monsoon is also one of the favourable factors for the development of this disease."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 14,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r08",
+  "lang": "en",
+  "question": "When does leaf rust intensify after the monsoon and what should I spray then?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "When does leaf rust intensify after the monsoon and what should I spray then?",
+  "gold_answer": "Rust intensifies in September; spray 0.5% Bordeaux mixture at 15 barrels per hectare.",
+  "evidence": [
+   "The coffee leaf rust disease intensifies during September month."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 28,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r09",
+  "lang": "en",
+  "question": "My estate is above 3500 feet. Do I need to worry about leaf rust in February-March?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "My estate is above 3500 feet. Do I need to worry about leaf rust in February-March?",
+  "gold_answer": "Generally no: areas above 3500 feet are usually not affected by leaf rust during February-March.",
+  "evidence": [
+   "The areas which are located in elevations more than 3500 feet are generally not affected by leaf rust disease during these months."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 14,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r09_kn",
+  "lang": "kn",
+  "question": "ನನ್ನ ತೋಟ 3500 ಅಡಿಗಿಂತ ಎತ್ತರದಲ್ಲಿದೆ. ಫೆಬ್ರವರಿ-ಮಾರ್ಚ್‌ನಲ್ಲಿ ಎಲೆ ತುಕ್ಕು ರೋಗದ ಬಗ್ಗೆ ಚಿಂತಿಸಬೇಕೇ?",
+  "pair": "r09",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "My estate is above 3500 feet. Do I need to worry about leaf rust in February-March?",
+  "gold_answer": "Generally no: areas above 3500 feet are usually not affected by leaf rust during February-March.",
+  "evidence": [
+   "The areas which are located in elevations more than 3500 feet are generally not affected by leaf rust disease during these months."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 14,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r10",
+  "lang": "en",
+  "question": "How do I prepare 0.5% Bordeaux mixture?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "How do I prepare 0.5% Bordeaux mixture?",
+  "gold_answer": "Dissolve 1 kg copper sulphate in 10 litres of water overnight, dissolve 1 kg spray lime in 10 litres of water, add the lime solution to 180 litres of water and then add the copper sulphate solution while stirring.",
+  "evidence": [
+   "Dissolve 1 kg of pure chemically tested copper sulphate in 10 litres of water by suspending it in a gunny bag or cloth bag overnight.",
+   "Similarly prepare spray lime solution by dissolving 1 kg of spray lime in 10 litres of water."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 63,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "r11",
+  "lang": "en",
+  "question": "For an organic coffee farm, what should be the main way to manage leaf rust?",
+  "topic": "rust",
+  "disease": "Rust",
+  "question_en": "For an organic coffee farm, what should be the main way to manage leaf rust?",
+  "gold_answer": "Planting rust-resistant cultivars should be the main control measure, supported by cultural management, biological control and copper fungicides.",
+  "evidence": [
+   "The use of rust-resistant cultivars as the main control measure for rust management should be prioritized, with incentive programs to replace crops with susceptible cultivars in the various organic coffee-producing countries."
+  ],
+  "source": "Strategies_for_Coffee_Leaf_Rust_Management_in_Orga.pdf",
+  "page": 9,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "c01",
+  "lang": "en",
+  "question": "How do I protect nursery seedlings from Cercospora (brown eye spot)?",
+  "topic": "cercospora",
+  "disease": "Cerscospora",
+  "question_en": "How do I protect nursery seedlings from Cercospora (brown eye spot)?",
+  "gold_answer": "Spray Indofil M-45 (5 g per litre of water) or Bavistin (1 g per litre).",
+  "evidence": [
+   "To prevent the disease, spray Indofil -M-45 solutions (5 g/1 litre of water) or Bavistin (1g/litre)"
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 17,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "c01_kn",
+  "lang": "kn",
+  "question": "ನರ್ಸರಿ ಸಸಿಗಳನ್ನು ಸೆರ್ಕೋಸ್ಪೊರಾ (ಕಂದು ಕಣ್ಣಿನ ಚುಕ್ಕೆ) ರೋಗದಿಂದ ಹೇಗೆ ರಕ್ಷಿಸುವುದು?",
+  "pair": "c01",
+  "topic": "cercospora",
+  "disease": "Cerscospora",
+  "question_en": "How do I protect nursery seedlings from Cercospora (brown eye spot)?",
+  "gold_answer": "Spray Indofil M-45 (5 g per litre of water) or Bavistin (1 g per litre).",
+  "evidence": [
+   "To prevent the disease, spray Indofil -M-45 solutions (5 g/1 litre of water) or Bavistin (1g/litre)"
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 17,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "c02",
+  "lang": "en",
+  "question": "Which coffee plants are more likely to get Cercospora leaf spot?",
+  "topic": "cercospora",
+  "disease": "Cerscospora",
+  "question_en": "Which coffee plants are more likely to get Cercospora leaf spot?",
+  "gold_answer": "Newly established plantings, plants deficient in nutrients (especially nitrogen and potassium) and plants over-exposed to sunlight.",
+  "evidence": [
+   "It affects both leaves and fruits, which is seems more problematic in the newly established coffee orchard and is more susceptible to field with plant nutrition deficiency, particularly nitrogen and potassium and over-exposure to sunlight"
+  ],
+  "source": "cercospora.pdf",
+  "page": 2,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "c02_kn",
+  "lang": "kn",
+  "question": "ಯಾವ ಕಾಫಿ ಗಿಡಗಳಿಗೆ ಸೆರ್ಕೋಸ್ಪೊರಾ ಎಲೆ ಚುಕ್ಕೆ ರೋಗ ಬರುವ ಸಾಧ್ಯತೆ ಹೆಚ್ಚು?",
+  "pair": "c02",
+  "topic": "cercospora",
+  "disease": "Cerscospora",
+  "question_en": "Which coffee plants are more likely to get Cercospora leaf spot?",
+  "gold_answer": "Newly established plantings, plants deficient in nutrients (especially nitrogen and potassium) and plants over-exposed to sunlight.",
+  "evidence": [
+   "It affects both leaves and fruits, which is seems more problematic in the newly established coffee orchard and is more susceptible to field with plant nutrition deficiency, particularly nitrogen and potassium and over-exposure to sunlight"
+  ],
+  "source": "cercospora.pdf",
+  "page": 2,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "c03",
+  "lang": "en",
+  "question": "What do Cercospora leaf spot symptoms look like on coffee leaves?",
+  "topic": "cercospora",
+  "disease": "Cerscospora",
+  "question_en": "What do Cercospora leaf spot symptoms look like on coffee leaves?",
+  "gold_answer": "Lesions start as yellow (chlorotic) patches on the upper leaf surface and become deep brown and necrotic.",
+  "evidence": [
+   "On the top leaf surface, lesions begin as chlorotic (yellow) patches that develop to become deep brown and necrotic"
+  ],
+  "source": "cercospora.pdf",
+  "page": 2,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "c04",
+  "lang": "en",
+  "question": "How does Cercospora show on the green coffee berries and when?",
+  "topic": "cercospora",
+  "disease": "Cerscospora",
+  "question_en": "How does Cercospora show on the green coffee berries and when?",
+  "gold_answer": "About 90 days after flowering, as irregular brown sunken lesions surrounded by a purple halo.",
+  "evidence": [
+   "On green berries, this includes irregularly shaped brown, sunken lesions that are surrounded by a purple halo."
+  ],
+  "source": "cercospora.pdf",
+  "page": 2,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "c05",
+  "lang": "en",
+  "question": "Which eco-friendly treatment worked best against Cercospora leaf spot?",
+  "topic": "cercospora",
+  "disease": "Cerscospora",
+  "question_en": "Which eco-friendly treatment worked best against Cercospora leaf spot?",
+  "gold_answer": "Bordeaux mixture was the most effective eco-friendly treatment, due to the toxicity of copper to the pathogen.",
+  "evidence": [
+   "The result indicate that Bordeaux mixture is found to be must effective ecofriendly management treatments over other treatments which might be due to the toxicity of the copper to the pathogens"
+  ],
+  "source": "cercospora.pdf",
+  "page": 9,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "c05_kn",
+  "lang": "kn",
+  "question": "ಸೆರ್ಕೋಸ್ಪೊರಾ ಎಲೆ ಚುಕ್ಕೆ ರೋಗಕ್ಕೆ ಯಾವ ಪರಿಸರ ಸ್ನೇಹಿ ಚಿಕಿತ್ಸೆ ಹೆಚ್ಚು ಪರಿಣಾಮಕಾರಿ?",
+  "pair": "c05",
+  "topic": "cercospora",
+  "disease": "Cerscospora",
+  "question_en": "Which eco-friendly treatment worked best against Cercospora leaf spot?",
+  "gold_answer": "Bordeaux mixture was the most effective eco-friendly treatment, due to the toxicity of copper to the pathogen.",
+  "evidence": [
+   "The result indicate that Bordeaux mixture is found to be must effective ecofriendly management treatments over other treatments which might be due to the toxicity of the copper to the pathogens"
+  ],
+  "source": "cercospora.pdf",
+  "page": 9,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m01",
+  "lang": "en",
+  "question": "How does the coffee leaf miner damage the leaves?",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "How does the coffee leaf miner damage the leaves?",
+  "gold_answer": "Its larvae feed inside the leaf mesophyll, causing necrosis, loss of photosynthetic capacity, defoliation and yield loss.",
+  "evidence": [
+   "During the immature life stages, the insect feeds in the mesophyll triggering necrosis and causing loss of photosynthetic capacity, defoliation and signiﬁcant yield loss to coffee crops."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 1,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m01_kn",
+  "lang": "kn",
+  "question": "ಕಾಫಿ ಎಲೆ ಸುರಂಗ ಕೀಟ ಎಲೆಗಳಿಗೆ ಹೇಗೆ ಹಾನಿ ಮಾಡುತ್ತದೆ?",
+  "pair": "m01",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "How does the coffee leaf miner damage the leaves?",
+  "gold_answer": "Its larvae feed inside the leaf mesophyll, causing necrosis, loss of photosynthetic capacity, defoliation and yield loss.",
+  "evidence": [
+   "During the immature life stages, the insect feeds in the mesophyll triggering necrosis and causing loss of photosynthetic capacity, defoliation and signiﬁcant yield loss to coffee crops."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 1,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m02",
+  "lang": "en",
+  "question": "How much crop loss can the coffee leaf miner cause?",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "How much crop loss can the coffee leaf miner cause?",
+  "gold_answer": "Losses of about 30-70% in grain production, with lower quality.",
+  "evidence": [
+   "Responsible for losses ranging from 30–70%, the CLM impairs the grain production and quality, which negatively reﬂects on the coffee production chain."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 1,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m03",
+  "lang": "en",
+  "question": "What does the leaf miner larva look like?",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "What does the leaf miner larva look like?",
+  "gold_answer": "Newly hatched larvae are translucent whitish and turn greenish yellow as they develop.",
+  "evidence": [
+   "Newly hatched larvae have a translucent whitish color, but throughout their development they take on a greenish yellow tone."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 4,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m03_kn",
+  "lang": "kn",
+  "question": "ಎಲೆ ಸುರಂಗ ಕೀಟದ ಮರಿಹುಳು ಹೇಗೆ ಕಾಣುತ್ತದೆ?",
+  "pair": "m03",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "What does the leaf miner larva look like?",
+  "gold_answer": "Newly hatched larvae are translucent whitish and turn greenish yellow as they develop.",
+  "evidence": [
+   "Newly hatched larvae have a translucent whitish color, but throughout their development they take on a greenish yellow tone."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 4,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m04",
+  "lang": "en",
+  "question": "Can neem extract control the coffee leaf miner?",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "Can neem extract control the coffee leaf miner?",
+  "gold_answer": "Yes, in laboratory tests pupae treated with neem (Azadirachta indica) extract showed 100% mortality, the highest of the plant extracts tested.",
+  "evidence": [
+   "Moreover, pupae treated with A. indica extract showed the highest level of mortality (100%) followed by T. pallida 75% and C."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 13,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m05",
+  "lang": "en",
+  "question": "What are the problems with controlling leaf miner only with chemical pesticides?",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "What are the problems with controlling leaf miner only with chemical pesticides?",
+  "gold_answer": "Harm to human health and the environment and the selection of resistant insect populations, which is why integrated pest management is needed.",
+  "evidence": [
+   "Drawback aspects caused by chemical control with pesticides, such as the harmful effects to human health and environment and the selection of resistant-insect populations, prompt scientists to improve integrated pest management (IPM) tools."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 1,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m06",
+  "lang": "en",
+  "question": "What sustainable options are there to control the coffee leaf miner?",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "What sustainable options are there to control the coffee leaf miner?",
+  "gold_answer": "Resistant cultivars, biological control, nano-biopesticides and other integrated approaches.",
+  "evidence": [
+   "Therefore, the development of new resistant cultivars, biological control, nano-biopesticide products and other approaches are important strategies to a sustainable CLM control design."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 1,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m06_kn",
+  "lang": "kn",
+  "question": "ಕಾಫಿ ಎಲೆ ಸುರಂಗ ಕೀಟ ನಿಯಂತ್ರಣಕ್ಕೆ ಯಾವ ಸುಸ್ಥಿರ ವಿಧಾನಗಳಿವೆ?",
+  "pair": "m06",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "What sustainable options are there to control the coffee leaf miner?",
+  "gold_answer": "Resistant cultivars, biological control, nano-biopesticides and other integrated approaches.",
+  "evidence": [
+   "Therefore, the development of new resistant cultivars, biological control, nano-biopesticide products and other approaches are important strategies to a sustainable CLM control design."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 1,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m07",
+  "lang": "en",
+  "question": "Should I think about natural enemies before spraying against leaf miner?",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "Should I think about natural enemies before spraying against leaf miner?",
+  "gold_answer": "Yes, control strategies must consider parasitoids, predators and insect pathogens that naturally kill the leaf miner.",
+  "evidence": [
+   "Biorational pesticides strategies to control L. coffeella must consider the important role of parasitoids, predators, and insect pathogens on enhancing the natural mortality of the CLM in ﬁeld."
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 14,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "m08",
+  "lang": "en",
+  "question": "How much defoliation can a heavy leaf miner attack cause?",
+  "topic": "miner",
+  "disease": "Miner",
+  "question_en": "How much defoliation can a heavy leaf miner attack cause?",
+  "gold_answer": "Defoliation can reach up to 75%, and productivity losses up to 87% depending on the season.",
+  "evidence": [
+   "Estimated losses in neotropical producing countries can reach up to 87% of the coffee productivity, depending on the season, the defoliation can reach up to 75%"
+  ],
+  "source": "A_Comprehensive_Review_of_the_Coffee_Leaf_Miner_Le.pdf",
+  "page": 2,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p01",
+  "lang": "en",
+  "question": "When do coffee white stem borer beetles come out?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "When do coffee white stem borer beetles come out?",
+  "gold_answer": "Adults emerge in large numbers in April-May and October-December.",
+  "evidence": [
+   "Coffee White Stem Borer (WSB) beetles attain their adulthood during April – May and October-December period and emerge out in large numbers."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 15,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p01_kn",
+  "lang": "kn",
+  "question": "ಕಾಫಿ ಬಿಳಿ ಕಾಂಡ ಕೊರಕ ದುಂಬಿಗಳು ಯಾವಾಗ ಹೊರಬರುತ್ತವೆ?",
+  "pair": "p01",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "When do coffee white stem borer beetles come out?",
+  "gold_answer": "Adults emerge in large numbers in April-May and October-December.",
+  "evidence": [
+   "Coffee White Stem Borer (WSB) beetles attain their adulthood during April – May and October-December period and emerge out in large numbers."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 15,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p02",
+  "lang": "en",
+  "question": "What should I do with coffee plants infested by white stem borer?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "What should I do with coffee plants infested by white stem borer?",
+  "gold_answer": "Trace them, uproot them and destroy them immediately by burning or by keeping them under water for a week.",
+  "evidence": [
+   "As a first step, plants infested with borer should be traced, uprooted and immediately destroyed by burning or be immersed under water for a week."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 15,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p02_kn",
+  "lang": "kn",
+  "question": "ಬಿಳಿ ಕಾಂಡ ಕೊರಕ ತಗುಲಿದ ಕಾಫಿ ಗಿಡಗಳನ್ನು ಏನು ಮಾಡಬೇಕು?",
+  "pair": "p02",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "What should I do with coffee plants infested by white stem borer?",
+  "gold_answer": "Trace them, uproot them and destroy them immediately by burning or by keeping them under water for a week.",
+  "evidence": [
+   "As a first step, plants infested with borer should be traced, uprooted and immediately destroyed by burning or be immersed under water for a week."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 15,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p03",
+  "lang": "en",
+  "question": "How many pheromone traps per hectare are recommended for white stem borer?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "How many pheromone traps per hectare are recommended for white stem borer?",
+  "gold_answer": "25 traps per hectare in highly infested areas.",
+  "evidence": [
+   "WSB pheromone traps (25 traps per hectare) have to be installed in highly infested areas."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 16,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p04",
+  "lang": "en",
+  "question": "What should I apply on coffee stems after smoothening them against white stem borer?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "What should I apply on coffee stems after smoothening them against white stem borer?",
+  "gold_answer": "A 10% lime wash: 10 kg spray lime and 100 ml Fevicol DDL in 100 litres of water.",
+  "evidence": [
+   "The smoothened stems are then given 10% lime wash (10 kg spray lime + 100ml Fevicol DDL in 100 litres of water)."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 16,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p05",
+  "lang": "en",
+  "question": "Which shade tree makes black rot and white stem borer more common?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "Which shade tree makes black rot and white stem borer more common?",
+  "gold_answer": "Silver oak: black rot and white stem borer are more prevalent in estates shaded by silver oak.",
+  "evidence": [
+   "The black rot disease and white stem borer incidence are more prevalent in estates with silver oak as shade tree."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 56,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p05_kn",
+  "lang": "kn",
+  "question": "ಯಾವ ನೆರಳಿನ ಮರದಿಂದ ಕಪ್ಪು ಕೊಳೆ ರೋಗ ಮತ್ತು ಬಿಳಿ ಕಾಂಡ ಕೊರಕ ಹೆಚ್ಚಾಗುತ್ತದೆ?",
+  "pair": "p05",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "Which shade tree makes black rot and white stem borer more common?",
+  "gold_answer": "Silver oak: black rot and white stem borer are more prevalent in estates shaded by silver oak.",
+  "evidence": [
+   "The black rot disease and white stem borer incidence are more prevalent in estates with silver oak as shade tree."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 56,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p06",
+  "lang": "en",
+  "question": "How do I prevent coffee berry borer at harvest time?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "How do I prevent coffee berry borer at harvest time?",
+  "gold_answer": "Install Broca traps in the estate and near drying yards, use picking mats, and pick all leftover berries and gleanings.",
+  "evidence": [
+   "Broca traps have to be installed in the estate as well as near the drying yards"
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 10,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p07",
+  "lang": "en",
+  "question": "What should I do with berries partly damaged by coffee berry borer?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "What should I do with berries partly damaged by coffee berry borer?",
+  "gold_answer": "Dip them in boiling water for one minute and then dry them; burn highly damaged berries.",
+  "evidence": [
+   "If the berries are partially damaged by Coffee Berry Borer, such berries can be immersed in boiling water for 1 minute and then dried."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 10,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p08",
+  "lang": "en",
+  "question": "Is there a biological control for coffee berry borer?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "Is there a biological control for coffee berry borer?",
+  "gold_answer": "Yes, spray Beauveria bassiana with a backpack sprayer.",
+  "evidence": [
+   "Coffee Berry Borer has to be controlled using Beauveria bassiana spray using bakpak sprayer."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 28,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p08_kn",
+  "lang": "kn",
+  "question": "ಕಾಫಿ ಹಣ್ಣು ಕೊರಕ ಕೀಟಕ್ಕೆ ಜೈವಿಕ ನಿಯಂತ್ರಣ ವಿಧಾನವಿದೆಯೇ?",
+  "pair": "p08",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "Is there a biological control for coffee berry borer?",
+  "gold_answer": "Yes, spray Beauveria bassiana with a backpack sprayer.",
+  "evidence": [
+   "Coffee Berry Borer has to be controlled using Beauveria bassiana spray using bakpak sprayer."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 28,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p09",
+  "lang": "en",
+  "question": "How do I control green mealybug on coffee?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "How do I control green mealybug on coffee?",
+  "gold_answer": "Control the ants that spread it by dusting 5% Malathion around the base of affected plants and shade trees, destroy ant nests, and spray infested plants.",
+  "evidence": [
+   "Therefore, control ants by dusting 5% Malathion powder around the base of affected coffee plants and shade trees."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 23,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p10",
+  "lang": "en",
+  "question": "How should black rot affected patches be sprayed?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "How should black rot affected patches be sprayed?",
+  "gold_answer": "Spray 1.0% Bordeaux mixture in the first week of June.",
+  "evidence": [
+   "Black rot affected patches should be sprayed with 1.0 % Bordeaux mixture during the first week of June."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p11",
+  "lang": "en",
+  "question": "Why do black rot and stalk rot increase during the monsoon?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "Why do black rot and stalk rot increase during the monsoon?",
+  "gold_answer": "Retaining thick shade during the monsoon increases black rot and stalk rot and causes berry drop because the soil becomes chilly.",
+  "evidence": [
+   "Retaining higher levels (thick) shade during the monsoon results in the incidence of black rot and stalk rot diseases in coffee plants and berry drop due to chillness in the soil."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 65,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "p12",
+  "lang": "en",
+  "question": "My nursery seedlings show water-soaked brown stems and leaves are falling (Myrothecium). What should I spray?",
+  "topic": "pests",
+  "disease": "Healthy",
+  "question_en": "My nursery seedlings show water-soaked brown stems and leaves are falling (Myrothecium). What should I spray?",
+  "gold_answer": "Spray 0.8 ml of Tilt (propiconazole) per litre of water, once a month until the end of the monsoon.",
+  "evidence": [
+   "To prevent and cure this disease, spray 0.8ml of Tilt (propiconazole) in one litre of water."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 17,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k01",
+  "lang": "en",
+  "question": "What soil pH should be maintained in coffee soils?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "What soil pH should be maintained in coffee soils?",
+  "gold_answer": "Around 6.1 for the best fertilizer use efficiency.",
+  "evidence": [
+   "In order to have better fertilize use efficiency of the applied fertilizers, the soil pH should be maintained at around 6.1 in coffee soils."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 11,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k01_kn",
+  "lang": "kn",
+  "question": "ಕಾಫಿ ಮಣ್ಣಿನ ಪಿಎಚ್ ಎಷ್ಟು ಇರಬೇಕು?",
+  "pair": "k01",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "What soil pH should be maintained in coffee soils?",
+  "gold_answer": "Around 6.1 for the best fertilizer use efficiency.",
+  "evidence": [
+   "In order to have better fertilize use efficiency of the applied fertilizers, the soil pH should be maintained at around 6.1 in coffee soils."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 11,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k02",
+  "lang": "en",
+  "question": "How often should I test the soil in my coffee estate?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "How often should I test the soil in my coffee estate?",
+  "gold_answer": "Once every 2-3 years.",
+  "evidence": [
+   "Therefore, to monitor the soil pH, soils have to be tested compulsorily once in 2-3 years."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 11,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k03",
+  "lang": "en",
+  "question": "When is the best time to apply lime to coffee soils?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "When is the best time to apply lime to coffee soils?",
+  "gold_answer": "November to February, with enough moisture in the soil; never during the monsoon.",
+  "evidence": [
+   "However, keeping in mind the coffee zones, it is known that November to February months are the ideal period for lime application."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 12,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k03_kn",
+  "lang": "kn",
+  "question": "ಕಾಫಿ ಮಣ್ಣಿಗೆ ಸುಣ್ಣ ಹಾಕಲು ಉತ್ತಮ ಸಮಯ ಯಾವುದು?",
+  "pair": "k03",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "When is the best time to apply lime to coffee soils?",
+  "gold_answer": "November to February, with enough moisture in the soil; never during the monsoon.",
+  "evidence": [
+   "However, keeping in mind the coffee zones, it is known that November to February months are the ideal period for lime application."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 12,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k04",
+  "lang": "en",
+  "question": "The soil test says I need more than 3.5 tonnes of lime per hectare. Can I apply it all at once?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "The soil test says I need more than 3.5 tonnes of lime per hectare. Can I apply it all at once?",
+  "gold_answer": "No, split it into two equal parts applied in two years.",
+  "evidence": [
+   "If the recommended dose of liming material is more than 3.5 metric tonnes per hectare, in such case the dose has to be split into two equal parts and applied in 2 years."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 12,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k05",
+  "lang": "en",
+  "question": "How should I collect a soil sample from my coffee block?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "How should I collect a soil sample from my coffee block?",
+  "gold_answer": "From each 2-hectare block, pick 20 random spots, remove surface litter, dig 9 inches wide and 9 inches deep, scrape soil from top to bottom and mix into a 1 kg composite sample.",
+  "evidence": [
+   "Select at random 20 spots in each block, remove surface litter and dig a hole of 9 inches diameter using a suitable tool up to 9 inches depth."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 12,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k06",
+  "lang": "en",
+  "question": "When should I prune coffee after the harvest?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "When should I prune coffee after the harvest?",
+  "gold_answer": "Only after one or two summer showers (at least 2 inches of rain), unless the soil is still moist or the estate is above 3500 feet.",
+  "evidence": [
+   "But pruning operation should not be started until one or two summer showers (minimum of 2 inches of rain) are received."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 17,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k06_kn",
+  "lang": "kn",
+  "question": "ಕೊಯ್ಲಿನ ನಂತರ ಕಾಫಿ ಗಿಡಗಳನ್ನು ಯಾವಾಗ ಸವರಬೇಕು?",
+  "pair": "k06",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "When should I prune coffee after the harvest?",
+  "gold_answer": "Only after one or two summer showers (at least 2 inches of rain), unless the soil is still moist or the estate is above 3500 feet.",
+  "evidence": [
+   "But pruning operation should not be started until one or two summer showers (minimum of 2 inches of rain) are received."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 17,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k07",
+  "lang": "en",
+  "question": "What is the basic sustenance dose of fertilizer for grown-up coffee plants?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "What is the basic sustenance dose of fertilizer for grown-up coffee plants?",
+  "gold_answer": "50:50:50 kg of nitrogen, phosphorus and potash per hectare.",
+  "evidence": [
+   "In every coffee estate, the grown up plants need 50:50:50 kgs of nitrogen, phosphorus and potash per hectare for their vegetative growth."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 21,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k07_kn",
+  "lang": "kn",
+  "question": "ಬೆಳೆದ ಕಾಫಿ ಗಿಡಗಳಿಗೆ ಮೂಲಭೂತ ಗೊಬ್ಬರದ ಪ್ರಮಾಣ ಎಷ್ಟು?",
+  "pair": "k07",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "What is the basic sustenance dose of fertilizer for grown-up coffee plants?",
+  "gold_answer": "50:50:50 kg of nitrogen, phosphorus and potash per hectare.",
+  "evidence": [
+   "In every coffee estate, the grown up plants need 50:50:50 kgs of nitrogen, phosphorus and potash per hectare for their vegetative growth."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 21,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k08",
+  "lang": "en",
+  "question": "What is the maximum fertilizer I should give in one split dose?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "What is the maximum fertilizer I should give in one split dose?",
+  "gold_answer": "Not more than 100:75:100 kg of N:P:K per hectare in a single split.",
+  "evidence": [
+   "One should note that a single split dose of fertilizer should not exceed 100:75:100 kgs of N: P: K per hectare."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 21,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k09",
+  "lang": "en",
+  "question": "When should I lop and regulate the shade trees?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "When should I lop and regulate the shade trees?",
+  "gold_answer": "Usually in May, but only after 4-5 inches of rainfall; not in dry weather.",
+  "evidence": [
+   "Therefore, shade regulation shall be done preferably only after receiving 4-5 inches of rainfall."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k09_kn",
+  "lang": "kn",
+  "question": "ನೆರಳಿನ ಮರಗಳ ಕೊಂಬೆ ಕಡಿತ (ಲಾಪಿಂಗ್) ಯಾವಾಗ ಮಾಡಬೇಕು?",
+  "pair": "k09",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "When should I lop and regulate the shade trees?",
+  "gold_answer": "Usually in May, but only after 4-5 inches of rainfall; not in dry weather.",
+  "evidence": [
+   "Therefore, shade regulation shall be done preferably only after receiving 4-5 inches of rainfall."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 22,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k10",
+  "lang": "en",
+  "question": "What spacing should I use when planting Arabica coffee?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "What spacing should I use when planting Arabica coffee?",
+  "gold_answer": "Arabica talls 7x7, 7x6 or 6x6 feet; Arabica dwarf or semi-dwarf 5x5 feet.",
+  "evidence": [
+   "(a) Arabica Talls - 7 X 7, 7 X 6 or 6 X 6 feet (b) Arabica Dwarf/Semi Dwarf – 5 X 5 feet"
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 19,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k11",
+  "lang": "en",
+  "question": "What size of pit should I dig for planting coffee and what should I put in it?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "What size of pit should I dig for planting coffee and what should I put in it?",
+  "gold_answer": "1.5 x 1.5 x 1.5 feet pits, weathered for 15-20 days, filled with 1-1.5 kg compost or farmyard manure and 50-100 g rock phosphate mixed with top soil.",
+  "evidence": [
+   "The pits measuring 1.5 X 1.5 X 1.5 feet length, breadth and depth are ideal for planting."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 20,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k12",
+  "lang": "en",
+  "question": "How should I water young coffee plants after the monsoon ends?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "How should I water young coffee plants after the monsoon ends?",
+  "gold_answer": "Give 5-10 litres of water per plant once a week.",
+  "evidence": [
+   "After the cessation of monsoon, it is recommended that young coffee plants should be irrigated with 5 to 10 litres water per plant once in a week."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 11,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k12_kn",
+  "lang": "kn",
+  "question": "ಮುಂಗಾರು ಮುಗಿದ ನಂತರ ಎಳೆಯ ಕಾಫಿ ಗಿಡಗಳಿಗೆ ಹೇಗೆ ನೀರು ಹಾಕಬೇಕು?",
+  "pair": "k12",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "How should I water young coffee plants after the monsoon ends?",
+  "gold_answer": "Give 5-10 litres of water per plant once a week.",
+  "evidence": [
+   "After the cessation of monsoon, it is recommended that young coffee plants should be irrigated with 5 to 10 litres water per plant once in a week."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 11,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k13",
+  "lang": "en",
+  "question": "How much nitrogen should I apply during the break in the monsoon?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "How much nitrogen should I apply during the break in the monsoon?",
+  "gold_answer": "58 kg nitrogen per hectare (2.5 bags of urea), which also reduces berry drop.",
+  "evidence": [
+   "Therefore, apply 58 kgs of nitrogen (2.5 bags of Urea) per hectare during the break in the monsoon."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 27,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k14",
+  "lang": "en",
+  "question": "Which slope directions (aspects) are suitable for a new coffee plantation?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "Which slope directions (aspects) are suitable for a new coffee plantation?",
+  "gold_answer": "North, east and north-east aspects; western aspects need thick shade because of the scorching sun.",
+  "evidence": [
+   "North, East and North-East aspects are suitable for growing coffee."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 19,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k15",
+  "lang": "en",
+  "question": "What soil mixture should I fill in coffee nursery bags?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "What soil mixture should I fill in coffee nursery bags?",
+  "gold_answer": "6 parts sieved jungle soil, 2 parts well-rotted cattle manure or compost and 1 part coarse river sand (never sea sand).",
+  "evidence": [
+   "A nursery mixture of 6 parts of sieved jungle soil( free from nematodes and other pests), two parts of well rotted cattle manure or compost and one part of coarse river sand (do not use sea sand as it contains sodium which is harmful to the seedlings) should be prepared and mixed well to fill the nursery bags."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 17,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k15_kn",
+  "lang": "kn",
+  "question": "ಕಾಫಿ ನರ್ಸರಿ ಚೀಲಗಳಿಗೆ ಯಾವ ಮಣ್ಣಿನ ಮಿಶ್ರಣವನ್ನು ತುಂಬಬೇಕು?",
+  "pair": "k15",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "What soil mixture should I fill in coffee nursery bags?",
+  "gold_answer": "6 parts sieved jungle soil, 2 parts well-rotted cattle manure or compost and 1 part coarse river sand (never sea sand).",
+  "evidence": [
+   "A nursery mixture of 6 parts of sieved jungle soil( free from nematodes and other pests), two parts of well rotted cattle manure or compost and one part of coarse river sand (do not use sea sand as it contains sodium which is harmful to the seedlings) should be prepared and mixed well to fill the nursery bags."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 17,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k16",
+  "lang": "en",
+  "question": "How many leaves should I send for leaf nutrient analysis?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "How many leaves should I send for leaf nutrient analysis?",
+  "gold_answer": "At least 25 pairs of leaves (the fourth pair from the tip) per hectare, collected before 10 a.m.",
+  "evidence": [
+   "A minimum of 25 pairs of leaves from one hectare land is necessary for precise analysis."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 14,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k17",
+  "lang": "en",
+  "question": "To what moisture level should parchment coffee be dried?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "To what moisture level should parchment coffee be dried?",
+  "gold_answer": "To 11.0% moisture.",
+  "evidence": [
+   "The superficial water content should be removed by spreading the parchment over wire mesh trays and then dried on clean cement or clay lined drying yards till the moisture content reaches a value of 11.0%."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 7,
+  "out_of_kb": 0,
+  "origin": "curated"
+ },
+ {
+  "id": "k18",
+  "lang": "en",
+  "question": "When are Robusta flower buds ready for blossom irrigation?",
+  "topic": "cultivation",
+  "disease": "Healthy",
+  "question_en": "When are Robusta flower buds ready for blossom irrigation?",
+  "gold_answer": "Generally between 15 February and 15 March.",
+  "evidence": [
+   "Generally between February 15th and March 15th flower buds will mature and will be ready for blooming in Robusta coffee."
+  ],
+  "source": "coffee_cultivation_guide.pdf",
+  "page": 49,
+  "out_of_kb": 0,
+  "origin": "curated"
+ }
+]

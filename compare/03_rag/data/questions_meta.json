@@ -1,0 +1,19 @@
+{
+  "n": 75,
+  "english": 54,
+  "kannada": 21,
+  "selection": "written by the authors from the knowledge base; every evidence quote verified against the PDF text",
+  "sha256": "f18df59653af5d14d2b516f3b5338414dc177815153786854b09321c6904ae3b",
+  "meta": {
+    "timestamp": "2026-11-22T11:58:55",
+    "git_commit": "d2d5230",
+    "python": "3.11.0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "seed": 42,
+    "smoke": false,
+    "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+  }
+}

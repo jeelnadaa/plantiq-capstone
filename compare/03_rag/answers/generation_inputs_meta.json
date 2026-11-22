@@ -1,0 +1,18 @@
+{
+  "n": 162,
+  "questions": 54,
+  "profile": "quality",
+  "sk_embeddings": "hf:sentence-transformers/all-mpnet-base-v2",
+  "meta": {
+    "timestamp": "2026-11-22T12:12:09",
+    "git_commit": "b421009",
+    "python": "3.11.0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cpu": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "seed": 42,
+    "smoke": false,
+    "splits_sha256": "6e33fa0b882230b1907c2e8f1306c53112e16bf243987d2d81f24268f3a534eb"
+  }
+}

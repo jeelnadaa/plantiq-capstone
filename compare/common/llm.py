@@ -241,12 +241,16 @@ def parse_json(text: str):
     t = text.strip()
     t = re.sub(r"^```(?:json)?\s*|\s*```$", "", t)
     try:
-        return json.loads(t)
+        d = json.loads(t)
     except json.JSONDecodeError:
         m = re.search(r"(\{.*\}|\[.*\])", t, re.S)
-        if m:
-            return json.loads(m.group(1))
-        raise
+        if not m:
+            raise
+        d = json.loads(m.group(1))
+    # some models wrap the object in a list: [{...}]
+    if isinstance(d, list) and len(d) == 1 and isinstance(d[0], dict):
+        d = d[0]
+    return d if isinstance(d, dict) else {"items": d}
 
 
 def _fake(prompt: str, json_mode: bool) -> str:

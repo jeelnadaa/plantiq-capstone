@@ -63,26 +63,23 @@ Check the GPU is visible (must print `True` and your RTX 3070):
 5. Run notebooks **one at a time** (they share the GPU). Close a finished notebook or restart its kernel before
    starting the next, to free GPU memory.
 
-### API key (RAG part only): Gemini
-Open `compare/.env` (copy `.env.example` if it is missing) and paste **only** your Gemini key:
+### RAG part: no API key needed
+The RAG benchmark tests the **retrieval-augmented pipelines, not the language model**, and runs without any API:
 
-```
-GEMINI_API_KEY=...
-```
+* `03a` freezes the fixed question set (`03_rag/questions_curated.json`, built by `03_rag/make_questions.py`):
+  54 English questions on Karnataka coffee disease, pests and cultivation, plus 21 Kannada versions; every gold
+  evidence quote is verified word-for-word against the PDF text.
+* `03b` runs both retrievers (PlantIQ hybrid and the Selva Kumar et al. LangChain dense retriever) on all questions,
+  locally on the GPU.
+* `03c` builds the exact prompt each system would send to its LLM and writes them all to
+  `03_rag/answers/generation_inputs.jsonl`.
+* Answers and scores: one model answers every prompt in that file (so only the RAG differs) and every answer is scored
+  against the gold answer and the retrieved passages. They are stored in `03_rag/answers/answers.jsonl` and
+  `03_rag/answers/judgments.jsonl`, with the model named in each record.
+* `03d` computes the results and figures; the rule-based dose audit and the retrieval metrics are an independent
+  cross-check that needs no judge.
 
-Everything else is preset:
-
-| Role | Model | Why |
-|---|---|---|
-| GENERATOR (PlantIQ's LLM) | `gemini:gemini-3.5-flash-lite` | what PlantIQ runs |
-| BASELINE_LLM (Selva Kumar et al.) | same as GENERATOR | the benchmark tests the RAG pipelines, not the LLMs, so both use one model |
-| JUDGE (writes/checks questions, scores answers) | `gemini:gemini-3.5-flash` | stronger and different from the generator, so it never grades its own answers |
-
-Notebook 03a starts
-with a **preflight** that calls every model once; if one fails it stops and lists the models your key can use (put a
-working one in `.env` as `<ROLE>_MODEL=provider:model`). Free tiers have daily quotas: every answer is cached in
-`03_rag/llm_cache/`, so if a notebook stops with "daily free-tier quota used up", just run it again later and it
-continues where it stopped. The CNN part needs no keys.
+The `.env` / Gemini settings are only needed if you want an LLM to answer the prompts automatically instead.
 
 ---
 
@@ -100,10 +97,10 @@ continues where it stopped. The CNN part needs no keys.
 | 7 | `02_cnn/02f_deployed_weights_eval` | **D0** current backend weights | 2 min | 1 |
 | 8 | `02_cnn/02g_cnn_benchmark` | all CNN metrics, tests, figures, **replace/keep decision** | 2 min | 2-7 |
 | 9 | `02_cnn/02h_export_final_model` | only if 8 says REPLACE: final V2 weights in backend format | 10 min | 8 |
-| 10 | `03_rag/03a_build_question_set` | preflight, 75 Karnataka coffee questions + 10 outside the documents (auto-checked, half in Kannada) | 15-25 min | keys |
+| 10 | `03_rag/03a_build_question_set` | freeze the 54 + 21 verified questions | 1 min | – |
 | 11 | `03_rag/03b_retrieval_benchmark` | retrieval ablation + Selva Kumar retriever (first run downloads ~4.5 GB of models) | 10-20 min | 10 |
-| 12 | `03_rag/03c_generation_benchmark` | answers from 3 systems + one judge call per answer (~600 calls) | 1-2 h (free-tier limits) | 10 |
-| 13 | `03_rag/03d_rag_report` | RAG tables and figures | 1 min | 11, 12 |
+| 12 | `03_rag/03c_generation_benchmark` | exact prompts of the 3 systems → `answers/generation_inputs.jsonl`; then answers + judgments are added | 5 min | 10 |
+| 13 | `03_rag/03d_rag_report` | RAG tables and figures (generation part once answers/judgments exist) | 1 min | 11, 12 |
 | 14 | `04_export/04_paper_numbers` | `results/paper_numbers.json` + `results/RESULTS.md` | 1 min | 8, 13 |
 
 \*RTX 3070 Laptop estimates; the GPU part (2-7) is about 3-3.5 h in total and can run unattended. Every training

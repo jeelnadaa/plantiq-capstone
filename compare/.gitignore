@@ -19,3 +19,4 @@ __pycache__/
 
 # results replaced after a fix (kept for reference, not used)
 **/_superseded_*/
+_executed/

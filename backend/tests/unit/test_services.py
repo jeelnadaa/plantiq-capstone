@@ -308,3 +308,11 @@ def test_offline_kannada_reply_is_kannada_and_uses_disease_named_in_text():
     assert CARDS["Rust"]["kn"]["summary"] in card
     en = offline_chat_reply("en", None, None, docs, False, query="When to apply lime?")
     assert "Spray 0.5%" in en                                   # English replies still quote the passage
+
+
+def test_offline_kannada_card_cites_pages_instead_of_english_text():
+    docs = [{"text": "[Rust] Spray 0.5% Bordeaux mixture on the lower surface.", "source": "guide.pdf",
+             "metadata": {"page": 21}, "score": 0.9}]
+    kn = offline_advisory("Rust", "kn", None, docs)
+    assert "Spray 0.5% Bordeaux" not in kn and "guide.pdf, ಪುಟ 21" in kn
+    assert "Spray 0.5% Bordeaux" in offline_advisory("Rust", "en", None, docs)

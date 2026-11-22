@@ -114,8 +114,11 @@ def offline_advisory(disease: str, lang: str, env: dict | None, docs: list[dict]
     if docs:
         lines.append(f"## {h['sources']}")
         for d in docs[:2]:
-            excerpt = d["text"].split("] ", 1)[-1][:260].rsplit(" ", 1)[0]
-            lines.append(f"- {excerpt}… ({d['source']}, p.{d['metadata'].get('page')})")
+            if lang == "kn":  # English documents are cited by page, not quoted, in a Kannada reply
+                lines.append(f"- {d['source']}, ಪುಟ {d['metadata'].get('page')}")
+            else:
+                excerpt = d["text"].split("] ", 1)[-1][:260].rsplit(" ", 1)[0]
+                lines.append(f"- {excerpt}… ({d['source']}, p.{d['metadata'].get('page')})")
         lines.append("")
     lines.append(f"_{h['offline']}_")
     return "\n".join(lines).strip()

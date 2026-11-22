@@ -1,0 +1,72 @@
+{"key": "r01|L0", "claims": 6, "supported": 0, "correct": 0.5, "relevant": 1, "note": "0.5% Bordeaux right; timing 'around May' misses April and the early-June deadline", "judge": "claude-opus-5-5"}
+{"key": "r01|SK", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "April-May, 0.5%, lower surface", "judge": "claude-opus-5-5"}
+{"key": "r01|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "April-May 0.5%, plus Feb-Mar in thin shade", "judge": "claude-opus-5-5"}
+{"key": "r02|L0", "claims": 3, "supported": 0, "correct": 1, "relevant": 1, "note": "lower surface", "judge": "claude-opus-5-5"}
+{"key": "r02|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "lower surface", "judge": "claude-opus-5-5"}
+{"key": "r02|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "lower surface only; both surfaces only for black rot", "judge": "claude-opus-5-5"}
+{"key": "r03|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "10-15 barrels range contains the gold 15", "judge": "claude-opus-5-5"}
+{"key": "r03|SK", "claims": 0, "supported": 0, "correct": 0, "relevant": 0, "note": "abstained: passage not retrieved", "judge": "claude-opus-5-5"}
+{"key": "r03|PQ", "claims": 2, "supported": 2, "correct": 0, "relevant": 0.5, "note": "only systemic 7-8 barrels; Bordeaux volume not retrieved, says so", "judge": "claude-opus-5-5"}
+{"key": "r04|L0", "claims": 3, "supported": 0, "correct": 0.5, "relevant": 1, "note": "says no, but gives a different reason (no ammonia loss)", "judge": "claude-opus-5-5"}
+{"key": "r04|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "no; ammonia loss and lower efficiency", "judge": "claude-opus-5-5"}
+{"key": "r04|PQ", "claims": 5, "supported": 4, "correct": 0.5, "relevant": 1, "note": "says no (supported); reason missing; 'apply fertilizers separately' not in passages", "judge": "claude-opus-5-5"}
+{"key": "r05|L0", "claims": 2, "supported": 0, "correct": 0, "relevant": 1, "note": "says about pH 7; gold is 9-10", "judge": "claude-opus-5-5"}
+{"key": "r05|SK", "claims": 0, "supported": 0, "correct": 0, "relevant": 0, "note": "abstained: passage not retrieved", "judge": "claude-opus-5-5"}
+{"key": "r05|PQ", "claims": 2, "supported": 2, "correct": 0, "relevant": 0.5, "note": "pH not retrieved; says so", "judge": "claude-opus-5-5"}
+{"key": "r06|L0", "claims": 3, "supported": 0, "correct": 0.5, "relevant": 1, "note": "systemic fungicide right; no product dose or monsoon-break timing", "judge": "claude-opus-5-5"}
+{"key": "r06|SK", "claims": 2, "supported": 2, "correct": 0.5, "relevant": 1, "note": "Contaf/Bayleton right; no dose or timing", "judge": "claude-opus-5-5"}
+{"key": "r06|PQ", "claims": 3, "supported": 3, "correct": 0.5, "relevant": 1, "note": "Contaf/Bayleton right; dose and timing not in the passages", "judge": "claude-opus-5-5"}
+{"key": "r07|L0", "claims": 5, "supported": 0, "correct": 0.5, "relevant": 1, "note": "humidity/leaf wetness right; misses cool misty Feb-Mar weather and thin shade", "judge": "claude-opus-5-5"}
+{"key": "r07|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "full weather list + thin shade", "judge": "claude-opus-5-5"}
+{"key": "r07|PQ", "claims": 6, "supported": 6, "correct": 1, "relevant": 1, "note": "full weather list + thin shade", "judge": "claude-opus-5-5"}
+{"key": "r08|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "Sept-Oct, 0.5% Bordeaux", "judge": "claude-opus-5-5"}
+{"key": "r08|SK", "claims": 2, "supported": 2, "correct": 0.5, "relevant": 1, "note": "September right; no spray strength", "judge": "claude-opus-5-5"}
+{"key": "r08|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "September, 0.5% Bordeaux or systemic", "judge": "claude-opus-5-5"}
+{"key": "r09|L0", "claims": 3, "supported": 0, "correct": 0.5, "relevant": 1, "note": "hedged; does not say generally not affected", "judge": "claude-opus-5-5"}
+{"key": "r09|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "r09|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "r10|L0", "claims": 5, "supported": 0, "correct": 1, "relevant": 1, "note": "1 kg copper sulphate + 1 kg lime per 200 L, copper into lime", "judge": "claude-opus-5-5"}
+{"key": "r10|SK", "claims": 0, "supported": 0, "correct": 0, "relevant": 0, "note": "abstained: recipe not retrieved", "judge": "claude-opus-5-5"}
+{"key": "r10|PQ", "claims": 5, "supported": 5, "correct": 0.5, "relevant": 0.5, "note": "lime quantity right; copper sulphate amount and steps not retrieved, says so", "judge": "claude-opus-5-5"}
+{"key": "r11|L0", "claims": 4, "supported": 0, "correct": 0.5, "relevant": 1, "note": "lists resistant varieties but not as the main measure", "judge": "claude-opus-5-5"}
+{"key": "r11|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "r11|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "c01|L0", "claims": 4, "supported": 0, "correct": 0.5, "relevant": 1, "note": "carbendazim (= Bavistin) class right, no dose; Indofil missing", "judge": "claude-opus-5-5"}
+{"key": "c01|SK", "claims": 3, "supported": 3, "correct": 0, "relevant": 1, "note": "suggests Bordeaux from a field trial; nursery spray (Indofil/Bavistin) not retrieved", "judge": "claude-opus-5-5"}
+{"key": "c01|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "Indofil M-45 5 g/L or Bavistin 1 g/L", "judge": "claude-opus-5-5"}
+{"key": "c02|L0", "claims": 4, "supported": 0, "correct": 0.5, "relevant": 1, "note": "young plants, full sun, low nitrogen right; potassium missing, drought claim extra", "judge": "claude-opus-5-5"}
+{"key": "c02|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "c02|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "c03|L0", "claims": 3, "supported": 0, "correct": 0.5, "relevant": 1, "note": "brown spot with pale centre and yellow halo; misses yellow-to-brown progression", "judge": "claude-opus-5-5"}
+{"key": "c03|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "c03|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "c04|L0", "claims": 3, "supported": 0, "correct": 0.5, "relevant": 1, "note": "brown sunken blotches right; no 90-day timing or purple halo", "judge": "claude-opus-5-5"}
+{"key": "c04|SK", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "c04|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "c05|L0", "claims": 3, "supported": 0, "correct": 1, "relevant": 1, "note": "copper / Bordeaux named as the standard eco-friendly option", "judge": "claude-opus-5-5"}
+{"key": "c05|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "c05|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "Bordeaux, copper toxicity", "judge": "claude-opus-5-5"}
+{"key": "m01|L0", "claims": 3, "supported": 0, "correct": 1, "relevant": 1, "note": "larvae tunnel, necrotic mines, leaf drop, lower yield", "judge": "claude-opus-5-5"}
+{"key": "m01|SK", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m01|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m02|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "30-50% or more; gold 30-70%", "judge": "claude-opus-5-5"}
+{"key": "m02|SK", "claims": 2, "supported": 2, "correct": 0.5, "relevant": 1, "note": "gives the 87% maximum, not the typical 30-70%", "judge": "claude-opus-5-5"}
+{"key": "m02|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "30-70% and the regional figures", "judge": "claude-opus-5-5"}
+{"key": "m03|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "pale yellowish-white flattened larva; no whitish-to-greenish-yellow change", "judge": "claude-opus-5-5"}
+{"key": "m03|SK", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m03|PQ", "claims": 1, "supported": 1, "correct": 0, "relevant": 0.5, "note": "description not retrieved; says so", "judge": "claude-opus-5-5"}
+{"key": "m04|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "yes, neem reduces larvae", "judge": "claude-opus-5-5"}
+{"key": "m04|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "yes, neem kernel extract (field guidance, not the lab result)", "judge": "claude-opus-5-5"}
+{"key": "m04|PQ", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "yes, neem kernel extract", "judge": "claude-opus-5-5"}
+{"key": "m05|L0", "claims": 4, "supported": 0, "correct": 1, "relevant": 1, "note": "resistance, environment/health, natural enemies", "judge": "claude-opus-5-5"}
+{"key": "m05|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m05|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m06|L0", "claims": 4, "supported": 0, "correct": 1, "relevant": 1, "note": "natural enemies, botanicals, tolerant varieties", "judge": "claude-opus-5-5"}
+{"key": "m06|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m06|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m07|L0", "claims": 3, "supported": 0, "correct": 1, "relevant": 1, "note": "yes, parasitoids and predators", "judge": "claude-opus-5-5"}
+{"key": "m07|SK", "claims": 2, "supported": 1, "correct": 0.5, "relevant": 1, "note": "yes, but reasoning only loosely supported (passage only cites an impact-on-parasitism study title)", "judge": "claude-opus-5-5"}
+{"key": "m07|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "conserve natural enemies", "judge": "claude-opus-5-5"}
+{"key": "m08|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "40-50% or more; gold up to 75%", "judge": "claude-opus-5-5"}
+{"key": "m08|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "m08|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}

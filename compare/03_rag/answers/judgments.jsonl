@@ -106,3 +106,39 @@
 {"key": "p12|L0", "claims": 3, "supported": 0, "correct": 0, "relevant": 1, "note": "wrong fungicide (carbendazim/copper instead of propiconazole)", "judge": "claude-opus-5-5"}
 {"key": "p12|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "p12|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k01|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "range 5.5-6.5 contains 6.1 but threshold 5.5 differs from 6.1", "judge": "claude-opus-5-5"}
+{"key": "k01|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k01|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k02|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "every 2-3 years", "judge": "claude-opus-5-5"}
+{"key": "k02|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k02|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k03|L0", "claims": 3, "supported": 0, "correct": 1, "relevant": 1, "note": "November-February with some moisture", "judge": "claude-opus-5-5"}
+{"key": "k03|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k03|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k04|L0", "claims": 1, "supported": 0, "correct": 1, "relevant": 1, "note": "split over two seasons", "judge": "claude-opus-5-5"}
+{"key": "k04|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k04|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k05|L0", "claims": 3, "supported": 0, "correct": 0.5, "relevant": 1, "note": "composite-sample idea right; depth, number and amount differ from the guide", "judge": "claude-opus-5-5"}
+{"key": "k05|SK", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k05|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k06|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "after first showers right, but also says 'soon after harvest'; no 2-inch / 3500 ft rule", "judge": "claude-opus-5-5"}
+{"key": "k06|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k06|PQ", "claims": 7, "supported": 5, "correct": 1, "relevant": 1, "note": "'irrigated blocks' and the light-pruning list not in its passages", "judge": "claude-opus-5-5"}
+{"key": "k07|L0", "claims": 2, "supported": 0, "correct": 0, "relevant": 1, "note": "80-120 kg is not the 50:50:50 sustenance dose", "judge": "claude-opus-5-5"}
+{"key": "k07|SK", "claims": 1, "supported": 1, "correct": 0, "relevant": 0.5, "note": "figure cut off in its passage; says it does not know the amount", "judge": "claude-opus-5-5"}
+{"key": "k07|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k08|L0", "claims": 2, "supported": 0, "correct": 0, "relevant": 1, "note": "'a third of the annual dose' instead of 100:75:100 kg", "judge": "claude-opus-5-5"}
+{"key": "k08|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k08|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k09|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "April-May after showers; no 4-5 inch rule", "judge": "claude-opus-5-5"}
+{"key": "k09|SK", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "4-5 inches of rain", "judge": "claude-opus-5-5"}
+{"key": "k09|PQ", "claims": 5, "supported": 5, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k10|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "6x6 to 7x7 and 5x5 feet", "judge": "claude-opus-5-5"}
+{"key": "k10|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k10|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k11|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "pit size right; no quantities or rock phosphate", "judge": "claude-opus-5-5"}
+{"key": "k11|SK", "claims": 2, "supported": 2, "correct": 0.5, "relevant": 1, "note": "pit size and compost right; rock phosphate cut off in its passage", "judge": "claude-opus-5-5"}
+{"key": "k11|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k12|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "weekly-ish watering, no 5-10 litre amount", "judge": "claude-opus-5-5"}
+{"key": "k12|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "k12|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}

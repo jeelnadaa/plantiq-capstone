@@ -142,3 +142,14 @@ def test_chat_validation(client, farmer):
     assert send(client, farmer["headers"], "").status_code == 422
     assert send(client, farmer["headers"], "x" * 2001).status_code == 422
     assert send(client, farmer["headers"], "hi", files={"image_file": ("a.gif", b"GIF89a", "image/gif")}).status_code == 415
+
+
+def test_follow_up_router_call_gets_the_history(client, farmer):
+    llm = FakeLLM()
+    registry.override("llm", llm)
+    h = farmer["headers"]
+    d1 = send(client, h, "How do I prepare 0.5% Bordeaux mixture?").json()
+    send(client, h, "What pH should it have?", session_id=d1["session_id"])
+    router_calls = [p for p in llm.calls if "linguistic pre-router" in p]
+    assert "<history>" not in router_calls[0]
+    assert "<history>" in router_calls[-1] and "Bordeaux" in router_calls[-1].split("\n<q>")[0]

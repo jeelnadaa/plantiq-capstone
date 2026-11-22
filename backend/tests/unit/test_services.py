@@ -247,3 +247,64 @@ def test_gemini_disables_thinking_and_rejects_truncated_answers(monkeypatch):
     gen = seen[0]["generationConfig"]
     assert gen["thinkingConfig"] == {"thinkingBudget": 0} and gen["maxOutputTokens"] >= 1800
     assert res.provider == "groq" and res.text == "full groq answer"
+
+
+# ------------------------------------------------------------------ fixes found by the chatbot benchmark (compare/05_chat)
+def test_router_prompt_without_history_is_unchanged():
+    from app.services.lang_router import ROUTER_PROMPT, router_prompt
+
+    assert router_prompt("When to spray for rust?") == ROUTER_PROMPT.format(query="When to spray for rust?")
+    assert router_prompt("When to spray for rust?", []) == ROUTER_PROMPT.format(query="When to spray for rust?")
+
+
+def test_router_sees_recent_history_to_resolve_follow_ups():
+    from app.services.lang_router import router_prompt
+
+    hist = [("user", "old question 1"), ("assistant", "old answer 1"), ("user", "q2"), ("assistant", "a2"),
+            ("user", "How do I prepare 0.5% Bordeaux mixture?"), ("assistant", "Dissolve 1 kg copper sulphate ...")]
+    p = router_prompt("What pH should it have?", hist)
+    assert "<history>" in p and "Farmer: How do I prepare 0.5% Bordeaux mixture?" in p
+    assert "old question 1" not in p                      # only the last 2 exchanges
+    assert p.index("inside <q></q>") < p.index("<history>") < p.index("</history>") \
+        < p.index("<q>What pH should it have?</q>")
+    seen = {}
+
+    class Capture(FakeLLM):
+        def generate(self, prompt, **k):
+            seen["prompt"] = prompt
+            return super().generate(prompt, **k)
+
+    route_query("What pH should it have?", Capture(), history=hist)
+    assert "Bordeaux" in seen["prompt"]
+
+
+@pytest.mark.parametrize("text,weather", [
+    ("ಹೂಮಳೆ ತಡವಾಗಿ ಬಂದರೆ ಏನು ಸಿಂಪಡಿಸಬೇಕು?", False),          # blossom shower contains "rain"
+    ("ಸೆರ್ಕೋಸ್ಪೊರಾ ರೋಗಕ್ಕೆ ಪರಿಸರ ಸ್ನೇಹಿ ಚಿಕಿತ್ಸೆ ಯಾವುದು?", False),  # eco-friendly contains "environment"
+    ("Which eco-friendly treatment works for Cercospora?", False),
+    ("I am sending a photo of the leaf", False),                # "photo" contains "hot"
+    ("Is drainage needed in the nursery?", False),              # "drainage" contains "rain"
+    ("ಮಳೆಯ ನಂತರ ಸಿಂಪಡಿಸಬಹುದೇ?", True),                       # suffix still matches
+    ("ಇಂದು ಹವಾಮಾನ ಹೇಗಿದೆ?", True),
+    ("Will the rainfall stop this week?", True),
+    ("Is it too hot to spray?", True),
+])
+def test_weather_intent_matches_words_not_substrings(text, weather):
+    assert is_weather_query(text) is weather
+
+
+def test_offline_kannada_reply_is_kannada_and_uses_disease_named_in_text():
+    from app.core.text import has_kannada
+    from app.services.knowledge import disease_from_text, offline_chat_reply
+
+    docs = [{"text": "[Bordeaux] Spray 0.5% Bordeaux mixture on the lower surface.", "source": "guide.pdf",
+             "metadata": {"page": 21}, "score": 0.9}]
+    reply = offline_chat_reply("kn", None, {"available": False}, docs, False, query="ಸುಣ್ಣ ಯಾವಾಗ ಹಾಕಬೇಕು?")
+    letters = [c for c in reply if c.isalpha()]
+    assert has_kannada(reply) and sum("ಀ" <= c <= "೿" for c in letters) / len(letters) > 0.6
+    assert "Spray 0.5%" not in reply and "guide.pdf" in reply and "21" in reply
+    assert disease_from_text("ಎಲೆಗೆ ತುಕ್ಕು ರೋಗ ಬಂದಿದೆ") == "Rust"
+    card = offline_chat_reply("kn", None, None, [], False, query="ಎಲೆಗೆ ತುಕ್ಕು ರೋಗ ಬಂದಿದೆ, ಏನು ಮಾಡಬೇಕು?")
+    assert CARDS["Rust"]["kn"]["summary"] in card
+    en = offline_chat_reply("en", None, None, docs, False, query="When to apply lime?")
+    assert "Spray 0.5%" in en                                   # English replies still quote the passage

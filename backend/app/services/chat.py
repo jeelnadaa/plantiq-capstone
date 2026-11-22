@@ -47,9 +47,21 @@ def extract_coordinates(text: str) -> tuple[float, float] | None:
     return None
 
 
+# Phrases that contain a weather word but are not about weather ("eco-friendly" = ಪರಿಸರ ಸ್ನೇಹಿ, literally
+# "environment-friendly").
+NOT_WEATHER = ("ಪರಿಸರ ಸ್ನೇಹಿ", "ಪರಿಸರಸ್ನೇಹಿ", "eco-friendly", "eco friendly", "environment friendly",
+               "environment-friendly", "environmentally friendly")
+# A weather word counts only at the start of a word, so suffixes still match (ಮಳೆಯ, rainfall, temperatures) but a
+# word that merely contains it does not (ಹೂಮಳೆ "blossom shower" contains ಮಳೆ "rain"; "photo" contains "hot").
+_WEATHER_RX = re.compile(r"(?<![\wಀ-೿])(?:"
+                         + "|".join(sorted(map(re.escape, WEATHER_WORDS), key=len, reverse=True)) + ")")
+
+
 def is_weather_query(text: str) -> bool:
     low = (text or "").lower()
-    return any(w in low for w in WEATHER_WORDS)
+    for phrase in NOT_WEATHER:
+        low = low.replace(phrase, " ")
+    return bool(_WEATHER_RX.search(low))
 
 
 @dataclass
@@ -132,7 +144,7 @@ def process_message(db: Session, inp: ChatInput, *, cnn, rag, llm, env_service) 
             env = env_service.get_environmental_data(lat, lng)
 
         with p.step("Language routing"):
-            route = route_query(inp.message, llm)
+            route = route_query(inp.message, llm, history=history)
         target = "kn" if inp.language == "kn" or route["target_response_language"] == "kn" else "en"
         weather_q = is_weather_query(inp.message)
         greeting = route.get("is_greeting_or_location_only", False) and not weather_q
@@ -198,7 +210,7 @@ Rules:
 {weather_rule}"""
         with p.step("LLM"):
             res = llm.generate(prompt, system=SYSTEM_PROMPT, temperature=0.3, max_tokens=800) if llm and llm.available else None
-        reply = res.text if res else offline_chat_reply(target, disease, env, docs, weather_q)
+        reply = res.text if res else offline_chat_reply(target, disease, env, docs, weather_q, query=inp.message)
         provider = f"{res.provider}:{res.model}" if res else "offline"
 
         now = utcnow()

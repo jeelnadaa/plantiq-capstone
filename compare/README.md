@@ -63,12 +63,11 @@ Check the GPU is visible (must print `True` and your RTX 3070):
 5. Run notebooks **one at a time** (they share the GPU). Close a finished notebook or restart its kernel before
    starting the next, to free GPU memory.
 
-### API keys (RAG part only): Gemini + Groq
-Open `compare/.env` (copy `.env.example` if it is missing) and paste **only** your two keys:
+### API key (RAG part only): Gemini
+Open `compare/.env` (copy `.env.example` if it is missing) and paste **only** your Gemini key:
 
 ```
 GEMINI_API_KEY=...
-GROQ_API_KEY=...
 ```
 
 Everything else is preset:
@@ -76,10 +75,10 @@ Everything else is preset:
 | Role | Model | Why |
 |---|---|---|
 | GENERATOR (PlantIQ's LLM) | `gemini:gemini-3.5-flash-lite` | what PlantIQ runs |
-| BASELINE_LLM (Selva Kumar et al.) | `groq:llama-3.1-8b-instant` | open ~8B model standing in for their GPT-3.5 |
+| BASELINE_LLM (Selva Kumar et al.) | same as GENERATOR | the benchmark tests the RAG pipelines, not the LLMs, so both use one model |
 | JUDGE (writes/checks questions, scores answers) | `gemini:gemini-3.5-flash` | stronger and different from the generator, so it never grades its own answers |
 
-Without a Groq key the baseline falls back to Gemini Flash-Lite and the notebooks print a note. Notebook 03a starts
+Notebook 03a starts
 with a **preflight** that calls every model once; if one fails it stops and lists the models your key can use (put a
 working one in `.env` as `<ROLE>_MODEL=provider:model`). Free tiers have daily quotas: every answer is cached in
 `03_rag/llm_cache/`, so if a notebook stops with "daily free-tier quota used up", just run it again later and it

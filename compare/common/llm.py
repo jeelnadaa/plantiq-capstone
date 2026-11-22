@@ -7,7 +7,8 @@ for free (important on free-tier quotas) and latency numbers stay the real first
 
 Roles (override any of them in .env with <ROLE>_MODEL=provider:model):
     GENERATOR     PlantIQ's own LLM (generates the advice and routes Kannada questions)
-    BASELINE_LLM  stand-in for GPT-3.5 in the Selva Kumar et al. baseline (an open ~8B model on Groq)
+    BASELINE_LLM  LLM of the Selva Kumar et al. baseline; by default the SAME model as GENERATOR, because the
+                  benchmark compares RAG pipelines, not language models
     JUDGE         drafts/validates the question set and scores every answer (a different, stronger model)
 
 provider "fake" returns deterministic text without any network call (used only in smoke mode).
@@ -33,12 +34,14 @@ GROQ_LIST = "https://api.groq.com/openai/v1/models"
 
 DEFAULTS = {
     "GENERATOR": "gemini:gemini-3.5-flash-lite",
-    "BASELINE_LLM": "groq:llama-3.1-8b-instant",
+    # The benchmark tests the RAG pipelines, not the LLMs: by default the baseline uses the SAME model as PlantIQ,
+    # so differences come from retrieval, prompting and grounding only. Set BASELINE_LLM_MODEL to override.
+    "BASELINE_LLM": "SAME_AS_GENERATOR",
     "JUDGE": "gemini:gemini-3.5-flash",
 }
 FALLBACK = {  # used when the provider of the configured model has no key
     "GENERATOR": "gemini:gemini-3.5-flash-lite",
-    "BASELINE_LLM": "gemini:gemini-3.5-flash-lite",
+    "BASELINE_LLM": "SAME_AS_GENERATOR",
     "JUDGE": "gemini:gemini-3.5-flash",
 }
 
@@ -64,8 +67,12 @@ def role_model(role: str, verbose: bool = False) -> str:
     if config.SMOKE:
         return "fake:fake"
     spec = (os.getenv(f"{role}_MODEL") or DEFAULTS[role]).strip()
+    if spec == "SAME_AS_GENERATOR":
+        return role_model("GENERATOR", verbose)
     if not has_key(spec.split(":", 1)[0]):
         alt = FALLBACK[role]
+        if alt == "SAME_AS_GENERATOR":
+            alt = role_model("GENERATOR", verbose)
         if verbose:
             print(f"[{role}] no key for {spec.split(':')[0]} -> using {alt}")
         spec = alt

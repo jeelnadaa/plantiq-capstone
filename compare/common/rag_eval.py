@@ -246,3 +246,35 @@ def wilcoxon_paired(a, b) -> float:
     if m.sum() < 5 or np.allclose(a[m], b[m]):
         return float("nan")
     return float(wilcoxon(a[m], b[m]).pvalue)
+
+
+# --------------------------------------------------------------------------- file-backed LLM steps
+class FileRouter:
+    """Stands in for the LLM inside PlantIQ's language router: returns the stored router output for a question
+    (03_rag/answers/router_outputs.jsonl), so retrieval runs without any API. Unknown text -> None, and the router
+    falls back to its offline heuristic, exactly as the app does when no LLM is available."""
+
+    available = True
+
+    def __init__(self, path):
+        import json as _json
+        from types import SimpleNamespace
+
+        from plantiq_rag_snapshot.text import clean_user_text
+
+        self._ns = SimpleNamespace
+        self._clean = clean_user_text
+        self.table = {}
+        for line in Path(path).read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                r = _json.loads(line)
+                self.table[clean_user_text(r["question"], 500)] = _json.dumps(r["router_output"], ensure_ascii=False)
+        self.hits = 0
+
+    def generate(self, prompt, *, system="", temperature=0.1, max_tokens=200, json_mode=False):
+        found = re.findall(r"<q>(.*?)</q>", prompt, re.S)   # the prompt text also mentions an empty <q></q>
+        text = self.table.get(found[-1].strip()) if found else None
+        if text is None:
+            return None
+        self.hits += 1
+        return self._ns(text=text, provider="file-router", model="router_outputs.jsonl")

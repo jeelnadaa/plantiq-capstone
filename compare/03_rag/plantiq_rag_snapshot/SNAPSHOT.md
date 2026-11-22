@@ -1,6 +1,7 @@
 # PlantIQ RAG snapshot
 
-Copied from the PlantIQ backend at commit `560e9af` so the benchmark never imports or changes the app.
+Copied from the PlantIQ backend at commit `560e9af`; `lang_router.py` refreshed at commit `b421009` (Kannada queries
+routed to retrieval as one full English question) so the benchmark never imports or changes the app.
 
 | File here | Source | Changes |
 |---|---|---|

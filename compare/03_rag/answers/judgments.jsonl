@@ -70,3 +70,39 @@
 {"key": "m08|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "40-50% or more; gold up to 75%", "judge": "claude-opus-5-5"}
 {"key": "m08|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
 {"key": "m08|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p01|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "April-May and October-December", "judge": "claude-opus-5-5"}
+{"key": "p01|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p01|PQ", "claims": 7, "supported": 7, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p02|L0", "claims": 3, "supported": 0, "correct": 0.5, "relevant": 1, "note": "uproot and burn right; 'cut below the damage' vague; no water option", "judge": "claude-opus-5-5"}
+{"key": "p02|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p02|PQ", "claims": 6, "supported": 6, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p03|L0", "claims": 1, "supported": 0, "correct": 0.5, "relevant": 1, "note": "10-25 range includes 25", "judge": "claude-opus-5-5"}
+{"key": "p03|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p03|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p04|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "lime wash right; no strength or recipe", "judge": "claude-opus-5-5"}
+{"key": "p04|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p04|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p05|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "silver oak and stem borer right; black rot not mentioned", "judge": "claude-opus-5-5"}
+{"key": "p05|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p05|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p06|L0", "claims": 4, "supported": 0, "correct": 0.5, "relevant": 1, "note": "stripping, gleaning, traps; no picking mats or Broca traps by name", "judge": "claude-opus-5-5"}
+{"key": "p06|SK", "claims": 6, "supported": 6, "correct": 0.5, "relevant": 1, "note": "picking mats, leftover berries; Broca traps not retrieved", "judge": "claude-opus-5-5"}
+{"key": "p06|PQ", "claims": 7, "supported": 7, "correct": 1, "relevant": 1, "note": "Broca traps, picking mats, stripping and gleaning", "judge": "claude-opus-5-5"}
+{"key": "p07|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "burn badly bored berries right; no boiling-water dip", "judge": "claude-opus-5-5"}
+{"key": "p07|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p07|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p08|L0", "claims": 2, "supported": 0, "correct": 1, "relevant": 1, "note": "Beauveria bassiana", "judge": "claude-opus-5-5"}
+{"key": "p08|SK", "claims": 0, "supported": 0, "correct": 0, "relevant": 0, "note": "abstained: Beauveria passage not retrieved", "judge": "claude-opus-5-5"}
+{"key": "p08|PQ", "claims": 3, "supported": 3, "correct": 0, "relevant": 0.5, "note": "only general natural-enemy conservation; Beauveria passage not retrieved, says so", "judge": "claude-opus-5-5"}
+{"key": "p09|L0", "claims": 4, "supported": 0, "correct": 0.5, "relevant": 1, "note": "ant control right; no Malathion dusting", "judge": "claude-opus-5-5"}
+{"key": "p09|SK", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p09|PQ", "claims": 6, "supported": 6, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p10|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "1% Bordeaux right; timing 'before and during breaks' instead of first week of June", "judge": "claude-opus-5-5"}
+{"key": "p10|SK", "claims": 1, "supported": 1, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p10|PQ", "claims": 4, "supported": 3, "correct": 1, "relevant": 1, "note": "'both leaf surfaces' not in its passages", "judge": "claude-opus-5-5"}
+{"key": "p11|L0", "claims": 2, "supported": 0, "correct": 0.5, "relevant": 1, "note": "thick shade and wetness right; no chilly soil / berry drop", "judge": "claude-opus-5-5"}
+{"key": "p11|SK", "claims": 1, "supported": 1, "correct": 0.5, "relevant": 1, "note": "black rot causes right; stalk rot and chilly soil missing", "judge": "claude-opus-5-5"}
+{"key": "p11|PQ", "claims": 4, "supported": 4, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p12|L0", "claims": 3, "supported": 0, "correct": 0, "relevant": 1, "note": "wrong fungicide (carbendazim/copper instead of propiconazole)", "judge": "claude-opus-5-5"}
+{"key": "p12|SK", "claims": 2, "supported": 2, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}
+{"key": "p12|PQ", "claims": 3, "supported": 3, "correct": 1, "relevant": 1, "note": "", "judge": "claude-opus-5-5"}

@@ -103,6 +103,7 @@ The `.env` / Gemini settings are only needed if you want an LLM to answer the pr
 | 12 | `03_rag/03c_generation_benchmark` | exact prompts of the 3 systems → `answers/generation_inputs.jsonl`; then answers + judgments are added | 5 min | 10 |
 | 13 | `03_rag/03d_rag_report` | RAG tables and figures (generation part once answers/judgments exist) | 1 min | 11, 12 |
 | 14 | `04_export/04_paper_numbers` | `results/paper_numbers.json` + `results/RESULTS.md` | 1 min | 8, 13 |
+| – | `05_chat/make_snapshot.py`, then `verify_snapshot.py` (backend venv) | only after the backend chat code changes: regenerate the chat snapshot and prove it builds the backend's prompts | 1 min | – |
 | 15 | `05_chat/05a_build_chat_prompts` | 43 chat conversations → exact prompts of PlantIQ, the LangChain Selva Kumar chatbot and PlantIQ offline (`05_chat/answers/chat_inputs.jsonl`); re-run once per turn depth after its answers are added (`05_chat/add.py`) | 2 min | 11 |
 | 16 | `05_chat/05b_chat_report` | Module 3 scores → `results/chat/chat.json`, `chat_rows.csv`, `figures/fig_chat.png` | 1 min | 15 |
 

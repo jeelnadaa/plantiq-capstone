@@ -170,8 +170,10 @@ def build_rows(m: Models, depth: int) -> tuple[list[dict], list[dict]]:
 
 
 def kannada_share(text: str) -> float:
-    letters = [c for c in text if c.isalpha()]
-    return sum("ಀ" <= c <= "೿" for c in letters) / len(letters) if letters else 0.0
+    """Kannada characters (incl. vowel signs, which are not str.isalpha) over Kannada + Latin letters."""
+    kn = sum("ಀ" <= c <= "೿" for c in text)
+    latin = sum(c.isascii() and c.isalpha() for c in text)
+    return kn / (kn + latin) if kn + latin else 0.0
 
 
 def numbers(text: str) -> list[float]:

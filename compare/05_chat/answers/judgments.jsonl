@@ -1,6 +1,6 @@
 {"key": "kn_c01_lat|t0|PQ", "claims": 5, "supported": 5, "correct": 1, "task_ok": 1, "note": "Indofil M-45 / Bavistin, Kannada script", "judge": "claude-opus-5-5"}
 {"key": "kn_c01_lat|t0|SK", "claims": 2, "supported": 2, "correct": 0, "task_ok": 0, "note": "English; says the spray is not in its context", "judge": "claude-opus-5-5"}
-{"key": "kn_c05|t0|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "Bordeaux; needless 'no weather' note (the word for eco-friendly contains 'environment')", "judge": "claude-opus-5-5"}
+{"key": "kn_c05|t0|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "Bordeaux; no weather note after the keyword fix", "judge": "claude-opus-5-5"}
 {"key": "kn_c05|t0|SK", "claims": 0, "supported": 0, "correct": 0, "task_ok": 0, "note": "abstained", "judge": "claude-opus-5-5"}
 {"key": "kn_k03_lat|t0|PQ", "claims": 3, "supported": 3, "correct": 0.5, "task_ok": 1, "note": "any time except monsoon; misses the ideal November-February", "judge": "claude-opus-5-5"}
 {"key": "kn_k03_lat|t0|SK", "claims": 0, "supported": 0, "correct": 0, "task_ok": 0, "note": "abstained, in English", "judge": "claude-opus-5-5"}
@@ -14,29 +14,29 @@
 {"key": "kn_m01|t0|SK", "claims": 0, "supported": 0, "correct": 0, "task_ok": 0, "note": "abstained", "judge": "claude-opus-5-5"}
 {"key": "kn_r02|t0|PQ", "claims": 6, "supported": 6, "correct": 1, "task_ok": 1, "note": "lower surface", "judge": "claude-opus-5-5"}
 {"key": "kn_r02|t0|SK", "claims": 0, "supported": 0, "correct": 0, "task_ok": 0, "note": "abstained", "judge": "claude-opus-5-5"}
-{"key": "kn_r06|t0|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "systemic fungicide; adds a needless 'no weather' note because the word for blossom shower contains 'rain'", "judge": "claude-opus-5-5"}
+{"key": "kn_r06|t0|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "systemic fungicide; no weather note after the keyword fix", "judge": "claude-opus-5-5"}
 {"key": "kn_r06|t0|SK", "claims": 0, "supported": 0, "correct": 0, "task_ok": 0, "note": "abstained", "judge": "claude-opus-5-5"}
 {"key": "kn_r09|t0|PQ", "claims": 3, "supported": 3, "correct": 1, "task_ok": 1, "note": "generally no above 3500 ft", "judge": "claude-opus-5-5"}
 {"key": "kn_r09|t0|SK", "claims": 0, "supported": 0, "correct": 0, "task_ok": 0, "note": "abstained", "judge": "claude-opus-5-5"}
-{"key": "mem01|t1|PQ", "claims": 4, "supported": 2, "correct": 0, "task_ok": 1, "note": "resolves 'it' to Bordeaux mixture, but the router could not, so retrieval returned soil-pH passages; answers pH 7 (gold 9-10)", "judge": "claude-opus-5-5"}
+{"key": "mem01|t1|PQ", "claims": 3, "supported": 3, "correct": 1, "task_ok": 1, "note": "history-aware router retrieved the pH 9-10 passage", "judge": "claude-opus-5-5"}
 {"key": "mem01|t1|SK", "claims": 1, "supported": 1, "correct": 1, "task_ok": 1, "note": "condensed question retrieved the pH 9-10 passage", "judge": "claude-opus-5-5"}
 {"key": "mem02|t1|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "15 barrels", "judge": "claude-opus-5-5"}
 {"key": "mem02|t1|SK", "claims": 1, "supported": 1, "correct": 1, "task_ok": 1, "note": "15 barrels", "judge": "claude-opus-5-5"}
-{"key": "mem03|t1|PQ", "claims": 5, "supported": 5, "correct": 1, "task_ok": 1, "note": "no urea; history also had it", "judge": "claude-opus-5-5"}
+{"key": "mem03|t1|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "no urea, only potash", "judge": "claude-opus-5-5"}
 {"key": "mem03|t1|SK", "claims": 3, "supported": 3, "correct": 1, "task_ok": 1, "note": "no urea, only potash", "judge": "claude-opus-5-5"}
 {"key": "mem04|t1|PQ", "claims": 5, "supported": 5, "correct": 1, "task_ok": 1, "note": "25 traps per hectare", "judge": "claude-opus-5-5"}
 {"key": "mem04|t1|SK", "claims": 2, "supported": 2, "correct": 1, "task_ok": 1, "note": "25 traps per hectare", "judge": "claude-opus-5-5"}
-{"key": "mem05|t1|PQ", "claims": 6, "supported": 5, "correct": 1, "task_ok": 1, "note": "split in two years", "judge": "claude-opus-5-5"}
+{"key": "mem05|t1|PQ", "claims": 5, "supported": 5, "correct": 1, "task_ok": 1, "note": "split in two years", "judge": "claude-opus-5-5"}
 {"key": "mem05|t1|SK", "claims": 1, "supported": 1, "correct": 1, "task_ok": 1, "note": "split in two years", "judge": "claude-opus-5-5"}
-{"key": "mem06|t1|PQ", "claims": 6, "supported": 5, "correct": 1, "task_ok": 1, "note": "Indofil M-45 / Bavistin; 'remove diseased seedlings' not in its passages", "judge": "claude-opus-5-5"}
+{"key": "mem06|t1|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "Indofil M-45 / Bavistin", "judge": "claude-opus-5-5"}
 {"key": "mem06|t1|SK", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "Indofil M-45 / Bavistin", "judge": "claude-opus-5-5"}
-{"key": "mem07|t1|PQ", "claims": 3, "supported": 2, "correct": 1, "task_ok": 1, "note": "Beauveria bassiana from model knowledge; retrieval got rust/miner biocontrol passages", "judge": "claude-opus-5-5"}
+{"key": "mem07|t1|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "Beauveria bassiana now retrieved", "judge": "claude-opus-5-5"}
 {"key": "mem07|t1|SK", "claims": 2, "supported": 2, "correct": 1, "task_ok": 1, "note": "Beauveria bassiana", "judge": "claude-opus-5-5"}
-{"key": "mem08|t1|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "100:75:100 per split, in Kannada", "judge": "claude-opus-5-5"}
+{"key": "mem08|t1|PQ", "claims": 4, "supported": 4, "correct": 0, "task_ok": 1, "note": "the 100:75:100 passage is no longer retrieved; says the documents give no per-split maximum", "judge": "claude-opus-5-5"}
 {"key": "mem08|t1|SK", "claims": 0, "supported": 0, "correct": 0, "task_ok": 0, "note": "abstained: Kannada query retrieved unreadable text", "judge": "claude-opus-5-5"}
-{"key": "mem09|t1|PQ", "claims": 4, "supported": 1, "correct": 0, "task_ok": 1, "note": "right subject, wrong value (pH 7); same router limitation as mem01", "judge": "claude-opus-5-5"}
+{"key": "mem09|t1|PQ", "claims": 3, "supported": 3, "correct": 1, "task_ok": 1, "note": "pH 9-10 now retrieved", "judge": "claude-opus-5-5"}
 {"key": "mem09|t1|SK", "claims": 0, "supported": 0, "correct": 0, "task_ok": 0, "note": "abstained", "judge": "claude-opus-5-5"}
-{"key": "mem10|t1|PQ", "claims": 4, "supported": 0, "correct": 1, "task_ok": 1, "note": "uproot and burn, from model knowledge; retrieval got pruning passages", "judge": "claude-opus-5-5"}
+{"key": "mem10|t1|PQ", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "uproot and burn, or under water; now from the passage", "judge": "claude-opus-5-5"}
 {"key": "mem10|t1|SK", "claims": 0, "supported": 0, "correct": 0, "task_ok": 0, "note": "abstained", "judge": "claude-opus-5-5"}
 {"key": "photo01|t0|PQ", "claims": 8, "supported": 6, "correct": 1, "task_ok": 1, "note": "rust; Bordeaux or systemic", "judge": "claude-opus-5-5"}
 {"key": "photo01|t0|SK", "claims": 4, "supported": 4, "correct": 1, "task_ok": 1, "note": "rust; Bordeaux or systemic", "judge": "claude-opus-5-5"}

@@ -114,14 +114,37 @@ def offline_advisory(disease: str, lang: str, env: dict | None, docs: list[dict]
     if docs:
         lines.append(f"## {h['sources']}")
         for d in docs[:2]:
-            excerpt = d["text"].split("] ", 1)[-1][:260].rsplit(" ", 1)[0]
-            lines.append(f"- {excerpt}… ({d['source']}, p.{d['metadata'].get('page')})")
+            if lang == "kn":  # English documents are cited by page, not quoted, in a Kannada reply
+                lines.append(f"- {d['source']}, ಪುಟ {d['metadata'].get('page')}")
+            else:
+                excerpt = d["text"].split("] ", 1)[-1][:260].rsplit(" ", 1)[0]
+                lines.append(f"- {excerpt}… ({d['source']}, p.{d['metadata'].get('page')})")
         lines.append("")
     lines.append(f"_{h['offline']}_")
     return "\n".join(lines).strip()
 
 
-def offline_chat_reply(lang: str, disease: str | None, env: dict | None, docs: list[dict], weather_query: bool) -> str:
+# Disease named in the farmer's own words (English, Kannada script, Kanglish), for the offline card when no photo or scan
+# gave a diagnosis.
+DISEASE_WORDS = {
+    "Rust": ("rust", "hemileia", "ತುಕ್ಕು", "tukku"),
+    "Cerscospora": ("cercospora", "brown eye", "ಸೆರ್ಕೋಸ್ಪೊರಾ", "ಕಂದು ಕಣ್ಣಿನ"),
+    "Miner": ("leaf miner", "miner", "leucoptera", "ಸುರಂಗ"),
+    "Phoma": ("phoma", "ಫೋಮಾ"),
+}
+
+
+def disease_from_text(text: str | None) -> str | None:
+    low = (text or "").lower()
+    for disease, words in DISEASE_WORDS.items():
+        if any(w in low for w in words):
+            return disease
+    return None
+
+
+def offline_chat_reply(lang: str, disease: str | None, env: dict | None, docs: list[dict], weather_query: bool,
+                       query: str | None = None) -> str:
+    disease = disease if disease in CARDS else (None if weather_query else disease_from_text(query))
     if disease and disease in CARDS:
         return offline_advisory(disease, lang, env, docs)
     kn = lang == "kn"
@@ -134,8 +157,17 @@ def offline_chat_reply(lang: str, disease: str | None, env: dict | None, docs: l
         else:
             parts.append("ಜಿಪಿಎಸ್ ಸ್ಥಳ ಲಭ್ಯವಿಲ್ಲದ ಕಾರಣ ಹವಾಮಾನ ಮಾಹಿತಿ ಲಭ್ಯವಿಲ್ಲ." if kn else
                          "Live weather is unavailable because no GPS location was provided.")
-    if docs:
-        parts.append("CCRI ದಾಖಲೆಗಳಿಂದ:" if kn else "From the CCRI documents:")
+    if docs and kn:
+        # The documents are in English and there is no model to translate them, so a Kannada reply points to the pages
+        # instead of quoting English text.
+        parts.append("ನಿಮ್ಮ ಪ್ರಶ್ನೆಗೆ ಸಂಬಂಧಿಸಿದ ಮಾಹಿತಿ ಈ CCRI ದಾಖಲೆಗಳ ಪುಟಗಳಲ್ಲಿ ಇದೆ:")
+        for d in docs[:2]:
+            parts.append(f"- {d['source']}, ಪುಟ {d['metadata'].get('page')}")
+        parts.append("ಈ ದಾಖಲೆಗಳು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿವೆ. AI ಸಹಾಯಕ ಮತ್ತೆ ಲಭ್ಯವಾದಾಗ ಕನ್ನಡದಲ್ಲಿ ಪೂರ್ಣ ಉತ್ತರ ಸಿಗುತ್ತದೆ; "
+                     "ತುರ್ತು ಸಲಹೆಗೆ ಹತ್ತಿರದ ಕಾಫಿ ಮಂಡಳಿ ವಿಸ್ತರಣಾ ಅಧಿಕಾರಿಯನ್ನು ಸಂಪರ್ಕಿಸಿ. ಎಲೆಯ ಫೋಟೋ ಕಳುಹಿಸಿದರೆ "
+                     "ರೋಗದ ಕನ್ನಡ ಮಾರ್ಗದರ್ಶಿ ತಕ್ಷಣ ಸಿಗುತ್ತದೆ.")
+    elif docs:
+        parts.append("From the CCRI documents:")
         for d in docs[:2]:
             parts.append(f"- {d['text'].split('] ', 1)[-1][:300]}… ({d['source']}, p.{d['metadata'].get('page')})")
     parts.append(f"_{HEADINGS['kn' if kn else 'en']['offline']}_")

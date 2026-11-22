@@ -46,7 +46,10 @@ used only for retrieval. A full question (not a keyword list) keeps negations, q
 which the sentence-trained embedders and the cross-encoder reranker need. The LLM still answers the farmer's original
 text, directly in Kannada script when Kannada is requested; there is no translate-back step.
 1. A small JSON prompt to the LLM (temperature 0.1) returns `{detected_script, search_query_english, is_greeting_or_location_only,
-   target_response_language}`.
+   target_response_language}`. In a conversation the prompt also carries the **last two exchanges** as a fenced,
+   cleaned `<history>` block, so a follow-up such as *"What pH should it have?"* becomes *"What pH should the 0.5%
+   Bordeaux mixture have?"* before retrieval (`router_prompt`; without history the prompt is unchanged, so the
+   advisory path is unaffected).
 2. If the LLM is unavailable or returns invalid JSON, a **heuristic router** decides: Kannada Unicode range (U+0C80–U+0CFF),
    a list of common Kanglish words, greeting words, or a single capitalised place name.
 3. Kannada script in the message always forces a Kannada reply; the app language setting also requests Kannada.
@@ -64,12 +67,16 @@ text, directly in Kannada script when Kannada is requested; there is no translat
 
 ### 2.3 Weather questions
 Keyword detection in English (*weather, rain, humidity, temperature, forecast, spray today…*) and Kannada
-(*ಹವಾಮಾನ, ಮಳೆ, ತಾಪಮಾನ, ತೇವಾಂಶ…*). Weather questions retrieve microclimate/disease-risk passages and get the special weather rule.
+(*ಹವಾಮಾನ, ಮಳೆ, ತಾಪಮಾನ, ತೇವಾಂಶ…*). A keyword counts only at the **start of a word** (so *ಮಳೆಯ*, *rainfall* match but
+*ಹೂಮಳೆ* "blossom shower", *drainage* and *photo* do not), and eco-friendly phrases (*ಪರಿಸರ ಸ್ನೇಹಿ*, *eco-friendly*)
+are excluded. Weather questions retrieve microclimate/disease-risk passages and get the special weather rule.
 Coordinates typed in the message are used when the app did not send GPS.
 
 ### 2.4 Offline mode
-Without any LLM: if a disease is known → the bilingual offline disease card; otherwise → live weather summary (or the
-"location not available" sentence) plus excerpts from the retrieved passages.
+Without any LLM: if a disease is known (photo, scan, or named in the message, e.g. *ತುಕ್ಕು* / *rust*) → the bilingual
+offline disease card; otherwise → live weather summary (or the "location not available" sentence) plus the retrieved
+passages. English replies quote the passages; Kannada replies cite the document and page in Kannada instead of quoting
+English text (there is no model to translate them).
 
 ## 3. Photos in chat
 - **New photo**: sanitised like Module 1 (EXIF/GPS stripped, re-encoded), stored, CNN runs on it.
@@ -108,20 +115,25 @@ flowchart LR
 | Provider fallback | Gemini 429 → Groq answered automatically |
 | Local STT | Whisper (English) and IndicConformer (Kannada) loaded on CUDA |
 
-**Comparison benchmark** (`compare/05_chat/`, 43 conversations, same LLM for every system): expected behaviour met in
-43/43 conversations vs 15/43 for the Selva Kumar pipeline run as a LangChain conversational chain; correct answers
-0.88 vs 0.38 on 29 knowledge questions; Kannada-script replies 17/17; live temperature and humidity reported in 6/6
-weather turns with a location; no invented weather without one; greetings skip retrieval; chat turn without the LLM
-median 0.26 s on the laptop GPU. Speech recognition was not part of the benchmark.
+**Comparison benchmark** (`compare/05_chat/`, 43 conversations, same LLM for every system), after the fixes below:
+expected behaviour met in 43/43 conversations vs 15/43 for the Selva Kumar pipeline run as a LangChain conversational
+chain; correct answers 0.91 vs 0.38 on 29 knowledge questions (0.88 before the fixes); Kannada-script replies 17/17;
+live temperature and humidity reported in 6/6 weather turns with a location; no invented weather without one;
+greetings skip retrieval; chat turn without the LLM median 0.22 s on the laptop GPU. Speech recognition was not part
+of the benchmark.
+
+| Fault found by the benchmark | Fix | Before → after |
+|---|---|---|
+| Router saw only the current message; follow-ups searched as written | last two exchanges passed to the router | evidence retrieved 6/10 → 10/10 follow-ups; follow-up correctness 0.80 → 0.90 |
+| Weather keywords matched inside words (ಹೂಮಳೆ, ಪರಿಸರ ಸ್ನೇಹಿ) | word-start match + exclusions | false weather flags 2/35 → 0/35 |
+| Offline Kannada replies quoted English passages | cite pages in Kannada; disease named in text selects its card | Kannada offline replies 2/17 → 17/17 |
+
 
 ## 7. Limitations and future work
 - Conversation memory is the last 8 messages (no long-term summary).
 - Kanglish detection by word list can miss rare spellings (the LLM router covers most cases).
-- The router sees only the current message, so a follow-up such as "What pH should it have?" is searched as written
-  (benchmark: 2 of 10 follow-ups answered with a wrong value). Fix: pass the last turns to the router.
-- Weather intent is a keyword substring match; Kannada compounds such as ಹೂಮಳೆ (blossom shower) and ಪರಿಸರ ಸ್ನೇಹಿ
-  (eco-friendly) trigger it (2 of 35 non-weather turns). Fix: match whole words or let the router decide.
-- The offline reply quotes English passages even for Kannada users (1 of 17 such replies in Kannada).
+- The router sees only the last two exchanges; a reference to something said earlier than that is not resolved.
+- Offline Kannada replies point to the English document pages; they do not translate them.
 - Future: text-to-speech replies for low-literacy users; streaming responses; measured STT accuracy on recorded farmer speech.
 
 **Tests:** `tests/integration/test_chat_api.py` (threads, history in prompt, photos, media reuse, scan hand-off, coordinates,

@@ -165,3 +165,21 @@ Postgres create-database race.
 - Paper (both layouts): Module 3 protocol, Section IX-D with Table IX, abstract, limitations, conclusion; DRAFT banner,
   mock table, mock speech-recognition figure and email/acknowledgement placeholders removed; Sapkota bib entry fixed.
 
+## 2026-11-22 — Chatbot fixes from the Module 3 benchmark; paper references, emails, acknowledgment
+- **Router with history** (`lang_router.router_prompt`, `chat.py`): the last two exchanges go to the router as a cleaned,
+  fenced `<history>` block; prompt unchanged without history (advisory path and Module 2 benchmark unaffected).
+- **Weather intent** (`chat.is_weather_query`): keywords match at the start of a word; eco-friendly phrases excluded.
+- **Offline Kannada** (`knowledge.py`): Kannada offline replies and Kannada disease cards cite document pages instead of
+  English excerpts; a disease named in the message selects its offline card.
+- Tests: +15 (unit, integration, security); backend fast suite **305 passed** (4 ml deselected).
+  TESTING.md not regenerated: `frontend/node_modules` is not installed on this machine, so the matrix script could
+  not run Vitest/Playwright (frontend unchanged); rerun `python scripts/test_matrix.py` after `npm install`.
+- Benchmark re-run (`compare/05_chat/make_snapshot.py` regenerates the snapshot; verified identical on 20 turns;
+  10 follow-up router outputs updated; 11 changed PlantIQ answers regenerated and re-judged): follow-up evidence
+  6/10 → 10/10, follow-up correctness 0.80 → 0.90 (one Kannada follow-up regressed), weather false flags 2 → 0,
+  Kannada offline replies 2/17 → 17/17, overall correctness 0.88 → 0.91 (vs 0.38 for the LangChain baseline).
+  Before-fix results kept in `compare/results/chat/chat_before_fix.json`.
+- Paper (both layouts): Module 3 section reports the faults, fixes and re-run; author emails; acknowledgment sentence;
+  the 11 references added earlier (ImageNet, BM25, RRF, MMR, bge-m3, FAISS, reranker, Whisper, RAGAS, haversine,
+  Argon2) removed with their citations; JMuBEN dataset citation kept (CC BY licence requires it).
+

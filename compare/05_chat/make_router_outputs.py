@@ -1,10 +1,10 @@
 """Writes 05_chat/answers/router_outputs.jsonl: PlantIQ's language-router output for every chat message.
 
-The router (backend lang_router.py, commit b421009) sees ONLY the current message, never the history, and asks an
-LLM for: the script, the message as one self-contained English search question, whether it is only a greeting or a
+The router (backend lang_router.py) asks an LLM for: the script, the message as one self-contained English search question, whether it is only a greeting or a
 place name, and the reply language. In this benchmark the LLM steps are performed by Claude Opus 5.5 (see README);
-these are its answers to that router prompt. A follow-up such as "What pH should it have?" therefore cannot be
-resolved by the router (it does not know what "it" is) - that is how the app behaves, and the benchmark measures it.
+these are its answers to that router prompt. Since backend commit 1b71631 the router also sees the last two exchanges
+of the conversation, so a follow-up such as "What pH should it have?" is rewritten with what "it" refers to (in the
+first run, before that fix, the router saw only the message and these follow-ups were searched as written).
 
 Run:  .venv\\Scripts\\python 05_chat\\make_router_outputs.py
 """
@@ -20,29 +20,29 @@ KN, EN, KG = "kannada_script", "english", "kanglish"
 ROUTER = {
     "When should I give the pre-monsoon Bordeaux mixture spray against coffee leaf rust, and at what strength?":
         (EN, "When and at what strength should the pre-monsoon Bordeaux mixture be sprayed against coffee leaf rust?", False),
-    "What pH should it have?": (EN, "What pH should it have?", False),
+    "What pH should it have?": (EN, "What pH should the 0.5% Bordeaux mixture sprayed against coffee leaf rust have?", False),
     "How do I prepare 0.5% Bordeaux mixture?": (EN, "How is 0.5% Bordeaux mixture prepared?", False),
-    "How many barrels of it do I need for one hectare?": (EN, "How many barrels are needed for one hectare?", False),
-    "Can I add urea to it when I spray?": (EN, "Can urea be added to the spray?", False),
+    "How many barrels of it do I need for one hectare?": (EN, "How many barrels of 0.5% Bordeaux mixture are needed to spray one hectare?", False),
+    "Can I add urea to it when I spray?": (EN, "Can urea be added to the 0.5% Bordeaux mixture when spraying?", False),
     "When do coffee white stem borer beetles come out?": (EN, "When do coffee white stem borer beetles emerge?", False),
     "How many pheromone traps per hectare should I put for them?":
-        (EN, "How many pheromone traps per hectare should be installed?", False),
+        (EN, "How many pheromone traps per hectare should be installed for coffee white stem borer?", False),
     "When is the best time to apply lime to coffee soils?": (EN, "When is the best time to apply lime to coffee soils?", False),
     "The soil test says I need more than 3.5 tonnes per hectare. Can I put all of it at once?":
-        (EN, "If the soil test recommends more than 3.5 tonnes per hectare, can it all be applied at once?", False),
+        (EN, "If the soil test recommends more than 3.5 tonnes of lime per hectare, can all of it be applied at once?", False),
     "Which coffee plants are more likely to get Cercospora leaf spot?":
         (EN, "Which coffee plants are more likely to get Cercospora leaf spot?", False),
-    "How do I protect my nursery seedlings from it?": (EN, "How can nursery seedlings be protected from it?", False),
+    "How do I protect my nursery seedlings from it?": (EN, "How can coffee nursery seedlings be protected from Cercospora leaf spot?", False),
     "How do I prevent coffee berry borer at harvest time?": (EN, "How can coffee berry borer be prevented at harvest time?", False),
-    "Is there a biological control for it?": (EN, "Is there a biological control for it?", False),
+    "Is there a biological control for it?": (EN, "Is there a biological control for the coffee berry borer?", False),
     "ಬೆಳೆದ ಕಾಫಿ ಗಿಡಗಳಿಗೆ ಮೂಲಭೂತ ಗೊಬ್ಬರದ ಪ್ರಮಾಣ ಎಷ್ಟು?":
         (KN, "What is the basic fertilizer dose for grown-up coffee plants?", False),
-    "ಒಂದೇ ಕಂತಿನಲ್ಲಿ ಗರಿಷ್ಠ ಎಷ್ಟು ಕೊಡಬಹುದು?": (KN, "What is the maximum amount that can be given in a single instalment?", False),
+    "ಒಂದೇ ಕಂತಿನಲ್ಲಿ ಗರಿಷ್ಠ ಎಷ್ಟು ಕೊಡಬಹುದು?": (KN, "What is the maximum fertilizer dose for grown-up coffee plants in a single split application?", False),
     "ಕಾಫಿ ಎಲೆ ತುಕ್ಕು ರೋಗಕ್ಕೆ ಮುಂಗಾರು ಪೂರ್ವ ಬೋರ್ಡೋ ಮಿಶ್ರಣವನ್ನು ಯಾವಾಗ ಮತ್ತು ಎಷ್ಟು ಸಾಂದ್ರತೆಯಲ್ಲಿ ಸಿಂಪಡಿಸಬೇಕು?":
         (KN, "When and at what concentration should the pre-monsoon Bordeaux mixture be sprayed against coffee leaf rust?", False),
-    "ಅದರ ಪಿಎಚ್ ಎಷ್ಟು ಇರಬೇಕು?": (KN, "What should its pH be?", False),
+    "ಅದರ ಪಿಎಚ್ ಎಷ್ಟು ಇರಬೇಕು?": (KN, "What should the pH of the Bordeaux mixture sprayed against coffee leaf rust be?", False),
     "ಕಾಫಿ ಬಿಳಿ ಕಾಂಡ ಕೊರಕ ದುಂಬಿಗಳು ಯಾವಾಗ ಹೊರಬರುತ್ತವೆ?": (KN, "When do coffee white stem borer beetles come out?", False),
-    "ತಗುಲಿದ ಗಿಡಗಳನ್ನು ಏನು ಮಾಡಬೇಕು?": (KN, "What should be done with the affected plants?", False),
+    "ತಗುಲಿದ ಗಿಡಗಳನ್ನು ಏನು ಮಾಡಬೇಕು?": (KN, "What should be done with coffee plants infested by white stem borer?", False),
     "ತುಕ್ಕು ರೋಗ ನಿಯಂತ್ರಣಕ್ಕೆ ಬೋರ್ಡೋ ಮಿಶ್ರಣವನ್ನು ಎಲೆಯ ಮೇಲ್ಭಾಗಕ್ಕೆ ಸಿಂಪಡಿಸಬೇಕೇ ಅಥವಾ ಕೆಳಭಾಗಕ್ಕೆ?":
         (KN, "For controlling coffee leaf rust, should Bordeaux mixture be sprayed on the upper side or the lower side of the leaf?", False),
     "ಹೂಮಳೆ ತಡವಾಗಿ ಬಂದು ಹೊಸ ಚಿಗುರು ಇಲ್ಲದಿದ್ದರೆ ಎಲೆ ತುಕ್ಕು ರೋಗಕ್ಕೆ ಬೋರ್ಡೋ ಬದಲು ಏನು ಸಿಂಪಡಿಸಬೇಕು?":

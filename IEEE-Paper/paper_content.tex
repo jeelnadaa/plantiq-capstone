@@ -57,11 +57,11 @@
 
 \author{%
 \begin{tabular}{@{}p{0.5\textwidth}@{}p{0.5\textwidth}@{}}
-\centering\authorcell{Jeel Nada}{Dept. of Computer Science and Engineering}{PES2UG23CS357} &
-\centering\arraybackslash\authorcell{Nidhi N Udupa}{Dept. of Computer Science and Engineering}{PES2UG23CS384} \\
+\centering\authorcell{Jeel Nada}{Dept. of Computer Science and Engineering}{PES2UG23CS357\\ \texttt{jeelnadaa@gmail.com}} &
+\centering\arraybackslash\authorcell{Nidhi N Udupa}{Dept. of Computer Science and Engineering}{PES2UG23CS384\\ \texttt{nidhiudupa17@gmail.com}} \\
 \addlinespace[3ex]
-\centering\authorcell{Mohammed Ayaan}{Dept. of Computer Science and Engineering (AI \& ML)}{PES2UG23AM058} &
-\centering\arraybackslash\authorcell{Prof. Deepti C.}{Dept. of Computer Science and Engineering}{} \\
+\centering\authorcell{Mohammed Ayaan}{Dept. of Computer Science and Engineering (AI \& ML)}{PES2UG23AM058\\ \texttt{ayaan.md.blr@gmail.com}} &
+\centering\arraybackslash\authorcell{Prof. Deepti C.}{Dept. of Computer Science and Engineering}{\texttt{deeptic@pes.edu}} \\
 \end{tabular}}
 
 \maketitle
@@ -90,7 +90,8 @@ passages for 0.87 of questions against 0.50 for a re-implemented dense LangChain
 with the same language model its answers are correct for 0.94 of questions against 0.82 for that pipeline and
 0.61 without retrieval, which states an unsupported dose in 20\% of answers against none for PlantIQ. On 43 test conversations covering follow-up questions, Kannada, leaf photographs, weather and
 prompt injection, the chatbot met the expected behaviour in all 43 against 15 for the same pipeline run as a LangChain
-conversational chain, and answered 0.88 of its knowledge questions correctly against 0.38.
+conversational chain, and answered 0.91 of its knowledge questions correctly against 0.38; three faults the evaluation
+exposed were fixed.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -168,7 +169,7 @@ lexical search, adds reranking and diversification, injects live weather into th
 
 \subsection{Agricultural Conversational Assistants}
 Farmer.Chat~\cite{singh2024farmerchat} is a generative-AI assistant deployed over WhatsApp and Telegram in four
-countries, supporting six languages, voice notes and images, and evaluated with RAGAS-style~\cite{es2023ragas}
+countries, supporting six languages, voice notes and images, and evaluated with RAGAS-style
 faithfulness, relevance and context-precision metrics as well as latency and user engagement. Sapkota
 \textit{et al.}~\cite{sapkota2024mmllm} survey multi-modal LLMs in agriculture and highlight domain-specific data,
 integration with existing systems and robust evaluation as open problems. PlantIQ's chatbot is narrower in crop scope
@@ -286,7 +287,7 @@ files are byte-identical copies and the rest are rotated, flipped or colour-shif
 random splits of this dataset produce. All models in this paper are therefore trained and evaluated on group-aware folds
 in which every copy of a patch stays on the same side (Section~\ref{sec:protocol}).
 
-The classifier starts from ImageNet-pre-trained ResNet-50 weights~\cite{deng2009imagenet}. Inputs are resized to
+The classifier starts from ImageNet-pre-trained ResNet-50 weights. Inputs are resized to
 224$\times$224 and augmented with AutoAugment (ImageNet policy). Training uses AdamW (learning rate
 $3\times10^{-4}$, weight decay $10^{-4}$), cross-entropy loss, a cosine schedule over at most 25 epochs of 6,000 samples
 drawn in proportion to the dataset's copy counts, batch size 64 and mixed precision. The checkpoint with the best
@@ -418,7 +419,7 @@ Models are stored locally in the safetensors format so that they can be memory-m
 \toprule
 Profile & Embedding model & Cross-encoder reranker \\
 \midrule
-\makecell[l]{Quality\\(GPU $\geq$ 6 GB)} & \makecell[l]{BAAI/bge-m3~\cite{chen2024bgem3}\\1024-d, fp16} & \makecell[l]{BAAI/bge-reranker-\\v2-m3} \\
+\makecell[l]{Quality\\(GPU $\geq$ 6 GB)} & \makecell[l]{BAAI/bge-m3\\1024-d, fp16} & \makecell[l]{BAAI/bge-reranker-\\v2-m3} \\
 \addlinespace
 \makecell[l]{Balanced\\(CPU)} & \makecell[l]{BAAI/bge-base-en-v1.5\\768-d} & \makecell[l]{cross-encoder/ms-marco-\\MiniLM-L-6-v2} \\
 \bottomrule
@@ -438,18 +439,18 @@ rather than keyword lists.
 
 \subsection{Hybrid Retrieval}
 \textit{Dense retrieval} encodes the recall query with the profile's embedder and performs exact inner-product search in
-a FAISS \texttt{IndexFlatIP}~\cite{johnson2021faiss} over L2-normalised vectors, which equals cosine similarity,
+a FAISS \texttt{IndexFlatIP} over L2-normalised vectors, which equals cosine similarity,
 \begin{equation}
 s_{\mathrm{dense}}(q,d) = \frac{\mathbf{e}_q^{\top}\mathbf{e}_d}{\lVert\mathbf{e}_q\rVert\,\lVert\mathbf{e}_d\rVert}.
 \end{equation}
 Exact search is used because a scan over 931 vectors is fast; approximate indexes are only needed at much larger scale.
-\textit{Sparse retrieval} scores chunks with Okapi BM25~\cite{robertson2009bm25},
+\textit{Sparse retrieval} scores chunks with Okapi BM25,
 \begin{equation}
 s_{\mathrm{bm25}}(q,d)=\sum_{t\in q}\mathrm{IDF}(t)\,\frac{f(t,d)\,(k_1+1)}{f(t,d)+k_1\big(1-b+b\,\frac{|d|}{\mathrm{avgdl}}\big)},
 \end{equation}
 with the library defaults $k_1=1.5$ and $b=0.75$. Dense search captures paraphrase (``orange powder on leaves'' versus
 ``urediniospores''), whereas BM25 captures exact chemical names, concentrations and pathogen names. Each retriever
-returns its top 20 chunks, and the two rankings are fused by reciprocal rank fusion~\cite{cormack2009rrf},
+returns its top 20 chunks, and the two rankings are fused by reciprocal rank fusion,
 \begin{equation}
 \mathrm{RRF}(d)=\sum_{r\in\{\mathrm{dense},\,\mathrm{bm25}\}}\frac{1}{k+\mathrm{rank}_r(d)},\quad k=60,
 \end{equation}
@@ -457,7 +458,7 @@ where a chunk missing from one list is assigned rank 1000. RRF needs no score ca
 
 \subsection{Reranking, Topic Preference and De-duplication}
 The 20 fused candidates, plus up to six further chunks tagged with the diagnosed disease's topic, are scored by a
-cross-encoder~\cite{nogueira2019rerank} that reads the rerank query and the passage jointly and outputs a logit $z$,
+cross-encoder that reads the rerank query and the passage jointly and outputs a logit $z$,
 mapped to a bounded relevance score
 \begin{equation}
 s = \sigma(z) = \frac{1}{1+e^{-z}} .
@@ -466,7 +467,7 @@ The diagnosed disease acts as a soft preference: passages tagged with its topic 
 $s$, while the reported score stays $s$. A relevant passage with another tag (the Bordeaux-mixture recipe is tagged
 ``nutrition'' because it mentions urea) therefore still competes. Passages are then taken in this order, skipping any
 whose token set has a Jaccard similarity $J\geq0.8$ with a passage already chosen, until three are selected. This
-replaces an earlier hard topic filter followed by maximal marginal relevance~\cite{carbonell1998mmr}, which the
+replaces an earlier hard topic filter followed by maximal marginal relevance, which the
 evaluation in Section~IX-C showed to discard passages that held the answer. A least-recently-used cache holds
 the last 256 queries. If the reranker cannot be loaded, normalised RRF scores are used instead.
 
@@ -579,7 +580,7 @@ reading, writing or deleting another user's thread returns HTTP 403.
 The grower chooses the language before recording, because short agricultural utterances are difficult to identify
 automatically. Audio recorded with the browser MediaRecorder is checked (container signature, at most 10~MB), decoded by
 FFmpeg to 16~kHz mono (truncated to 90~s), and transcribed by a local model: AI4Bharat's IndicConformer-600M multilingual
-model for Kannada, and a Whisper-base model~\cite{radford2023whisper} fine-tuned on the Svarah Indian-English accent
+model for Kannada, and a Whisper-base model fine-tuned on the Svarah Indian-English accent
 dataset for English. If the local model fails or returns empty text, the cascade falls back to Groq's
 whisper-large-v3 and then to Gemini audio understanding. The transcript is placed in the input box for the grower to
 correct before sending; it is never sent automatically. Local models load on first use and can be disabled
@@ -603,7 +604,7 @@ Rs.~190/kg. Totals are bounded to 100{,}000~kg and prices to Rs.~10{,}00{,}000.
 Buyers search case-insensitively over title, variety, address and farmer name with bound SQL parameters, and filter by
 variety, minimum lot size and a Rs./kg range on the normalised fields, by maximum distance (15, 30, 60 or 120~km) and
 by presence of photos. Distance from the buyer $(\varphi_1,\lambda_1)$ to a lot $(\varphi_2,\lambda_2)$ is the
-great-circle distance~\cite{sinnott1984haversine}
+great-circle distance
 \begin{align}
 a &= \sin^2\!\tfrac{\Delta\varphi}{2}+\cos\varphi_1\cos\varphi_2\sin^2\!\tfrac{\Delta\lambda}{2},\\
 d &= 2R\,\mathrm{atan2}\big(\sqrt{a},\sqrt{1-a}\big),\quad R=6371\ \mathrm{km}.
@@ -621,7 +622,7 @@ angle brackets and all text is rendered escaped.
 \section{Implementation and Evaluation Setup}
 % =========================================================================================
 \subsection{Implementation}
-Table~\ref{tab:stack} lists the technology stack. Authentication uses Argon2id password hashing~\cite{biryukov2016argon2}
+Table~\ref{tab:stack} lists the technology stack. Authentication uses Argon2id password hashing
 (time cost 3, 64~MB memory), 15-minute JSON Web Tokens and opaque refresh tokens stored as SHA-256 hashes and rotated on
 every use with reuse detection that revokes the whole token family, login lockout and a password policy. Every write
 endpoint checks ownership. LLM output is rendered as escaped text rather than raw HTML.
@@ -878,35 +879,40 @@ Dense RAG~\cite{selvakumar2024rag} & 0.500 & 0.824 & 0.990 & 0.0\% \\
 \end{table}
 
 \subsection{Module 3 Comparison}
-Table~\ref{tab:m3} reports, per group, whether the expected behaviour was met and, where a gold answer exists, whether
-the answer was correct. The PlantIQ chatbot met the expected behaviour in all 43 conversations, against 15 (0.35) for
-the LangChain version of the Selva Kumar pipeline (Wilcoxon $p<10^{-6}$), and answered the 29 knowledge questions
-correctly in 0.88 of cases against 0.38 ($p<0.001$). The gap comes from what the baseline lacks: it has no live weather
-(0 of 8 weather turns), cannot use a past scan, answers no Kannada question because dense search on Kannada text
-returns unreadable PDF text, and prints its own instructions when asked to. Both chatbots classified all six
-photographs correctly. PlantIQ replied in Kannada script in all 17 turns that required it, reported the live
-temperature and humidity in all six weather turns with a location (including coordinates typed in the message), and in
-the two turns without a location said that weather was unavailable without inventing values. Greeting and place-name
-turns skipped retrieval, and the closing \texttt{</user\_query>} tag of an injected message was removed by input cleaning
-before it reached the prompt.
+The first run of this evaluation exposed three faults in PlantIQ, which were fixed in the application and the evaluation
+re-run; Table~\ref{tab:m3} reports the re-run. (i) The language router saw only the current message, so a follow-up
+such as ``What pH should it have?'' was searched as written: the passage holding the answer was retrieved for six of
+the ten follow-ups, and PlantIQ twice gave a wrong value (pH~7 instead of 9--10 for Bordeaux mixture). The router now also
+receives the last two exchanges as fenced, sanitised data. Evidence is now retrieved for all ten follow-ups and follow-up
+correctness rose from 0.80 to 0.90; one Kannada follow-up (the largest fertilizer dose in a single split) that was
+answered correctly before now retrieves the sustenance-dose passage instead and is answered as not stated. (ii) Weather
+intent was a keyword substring match, and two Kannada compounds were taken for weather questions (the word for blossom
+shower contains the word for rain; the word for eco-friendly contains the word for environment). Keywords now match only
+at the start of a word and eco-friendly phrases are excluded; none of the 35 non-weather turns is flagged. (iii) Without
+a language model, Kannada users received English passage excerpts (2 of 17 replies mainly in Kannada); the offline reply
+now cites the document pages in Kannada and recognises a disease named in the message, and all 17 are in Kannada.
+Overall correctness rose from 0.88 to 0.91. Regression tests for the three fixes were added to the application's test
+suite. Because the fixes were checked on the same conversations, the re-run figures are optimistic.
 
-The evaluation also exposed three weaknesses. First, the language router sees only the current message, so a follow-up
-such as ``What pH should it have?'' is searched as written. Evidence for the ten follow-ups was retrieved in six cases by
-both systems; the model resolved ``it'' from the history in every case, but PlantIQ gave a wrong value twice (pH~7
-instead of 9--10 for Bordeaux mixture, in English and in Kannada), while LangChain's history-aware rewrite answered all
-seven English follow-ups correctly. Passing recent turns to the router is a direct fix. Second, weather intent is
-detected by keyword substrings, and two Kannada compounds triggered it (the word for blossom shower contains the word
-for rain, and the word for eco-friendly the word for environment), which added a needless note about missing weather.
-Third, without any language model the offline reply quotes English passages, so only 0.06 of the replies that should be
-in Kannada were; it still named the disease in every photograph turn and reported the live weather correctly. When
-retrieval misses, PlantIQ answers from the model's knowledge instead of abstaining, so its answers are less strictly
-grounded (faithfulness 0.85 against 1.00) while the baseline answered only 0.55 of the knowledge questions. Without the
-language model, a PlantIQ chat turn (CNN, routing, weather and retrieval) took a median of 0.26~s (95th percentile
-0.55~s) on the laptop GPU. Answers and judgments were produced by the same model as in Module~2.
+The PlantIQ chatbot met the expected behaviour in all 43 conversations, against 15 (0.35) for the LangChain version of
+the Selva Kumar pipeline (Wilcoxon $p<10^{-6}$), and answered the 29 knowledge questions correctly in 0.91 of cases
+against 0.38 ($p<10^{-4}$); a passage containing the gold evidence was given to the model for 0.95 of the questions
+with evidence, against 0.33. The gap comes from what the baseline lacks: it has no live weather (0 of 8 weather turns),
+cannot use a past scan, answers no Kannada question because dense search on Kannada text returns unreadable PDF text,
+and prints its own instructions when asked to. LangChain's history-aware rewrite did answer all seven English follow-ups
+correctly. Both chatbots classified all six photographs correctly. PlantIQ replied in Kannada script in all 17 turns
+that required it, reported the live temperature and humidity in all six weather turns with a location (including
+coordinates typed in the message), and in the two turns without a location said that weather was unavailable without
+inventing values. Greeting and place-name turns skipped retrieval, and the closing \texttt{</user\_query>} tag of an
+injected message was removed by input cleaning before it reached the prompt. When retrieval misses, PlantIQ answers from
+the model's knowledge instead of abstaining, so its answers are slightly less strictly grounded (faithfulness 0.93
+against 1.00), while the baseline answered only 0.55 of the knowledge questions. Without the language model, a PlantIQ
+chat turn (CNN, routing, weather and retrieval) took a median of 0.22~s (95th percentile 0.51~s) on the laptop GPU.
+Answers and judgments were produced by the same model as in Module~2.
 
 \begin{table}[t]
-\caption{Module 3 comparison (same language model for every system): share of conversations with the expected
-behaviour and, for questions with a gold answer, correctness}
+\caption{Module 3 comparison after the fixes (same language model for every system): share of conversations with
+the expected behaviour and, for questions with a gold answer, correctness}
 \label{tab:m3}
 \centering
 \scriptsize
@@ -917,14 +923,14 @@ behaviour and, for questions with a gold answer, correctness}
 \cmidrule(lr){2-3}\cmidrule(l){4-5}
 Group ($n$) & PlantIQ & \makecell{Dense RAG\\(LangChain)} & PlantIQ & \makecell{Dense RAG\\(LangChain)} \\
 \midrule
-Follow-up questions (10) & 1.00 & 0.70 & 0.80 & 0.70 \\
+Follow-up questions (10) & 1.00 & 0.70 & 0.90 & 0.70 \\
 Kannada (10) & 1.00 & 0.00 & 0.85 & 0.00 \\
 Photo and past scan (8) & 1.00 & 0.38 & 1.00 & 0.44 \\
 Weather (8) & 1.00 & 0.00 & 1.00$^\ast$ & 0.50$^\ast$ \\
 Greeting, place name (4) & 1.00 & 0.75 & -- & -- \\
 Prompt injection (3) & 1.00 & 0.67 & -- & -- \\
 \midrule
-\textbf{All (43; correct: 29)} & \textbf{1.00} & 0.35 & \textbf{0.88} & 0.38 \\
+\textbf{All (43; correct: 29)} & \textbf{1.00} & 0.35 & \textbf{0.91} & 0.38 \\
 \bottomrule
 \multicolumn{5}{@{}l@{}}{\tiny $^\ast$One weather question (orange powder under the leaves) has a gold answer.}
 \end{tabular}
@@ -949,8 +955,8 @@ dataset of close-up patches with only nine distinct healthy patches; a test set 
 estates is needed, and since lighter GoogLeNet and YOLOv8 classifiers matched or exceeded the ResNet-50 on JMuBEN, the
 choice of backbone should be revisited on that field set. The knowledge base has no readable Phoma document, and the retrieval questions were written by the authors from the
 same documents; a question set collected from growers is needed. The chatbot was tested on author-written
-conversations with recorded weather; its router does not yet use the conversation history, weather intent is detected by
-keywords, the offline reply is not translated, and speech recognition has not been evaluated on recorded utterances. A
+conversations with recorded weather, its fixes were checked on the same conversations, the offline reply for Kannada
+users cites pages rather than translating them, and speech recognition has not been evaluated on recorded utterances. A
 field study with growers in Chikkamagaluru is required to assess usefulness.
 
 % =========================================================================================
@@ -966,16 +972,18 @@ On a leak-free evaluation the diagnosis module reaches a macro-F1 of 0.970, with
 re-implemented baseline. The hybrid retriever finds the right passage far more often than a dense LangChain pipeline, especially for Kannada
 questions, and grounding cuts unsupported doses from 20\% of answers to none. In conversation, the chatbot met the
 expected behaviour in all 43 test conversations against 15 for a LangChain chatbot built on the dense pipeline, because
-it adds live weather, scan hand-off, Kannada routing and safety rules; making the language router aware of the
-conversation history is the main remaining fix.
+it adds live weather, scan hand-off, Kannada routing and safety rules, and the evaluation located three faults (a
+router blind to the conversation history, substring weather detection and English offline replies for Kannada users)
+that were fixed.
 
 \section*{Acknowledgment}
 The authors thank Prof.\ Deepti C., Department of Computer Science and Engineering, PES University, for guidance
-throughout this capstone project.
+throughout this capstone project, and the Department of Computer Science and Engineering, PES University, for its
+support and facilities.
 
 % Balances the last page's columns: starts a new column before this reference number.
 % Re-tune (or remove) whenever the text or the reference list changes length.
-\IEEEtriggeratref{11}
+\IEEEtriggeratref{6}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 

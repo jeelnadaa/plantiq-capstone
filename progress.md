@@ -193,3 +193,11 @@ Postgres create-database race.
 eq`) so none of the four
   PDFs yields private-use, combining or format characters in copied text.
 
+## 2026-11-23 — Main paper at 12 pt without dashes; summary status
+- Full paper: second humanizer pass (two contrast/closer tells removed); every en/em dash removed from the PDFs
+  (ranges in words, "n/a" table cells, IEEEtran "Abstract"/"Index Terms" dash patched to a colon, reference page ranges
+  hyphenated via `scripts/make_refs.py` -> `refs_main.tex` / `refs_short.tex`). Both layouts now 12 pt: 15 and 18 pages;
+  author departments on two lines, architecture figure scaled to the text width, BM25 equation and Module 1 table
+  narrowed. All four PDFs: no overfull lines, no dashes, no hidden Unicode.
+- Project summary (`summary/35.tex`): publication status "Under Review"; target conference removed.
+

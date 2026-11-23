@@ -1,5 +1,6 @@
-\documentclass[conference]{IEEEtran}
-% Two-column IEEE conference layout. All text lives in paper_content.tex (shared with main_onecol.tex).
-% Balances the last page's columns: column break before this reference number. Re-tune when the text changes.
-\newcommand{\plantiqbalancerefs}{\IEEEtriggeratref{6}}
+\documentclass[conference,12pt]{IEEEtran}
+% Two-column IEEE conference layout at 12 pt. All text lives in paper_content.tex (shared with main_onecol.tex).
+% To balance the last page's columns, define this as \IEEEtriggeratref{n} (column break before reference n).
+% At 12 pt the list flows best without it.
+\newcommand{\plantiqbalancerefs}{}
 \input{paper_content}

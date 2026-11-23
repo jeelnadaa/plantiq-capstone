@@ -16,6 +16,10 @@
 \usepackage{array}
 \usepackage{url}
 \usepackage{tikz}
+\usepackage{etoolbox}
+% IEEEtran prints an em dash after "Abstract" and "Index Terms"; print a colon instead.
+\patchcmd{\abstract}{---}{:\ }{}{}
+\patchcmd{\IEEEkeywords}{---}{:\ }{}{}
 % width of single-column figures; main_onecol.tex sets it smaller before \input-ing this file
 \providecommand{\plantiqfigw}{\columnwidth}
 \usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shapes.geometric}
@@ -49,7 +53,8 @@
 \newcommand{\authorcell}[3]{%
   \begin{tabular}[t]{@{}c@{}}
     {\large #1}\\[0.4ex]
-    \textit{#2}\\
+    \textit{Dept. of Computer Science}\\
+    \textit{and Engineering#2}\\
     \textit{PES University}\\
     Bengaluru, India\\
     #3
@@ -57,11 +62,11 @@
 
 \author{%
 \begin{tabular}{@{}p{0.5\textwidth}@{}p{0.5\textwidth}@{}}
-\centering\authorcell{Jeel Nada}{Dept. of Computer Science and Engineering}{PES2UG23CS357\\ \texttt{jeelnadaa@gmail.com}} &
-\centering\arraybackslash\authorcell{Nidhi N Udupa}{Dept. of Computer Science and Engineering}{PES2UG23CS384\\ \texttt{nidhiudupa17@gmail.com}} \\
+\centering\authorcell{Jeel Nada}{}{PES2UG23CS357\\ \texttt{jeelnadaa@gmail.com}} &
+\centering\arraybackslash\authorcell{Nidhi N Udupa}{}{PES2UG23CS384\\ \texttt{nidhiudupa17@gmail.com}} \\
 \addlinespace[3ex]
-\centering\authorcell{Mohammed Ayaan}{Dept. of Computer Science and Engineering (AI \& ML)}{PES2UG23AM058\\ \texttt{ayaan.md.blr@gmail.com}} &
-\centering\arraybackslash\authorcell{Prof. Deepti C.}{Dept. of Computer Science and Engineering}{\texttt{deeptic@pes.edu}} \\
+\centering\authorcell{Mohammed Ayaan}{ (AI \& ML)}{PES2UG23AM058\\ \texttt{ayaan.md.blr@gmail.com}} &
+\centering\arraybackslash\authorcell{Prof. Deepti C.}{}{\texttt{deeptic@pes.edu}} \\
 \end{tabular}}
 
 \maketitle
@@ -124,7 +129,7 @@ This paper describes PlantIQ, a working system that combines them. Its contribut
 \begin{enumerate}
 \item A confidence-gated diagnosis pipeline (Module 1) that wraps a five-class ResNet-50 with input
 sanitisation, per-user result caching and an explicit ``blended'' state that is raised when either the image model or
-the retrieved evidence is weak, instead of silently returning a low-confidence label.
+the retrieved evidence is weak, so the grower is told when a label is uncertain.
 \item A hybrid, hardware-aware RAG advisory (Module 2) combining multilingual dense retrieval, BM25, reciprocal
 rank fusion, cross-encoder reranking, a soft disease-topic preference and near-duplicate removal, conditioned on live
 microclimate, a fungal infection risk rule and a three-day spray window, with a post-generation dose audit.
@@ -144,7 +149,7 @@ rupees per kilogram and ranks lots by Haversine distance, with owner-only editin
 Anudeep K.S.\ \textit{et al.}~\cite{anudeep2024cnn} classify coffee leaves into leaf rust, leaf miner, Cercospora and
 healthy classes with a CNN and softmax classifier, using GoogLeNet transfer learning. Images were drawn from
 ScienceDirect and Mendeley sources, with roughly 3{,}000 images for training and 800 for testing, plus about 250 field
-images collected near Chikkamagaluru for testing. They study 60/40, 70/30 and 80/20 train--test splits and report the
+images collected near Chikkamagaluru for testing. They study 60/40, 70/30 and 80/20 train/test splits and report the
 highest accuracy with the 80/20 split. Phoma is not among their classes. Selva Kumar \textit{et al.}~\cite{selvakumar2024rag}
 train YOLOv8 for instance segmentation of coffee leaf diseases (Rust, Miner and Phoma) on Kaggle, open-source and field
 images, and extract the predicted label from the rendered output with EasyOCR before passing it to the language model.
@@ -224,6 +229,7 @@ PostgreSQL to SQLite. Missing weather is reported as unavailable and never repla
 
 \begin{figure*}[t]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}
   % modules, 2 x 2 grid
   \node[mod] (m1) at (0,0) {\textbf{Module 1: CNN}\\ResNet-50, 5 classes\\confidence gate};
@@ -259,7 +265,7 @@ PostgreSQL to SQLite. Missing weather is reported as unavailable and never repla
   \draw[arr] (gw.east) -- (gw.east -| mods.west);
   \draw[arr, <->] (mods.east |- data.west) -- (data.west);
   \draw[arr] (mods.south) -- (mods.south |- extg.north);
-\end{tikzpicture}
+\end{tikzpicture}}
 \caption{PlantIQ system architecture. The mobile client is a thin client; all models run on the self-hostable server.
 Module 1 feeds its diagnosis to Module 2; Module 3 reuses Modules 1 and 2 for photos, retrieval and weather.}
 \label{fig:arch}
@@ -302,7 +308,7 @@ Coffee leaf rust & \textit{Hemileia vastatrix} & fungal disease \\
 Cercospora leaf spot & \textit{Cercospora coffeicola} & fungal disease \\
 Phoma leaf spot & \textit{Phoma costarricensis} & fungal disease \\
 Coffee leaf miner & \textit{Leucoptera coffeella} & insect pest \\
-Healthy & -- & -- \\
+Healthy & none & none \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -340,7 +346,7 @@ where $y$ is the predicted class, $\mathcal{D}$ the four disease classes, $\tau_
 passage score from Module~2 and $\tau_r=0.60$. Healthy leaves are
 exempt from the evidence condition because they require no disease protocol. A blended result is shown to the grower
 as ``not fully sure'' and the generation prompt instructs the LLM to name look-alike conditions and to recommend
-checking more leaves, so that a low-confidence prediction is never presented as a confirmed diagnosis.
+checking more leaves.
 
 \subsection{Serving}
 Weights are loaded with PyTorch's weights-only deserialiser under PyTorch~2.7.1, because versions before 2.6 are
@@ -441,8 +447,9 @@ s_{\mathrm{dense}}(q,d) = \frac{\mathbf{e}_q^{\top}\mathbf{e}_d}{\lVert\mathbf{e
 Exact search is used because a scan over 931 vectors is fast; approximate indexes are only needed at much larger scale.
 \textit{Sparse retrieval} scores chunks with Okapi BM25,
 \begin{equation}
-s_{\mathrm{bm25}}(q,d)=\sum_{t\in q}\mathrm{IDF}(t)\,\frac{f(t,d)\,(k_1+1)}{f(t,d)+k_1\big(1-b+b\,\frac{|d|}{\mathrm{avgdl}}\big)},
+s_{\mathrm{bm25}}(q,d)=\sum_{t\in q}\mathrm{IDF}(t)\,\frac{f(t,d)\,(k_1+1)}{f(t,d)+k_1 L_d},
 \end{equation}
+where $f(t,d)$ is the count of term $t$ in chunk $d$ and $L_d = 1-b+b\,|d|/\mathrm{avgdl}$ normalises for chunk length,
 with the library defaults $k_1=1.5$ and $b=0.75$. Dense search captures paraphrase (``orange powder on leaves'' versus
 ``urediniospores''), whereas BM25 captures exact chemical names, concentrations and pathogen names. Each retriever
 returns its top 20 chunks, and the two rankings are fused by reciprocal rank fusion,
@@ -559,7 +566,7 @@ A short JSON-mode prompt (temperature 0.1) asks the LLM for the detected languag
 English search query, whether the message is only a greeting or location, and the target response language. In a
 conversation the prompt also carries the last two exchanges, so a follow-up such as ``what pH should it have?'' becomes
 a self-contained question about the Bordeaux mixture. If the LLM
-is unavailable or returns invalid JSON, a heuristic router uses the Kannada Unicode block (U+0C80--U+0CFF), greeting
+is unavailable or returns invalid JSON, a heuristic router uses the Kannada Unicode block (U+0C80 to U+0CFF), greeting
 words, and a single capitalised word as a place name. Kannada script in the message, or
 the Kannada UI setting, forces a Kannada-script reply.
 
@@ -665,10 +672,10 @@ Playwright at a Pixel~7 viewport. A deterministic fake for each model allows the
 Module & Unit & Integr. & Security & Real model & Frontend & E2E \\
 \midrule
 M1 CNN & 16/16 & 11/11 & 8/8 & 3/3 & 2/2 & 1/1 \\
-M2 RAG + env. & 46/46 & 1/1 & 1/1 & 1/1 & 5/5 & -- \\
-M3 Chatbot & 30/30 & 17/17 & 1/1 & -- & -- & 1/1 \\
-M4 Market & 31/31 & 9/9 & 13/13 & -- & 18/18 & 2/2 \\
-Platform & 39/39 & 33/33 & 36/36 & -- & 27/27 & 8/8 \\
+M2 RAG + env. & 46/46 & 1/1 & 1/1 & 1/1 & 5/5 & n/a \\
+M3 Chatbot & 30/30 & 17/17 & 1/1 & n/a & n/a & 1/1 \\
+M4 Market & 31/31 & 9/9 & 13/13 & n/a & 18/18 & 2/2 \\
+Platform & 39/39 & 33/33 & 36/36 & n/a & 27/27 & 8/8 \\
 \bottomrule
 \multicolumn{7}{@{}l@{}}{\tiny Functional (3) and non-functional (10) backend tests omitted from columns; total 373/373.}
 \end{tabular}
@@ -758,13 +765,13 @@ Rust & Rust & 100.0 & 0.93 \\
 Cercospora & Cercospora & 99.6 & 0.95 \\
 Leaf miner & Leaf miner & 99.5 & 0.84 \\
 Phoma & Phoma & 99.7 & 0.78 \\
-Healthy & Healthy & 100.0 & -- \\
+Healthy & Healthy & 100.0 & n/a \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Module 1 Comparison}
-Table~\ref{tab:m1} and Figs.~\ref{fig:cnn}--\ref{fig:cm} report out-of-fold results. All models exceed 0.96 macro-F1,
+Table~\ref{tab:m1} and Figs.~\ref{fig:cnn} and~\ref{fig:cm} report out-of-fold results. All models exceed 0.96 macro-F1,
 because the JMuBEN patches are close-up, evenly lit crops. The two re-implemented baselines score highest: GoogLeNet
 transfer learning reaches a macro-F1 of 0.988 and YOLOv8s-cls 0.985, against 0.970 for the PlantIQ ResNet-50. A paired
 bootstrap over source patches does not separate them at the 5\% level (GoogLeNet minus PlantIQ $+0.018$, 95\% CI
@@ -778,7 +785,7 @@ Phoma patches are predicted as leaf miner and 2\% the other way round, while Cer
 
 Three caveats apply. Validation accuracy was 1.0 for every configuration, so the step-wise ablation on the first fold
 could not justify further changes on validation data; class-balanced sampling, leaf-specific augmentation, label
-smoothing with weight averaging and MixUp reached 0.976--0.988 test macro-F1 on that fold but were not adopted, because
+smoothing with weight averaging and MixUp reached 0.976 to 0.988 test macro-F1 on that fold but were not adopted, because
 selection uses validation data only. The healthy class has only nine distinct patches. And all images come from one
 public dataset, so accuracy on field photographs from Karnataka estates remains to be measured. The weights deployed
 before this study (0.975 macro-F1 on the same folds) were trained on an unrecorded, most likely random split and are
@@ -789,17 +796,18 @@ reported only as a reference.
 \label{tab:m1}
 \centering
 \scriptsize
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{2pt}
 \begin{tabular}{@{}lccccc@{}}
 \toprule
-Method & Acc. & Macro-F1 [95\% CI] & Phoma F1 & Params & CPU ms \\
+Method & Acc. & \makecell{Macro-F1\\{[}95\% CI{]}} & \makecell{Phoma\\F1} & Params & \makecell{CPU\\ms} \\
 \midrule
 GoogLeNet TL~\cite{anudeep2024cnn} & 0.989 & 0.988 [0.979, 0.995] & 0.975 & 5.6M & 42.4 \\
 YOLOv8s-cls~\cite{selvakumar2024rag} & 0.986 & 0.985 [0.975, 0.992] & 0.967 & 5.1M & 16.0 \\
 ResNet-50, earlier recipe & 0.971 & 0.963 [0.944, 0.981] & 0.936 & 23.5M & 85.7$^\ast$ \\
 \textbf{PlantIQ ResNet-50} & 0.979 & 0.970 [0.938, 0.987] & 0.949 & 23.5M & 64.2 \\
 \bottomrule
-\multicolumn{6}{@{}l@{}}{\tiny $^\ast$128-pixel input. Batch-1 median on the laptop CPU. CI: bootstrap over the 861 source patches.}
+\multicolumn{6}{@{}l@{}}{\tiny $^\ast$128-pixel input. CPU: batch-1 median on the laptop CPU.}\\
+\multicolumn{6}{@{}l@{}}{\tiny CI: bootstrap over the 861 source patches.}
 \end{tabular}
 \end{table}
 
@@ -838,8 +846,8 @@ pipeline for 0.824 and the model without retrieval for 0.611 (Wilcoxon: PlantIQ 
 $p=0.02$, against no retrieval $p<10^{-5}$). Both retrieval systems stay close to their passages (faithfulness
 0.992 and 0.990); the dense pipeline more often retrieves no passage with the answer and then says it does
 not know (relevance 0.917 against 0.972). Without retrieval the model answers everything, but
-20\% of its answers state a dose that is in no supplied document, for example pH 7 instead of 9--10 for Bordeaux mixture
-or 30--40~kg instead of 58~kg of monsoon nitrogen. No PlantIQ answer contains an unsupported dose, although PlantIQ states
+20\% of its answers state a dose that is in no supplied document, for example pH 7 instead of 9 to 10 for Bordeaux mixture
+or 30 to 40~kg instead of 58~kg of monsoon nitrogen. No PlantIQ answer contains an unsupported dose, although PlantIQ states
 twice as many doses as the dense pipeline (52\% of answers against 26\%). The dose audit first flagged one PlantIQ
 answer because the guide writes ``four litres''; the audit now reads number words. Generator and judge are the same
 model, which can favour fluent answers; the retrieval figures and the dose audit do not depend on the judge.
@@ -870,7 +878,7 @@ model, which can favour fluent answers; the retrieval figures and the dose audit
 \toprule
 System & Recall@3 & Correct & Faithful. & \makecell{Unsupported\\doses} \\
 \midrule
-LLM, no retrieval & -- & 0.611 & -- & 20.4\% \\
+LLM, no retrieval & n/a & 0.611 & n/a & 20.4\% \\
 Dense RAG~\cite{selvakumar2024rag} & 0.500 & 0.824 & 0.990 & 0.0\% \\
 \textbf{PlantIQ hybrid RAG} & 0.867 & 0.944 & 0.992 & 0.0\% \\
 \bottomrule
@@ -881,7 +889,7 @@ Dense RAG~\cite{selvakumar2024rag} & 0.500 & 0.824 & 0.990 & 0.0\% \\
 The first run of this evaluation exposed three faults in PlantIQ, which were fixed in the application and the evaluation
 re-run; Table~\ref{tab:m3} reports the re-run. (i) The language router saw only the current message, so a follow-up
 such as ``What pH should it have?'' was searched as written: the passage holding the answer was retrieved for six of
-the ten follow-ups, and PlantIQ twice gave a wrong value (pH~7 instead of 9--10 for Bordeaux mixture). The router now also
+the ten follow-ups, and PlantIQ twice gave a wrong value (pH~7 instead of 9 to 10 for Bordeaux mixture). The router now also
 receives the last two exchanges as fenced, sanitised data. Evidence is now retrieved for all ten follow-ups and follow-up
 correctness rose from 0.80 to 0.90; one Kannada follow-up (the largest fertilizer dose in a single split) that was
 answered correctly before now retrieves the sustenance-dose passage instead and is answered as not stated. (ii) Weather
@@ -926,8 +934,8 @@ Follow-up questions (10) & 1.00 & 0.70 & 0.90 & 0.70 \\
 Kannada (10) & 1.00 & 0.00 & 0.85 & 0.00 \\
 Photo and past scan (8) & 1.00 & 0.38 & 1.00 & 0.44 \\
 Weather (8) & 1.00 & 0.00 & 1.00$^\ast$ & 0.50$^\ast$ \\
-Greeting, place name (4) & 1.00 & 0.75 & -- & -- \\
-Prompt injection (3) & 1.00 & 0.67 & -- & -- \\
+Greeting, place name (4) & 1.00 & 0.75 & n/a & n/a \\
+Prompt injection (3) & 1.00 & 0.67 & n/a & n/a \\
 \midrule
 \textbf{All (43; correct: 29)} & \textbf{1.00} & 0.35 & \textbf{0.91} & 0.38 \\
 \bottomrule
@@ -937,7 +945,7 @@ Prompt injection (3) & 1.00 & 0.67 & -- & -- \\
 
 \subsection{Module 4}
 The market module is covered by integration tests of unit conversion, photos, every filter and sort order, owner rules,
-single reporting and the listing quota, by a seller--buyer functional journey, by two end-to-end tests, and by a
+single reporting and the listing quota, by a functional journey from seller to buyer, by two end-to-end tests, and by a
 performance test in which distance sorting over 500 listings completes within the 1.5~s budget.
 
 % =========================================================================================
@@ -963,8 +971,7 @@ field study with growers in Chikkamagaluru is required to assess usefulness.
 % =========================================================================================
 PlantIQ puts leaf diagnosis, document-grounded and weather-aware advice, a Kannada-capable voice and text
 assistant and a direct market channel into one deployable system for Karnataka coffee growers. Most design choices aim
-to keep the advice trustworthy on cheap phones in the field: an explicit uncertainty state instead of a silent low-confidence
-label, hybrid retrieval with citations, refusal to invent weather values, a dose audit, offline fallbacks for every
+to keep the advice trustworthy on cheap phones in the field: an explicit uncertainty state for weak results, hybrid retrieval with citations, refusal to invent weather values, a dose audit, offline fallbacks for every
 external service, and server-side normalisation of market data. Measurements on a laptop GPU show that the vision and
 retrieval stages add well under a second to an advisory whose latency is dominated by generation.
 On a leak-free evaluation the diagnosis module reaches a macro-F1 of 0.970, within two points of the best
@@ -981,7 +988,13 @@ support and facilities.
 
 % Column balancing of the reference list; defined only by the two-column wrapper (main.tex).
 \providecommand{\plantiqbalancerefs}{}\plantiqbalancerefs
+% The reference list is generated by scripts/make_refs.py (BibTeX with IEEEtran.bst, page ranges written with a
+% hyphen instead of the en dash IEEEtran.bst inserts). The script defines \plantiqusebibtex to run BibTeX itself.
+\ifdefined\plantiqusebibtex
 \bibliographystyle{IEEEtran}
 \bibliography{references}
+\else
+\input{refs_main}
+\fi
 
 \end{document}

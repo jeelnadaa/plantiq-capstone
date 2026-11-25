@@ -201,3 +201,11 @@ eq`) so none of the four
   narrowed. All four PDFs: no overfull lines, no dashes, no hidden Unicode.
 - Project summary (`summary/35.tex`): publication status "Under Review"; target conference removed.
 
+
+## 2026-11-25 — KSCST SPP proposal Version2
+- `kscst/Version2 team 35 draft-kscst-35.docx` built from Version1 (kept unchanged). Research Papers section rewritten
+  around the 7 surveyed papers from the Phase-2 report; reference list cut to those 7, with details taken from the PDFs.
+- Payment details filled from the UPI receipt (`kscst/WhatsApp Image ...jpeg`): ref 632966375800, transaction ID,
+  UPI ID, date/time, bank, sender. Guide and SPP Coordinator email/phone filled in all signature blocks; Relevance and
+  the three Mandatory Attachments boxes ticked; Co-Guide "NOT APPLICABLE"; course B.TECH.; student names made consistent.
+- Still blank (filled by hand): HoD and Principal email/phone, all signatures, seals and dates.

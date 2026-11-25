@@ -209,3 +209,14 @@ eq`) so none of the four
   UPI ID, date/time, bank, sender. Guide and SPP Coordinator email/phone filled in all signature blocks; Relevance and
   the three Mandatory Attachments boxes ticked; Co-Guide "NOT APPLICABLE"; course B.TECH.; student names made consistent.
 - Still blank (filled by hand): HoD and Principal email/phone, all signatures, seals and dates.
+
+## 2026-11-25 — Capstone report cleaned to the reference format
+- `report/Report_Review_Findings.md`: formatting rules taken from the reference report and the issues found in
+  `Team_35_report_aligned_v2` (a PDF-to-Word conversion with 68 sections and hidden text).
+- `report/v3_build/`: content files, figure scripts and a python-docx builder; Word refreshes the page-number fields
+  and exports the PDF (`update_and_export.ps1`); `check_tables.ps1` proves no table splits across pages.
+- Two outputs, both with grammar, passive voice, reference-style headers/footers/captions, native equations and
+  redrawn figures: `Team_35_report_v3` (data updated to the current project: 373 tests, bge-m3, benchmarks) and
+  `Team_35_report_patched` (original report data). Change logs: `Report_Change_Log.md`, `Report_Change_Log_patched.md`.
+- Checks: 0 split content tables, 0 first-person words outside the Acknowledgement, every figure/table mentioned
+  before it appears, no citations in Chapter 8. No app code changed; test suites not re-run.

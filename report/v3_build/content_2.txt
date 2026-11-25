@@ -1,0 +1,279 @@
+= CHAPTER 4 | PROJECT REQUIREMENTS SPECIFICATION
+== 4.1 Purpose and Scope
+This chapter sets out what PlantIQ is expected to do. It includes the aims, the functional and non-functional requirements, the data on which the system relies, the working environment and whether each aim was achieved by the end of Phase 3. The product is a mobile and web application for the coffee growers and buyers of Karnataka, backed by a single server application.
+== 4.2 Objectives
+=== 4.2.1 Primary Objectives
+# Train and deploy a ResNet-50 classifier to recognise the main coffee leaf conditions in farmer-taken photos, and make an explicit decision when the model is not sure.
+# Construct a retrieval-augmented advisory system that answers questions based on authoritative coffee research text and current weather information, and checks the dosages it mentions.
+# Provide a chatbot that can take voice and text input in Kannada and English, recall the previous conversation and access the grower's recent scan.
+# Implement a direct grower-to-buyer platform, including one-tap contact and navigation, and proximity sorting.
+=== 4.2.2 Secondary Objectives
+# Use real microclimate data in Phase 3 instead of the simulated data of Phase 2.
+# Embed the four modules behind clean interfaces with one flow from image through advisory to marketplace.
+# Include automated tests for each module, the integrated application and basic security, to detect regressions early.
+# Provide fallbacks for the language model and speech recognition when external services are not available, in order to keep the system usable.
+# Use open data, open-source frameworks and published models where these are available.
+== 4.3 Functional Requirements
+Table 4.1 lists the functional requirements of the system, which include user authentication, disease detection, advisory support, multilingual interaction and the management of crop listings. These requirements specify the essential functions that the system must provide.
+T: Table 4.1: Functional requirements
+W: 13,87
+| ID | Requirement |
+| FR-0 | Users can register and sign in; scans, chats and listings are private to the account. |
+| FR-1.1 | Accept a leaf photograph and return a class, a confidence value and the full probability distribution. |
+| FR-1.2 | Recognise five classes: Leaf Miner, Leaf Rust, Phoma Blight, Cercospora and Healthy. |
+| FR-1.3 | When the top confidence is below 75%, withhold a single-disease verdict and give broader guidance. |
+| FR-1.4 | Reject corrupted or unreadable uploads without failing the request. |
+| FR-1.5 | Return a stored result for an identical repeated request instead of running the model again. |
+| FR-2.1 | Retrieve supporting passages from CCRI text for the diagnosed disease. |
+| FR-2.2 | Add live weather when GPS is available; never invent weather when it is not. |
+| FR-2.3 | Audit every dosage in the answer against the retrieved text and label the advisory Verified or Caution. |
+| FR-2.4 | Fall back from Gemini to Groq, and then to an offline guide with the retrieved text, when a language model is unavailable. |
+| FR-3.1 | Accept voice or text in Kannada, Kanglish and English. |
+| FR-3.2 | Reply in Kannada script when the question is in Kannada. |
+| FR-3.3 | Keep the recent conversation and the latest scan available as context. |
+| FR-3.4 | Keep leaf images attached to a chat thread across page refreshes. |
+| FR-4.1 | Create crop listings with price, quantity and phone number, validated before saving. |
+| FR-4.2 | Attach a multi-photo gallery with captions to each listing. |
+| FR-4.3 | Sort listings by distance from the buyer, and filter by price, variety, distance and keyword. |
+
+== 4.4 Non-Functional Requirements
+The non-functional requirements and their targets are listed in Table 4.2.
+T: Table 4.2: Non-functional requirements and targets
+W: 18,82
+| Area | Requirement or target |
+| Performance | Repeat (cache-hit) scan under 5 ms; first CNN call after start-up under 100 ms; ten parallel workers without deadlock. |
+| Security | Unauthenticated requests refused (401); one user cannot read another's data (403); SQL injection and cross-site scripting input stored only as text. |
+| Reliability | Language-model and speech failures must degrade to a fallback and not to an error; an empty model reply is never accepted as an answer. |
+| Language | Phase 2 target of at least 70% word accuracy on Kannada agricultural speech; a conversation window of at least ten turns. |
+| Safety | Chemical quantities in advice must be traceable to the retrieved source text. |
+| Usability | Contact, call and directions reachable in one tap; the same scan result shown consistently in the scan view and in chat. |
+
+== 4.5 Data Requirements
+=== 4.5.1 Leaf Images
+In Phase 2, three public datasets were combined into a composite dataset from which the classifier is derived. JMuBEN is an Arabica-specific coffee leaf set covering rust, leaf miner and Cercospora. PlantVillage provides numerous photos of single leaves and helps where the coffee-specific set is limited. PlantDoc adds low-quality field photographs with uneven lighting and background noise, which help to close the gap between photos taken in a laboratory and what a grower would take on an estate. The Phase 3 model recognises five conditions; Phoma Blight was not in the Phase 2 target list.
+Two sets of evaluations were reported for Phase 3. Images in the validation set come from the same distribution as the training data, while the "new leaf" set contains leaves that the model has never seen in any form and is a more honest indicator of behaviour on a new picture. A third, leak-free evaluation was added later, because an audit found that the 58,549 JMuBEN files come from only 861 distinct leaf patches; in this evaluation every copy of a patch stays on the same side of each fold.
+The fast automated tests do not use real images. The pytest suite uses Pillow to create synthetic and intentionally broken images to keep the tests fast and repeatable, not to test diagnostic accuracy. Four separate real-model tests load the deployed weights and classify one sample photograph of each class.
+=== 4.5.2 Advisory Knowledge Base
+The advisory engine responds from the CCRI text, which contains information on the identification, treatment and management of coffee diseases in Karnataka from the Central Coffee Research Institute, together with research articles on coffee diseases, pests and nutrition (14 PDF documents and 931 passages in all). The documents are broken up into passages and indexed twice, allowing a passage to be located by its meaning as well as by its exact wording. The dense index is a FAISS index of 1024-dimensional bge-m3 embeddings (768-dimensional BGE-base-en embeddings when no GPU is available); the sparse index is a BM25 keyword index over the same passages. Each passage carries a topic tag, which lets the pipeline prefer retrieved text on the disease that the classifier has named.
+The two indexes complement each other. Dense search finds a passage that means the same as the question even when the words differ. BM25 does better when the question contains a specific product or term, such as a fungicide name with a formulation code, that an embedding model may blur.
+=== 4.5.3 Live Weather
+In Phase 2, weather and elevation were simulated, followed by NASA POWER and Open Elevation. In Phase 3 the weather is fetched from Open-Meteo, which provides the temperature, humidity, rainfall, elevation and a three-day forecast for a given coordinate. If the app is not able to get a GPS fix, no default or invented reading is used; the advisory is still issued, but without weather. This is called the zero-mock policy, and it is checked by an automated test.
+=== 4.5.4 Application Data
+All the data written by the application is stored in a relational database (PostgreSQL, or SQLite for zero-configuration deployments) through SQLAlchemy: user accounts, cached scan results, marketplace listings and chats. Listing photos and chat images are stored as sanitised image files, with their captions and paths in the database, so that they survive page refreshes without bloating the database rows. Using an ORM keeps the data layer independent of the particular database engine during development and testing. The data assets are summarised in Table 4.3.
+T: Table 4.3: Data assets
+W: 22,22,24,32
+| Data asset | Used by | Source | Notes |
+| Composite leaf-image set | CNN training and evaluation | JMuBEN, PlantVillage, PlantDoc | Five classes in the final model |
+| CCRI text passages | Hybrid retrieval | Central Coffee Research Institute and research articles | 931 passages; dense (FAISS, 1024-d) and sparse (BM25) indexes |
+| Live microclimate | Favourability score and prompt | Open-Meteo | Temperature, humidity, rainfall, three-day forecast; never fabricated |
+| Users, cache, chats, listings | Whole application | Created by the app | SQLAlchemy models; photos as sanitised files |
+| Synthetic images | Automated tests | Generated with Pillow | Includes corrupted payloads |
+
+== 4.6 Software and Hardware Environment
+Development and testing were carried out on a Windows 11 laptop with an NVIDIA RTX 3070 Laptop GPU (CUDA 12) and Python 3.11. The server is a single FastAPI application on top of a relational database. The client is a React web app wrapped for Android using Capacitor 7, so it runs as a web app in a browser or as an installed app. Language-model calls are first sent to Gemini and then to Groq. A CPU fallback is available for the GPU parts, but the numbers in this report were measured on the GPU laptop.
+== 4.7 Constraints and Assumptions
+- The free Gemini tier allows only about 20 requests a day, so the system cannot depend on it alone.
+- There is currently no support for offline use, so diagnosis requires a connection to the backend. Weather data is available only at grid level, and soil data is not included.
+- The marketplace does not handle contracts or payments.
+- The Kannada word error rate was not measured in this work; the figure of 12.4% is the published value for the local speech model.
+== 4.8 Status of the Objectives
+The status of each objective at the end of Phase 3, and the section of this report in which it is discussed, are given in Table 4.4.
+T: Table 4.4: How the objectives were met by the end of Phase 3
+W: 26,50,24
+| Objective | Status | Where in this report |
+| Leaf classifier | Met: five classes, about 90% on validation, about 80% on new leaves and 97.9% in leak-free cross-validation; 75% confidence gate | Sections 6.1, 8.2 |
+| Grounded advisory engine | Met: hybrid retrieval, rerank, live weather and a dosage audit | Section 6.2 |
+| Kannada and English chatbot | Met: three-tier speech chain, language router and context fusion | Section 6.3 |
+| Direct marketplace | Met: listings with photos, Haversine sorting, Maps, call and WhatsApp | Section 6.4 |
+| Live environmental data | Met for temperature, humidity, rainfall and a three-day forecast; soil data not part of the build | Section 6.2 |
+| Integration | Met: all modules connected and exercised end to end | Chapters 5 and 7 |
+| Automated testing | Met: 373 of 373 tests pass | Sections 6.5, 8.1 |
+| Resilience to service failure | Met for the language-model and speech-recognition fallbacks | Sections 6.2, 6.3, 8.4 |
+| Open-source preference | Partly met: models, frameworks and test tools are open; Gemini and Groq are hosted APIs | Chapter 7 |
+
+**Language targets note:** The Phase 2 requirement was at least 70% word accuracy on Kannada agricultural speech. The word error rate of 12.4% quoted in this work is the published word error rate of the local Kannada model. It has not been measured on farmers' recordings, and this is highlighted in the limitations.
+
+= CHAPTER 5 | SYSTEM DESIGN
+== 5.1 Architectural Overview
+PlantIQ is organised into four layers, and a request moves through them from left to right: client and inputs, perception and processing, AI reasoning and advisory, and storage and outcomes (Figure 5.1).
+F: fig5_1_architecture.png | Figure 5.1: Four-layer architecture of PlantIQ | 6.3
+The plan in Phase 2 was to deploy a set of services individually behind a gateway. During integration, the four modules were combined into a single backend application that shares authentication, a database session and a common request format. This gave up the planned independent scaling in favour of simplicity, which was appropriate for this project, with one deployment target and a short integration window.
+== 5.2 The Four Layers
+Table 5.1 elaborates on the four primary layers of the system: client and inputs, perception and processing, AI reasoning and advisory, and storage and outcomes. It summarises the main components in each layer and the function of each layer in the overall flow of the system.
+T: Table 5.1: Contents and role of each layer
+W: 20,48,32
+| Layer | What sits in it | Role |
+| 1. Client and inputs | Mobile APK and web app (Capacitor 7); estate GPS; leaf photo upload; voice or text query in Kannada or English; crop lot details and photos | Collects everything the grower provides |
+| 2. Perception and processing | Microclimate service (Open-Meteo, infection-risk level and spray window); Module 1 CNN; speech-to-text with the language router; Module 4 marketplace | Turns raw inputs into structured signals: weather risk, a diagnosis with confidence, a transcribed query, a listing |
+| 3. AI reasoning and advisory | Module 2 hybrid RAG; LLM advisory (Gemini with Groq failover and an offline guide); Module 3 chatbot | Combines the signals with retrieved knowledge and writes a reply in the right language |
+| 4. Storage and outcomes | FAISS knowledge base; relational database for users, cache, chats and listings; media store; bilingual reply; Maps and WhatsApp hand-offs | Persists state and delivers the result or the next action |
+
+== 5.3 Request Flow
+The main flow for a grower with a sick leaf has nine steps.
+# The grower signs in and uploads a leaf photograph. If location is enabled, the app also sends the GPS coordinates of the estate.
+# The classifier checks its SHA-256 cache. On a miss it runs the ResNet-50 forward pass and returns a class, a confidence and the full probability distribution.
+# The microclimate service fetches the temperature, humidity and rainfall for the same coordinates from Open-Meteo and calculates a rule-based disease-favourability score.
+# The disease label, the confidence and the weather summary are passed to the retrieval pipeline. Dense and keyword search each return their top 20 passages, which are fused, reranked with a preference for the diagnosed disease and reduced to the top 3.
+# These passages, the disease and the weather are combined into a prompt. Gemini writes the answer, and Groq responds if Gemini is unavailable.
+# After the answer is generated, the dosage audit checks each dose in it against the retrieved text and marks the advisory as Verified or Caution.
+# The result is presented to the grower and saved to the database, so that the chatbot can continue from the scan.
+# When the grower asks a follow-up question in Kannada by speech, the speech chain converts the speech to text, the language router recognises the Kannada script and writes an English search question, and the answer comes back in Kannada script.
+# Once the crop is ready, the grower creates a listing. Listings are sorted by distance, and buyers can open Maps, call or start a WhatsApp chat in one tap.
+Context is carried along with the data in the links between layers. The grower can ask the chatbot a question such as "Will it get worse?", and it responds using the scan result, the live weather, the last 8 chat turns and the retrieved passages, without the grower repeating the diagnosis.
+== 5.4 Design Decisions
+**One format for a structured request.** The structure (Section 1.5.2) is the same for the classifier, the retrieval engine and the chatbot. This was by far the most helpful individual decision for integration.
+**A fallback for every external dependency.** Language-model calls fall back to Groq, and speech recognition falls back through three tiers. When no language model is available for the advisory, the system answers from an offline guide and the retrieved CCRI text alone. The fallbacks are tested and not taken for granted.
+**Caching by request.** A SHA-256 cache key built from the image, the user, the language and the query is used to serve the CNN result for a repeated request. The query is part of the key because an early version without it produced collisions.
+**Honesty when the model is unsure.** The system does not treat the label as settled if the top confidence is below 75%, and gives broader guidance instead. The threshold is tunable, and the score with which it is compared is not a calibrated probability, which is kept in mind throughout. **No invented inputs.** When no GPS is provided, the system does not generate fake weather, and when a number is not in the retrieved text, the system does not mark the dose as verified.
+== 5.5 Client and Deployment
+The client is a single web application wrapped with Capacitor 7 for Android. It can run as a web app in the browser or be installed as an APK. In this configuration, the app reaches the backend through a server address that can be set at run time. The one-tap phone, Maps and WhatsApp actions are made possible by the Android wrapper, which passes those links to the operating system as intents.
+== 5.6 Module Design Summaries
+=== 5.6.1 Module 1: Leaf Pathology
+Module 1 is based on a pre-trained ResNet-50 that is fine-tuned to classify five leaf conditions, with a fixed input resolution, accuracy requirements and a confidence threshold. Its design parameters are listed in Table 5.2.
+T: Table 5.2: Module 1 design parameters
+W: 30,22,48
+| Measure | Value | Comment |
+| Foliar classes | 5 | Leaf Miner, Leaf Rust, Phoma Blight, Cercospora, Healthy |
+| Input resolution | 224 x 224 | Standard ResNet input |
+| Validation accuracy | About 90% | Held-out images from the training distribution |
+| New-leaf accuracy | About 80% | Images unseen in training and validation |
+| Leak-free accuracy | 97.9% | Five-fold cross-validation on JMuBEN; macro-F1 0.970 |
+| Confidence gate | 75% | Tunable, not calibrated |
+| Saved model size | About 94 MB | Dropout 0.4 and a 2048-to-5 linear head |
+
+=== 5.6.2 Module 2: Advisory Engine
+Module 2 recommends treatments based on semantic and keyword retrieval, fuses the results with reciprocal rank fusion, and adds weather context, language-model responses and dosage safety checks. Its design parameters are listed in Table 5.3.
+T: Table 5.3: Module 2 design parameters
+W: 26,40,34
+| Element | Setting | Why |
+| Dense embeddings | bge-m3, 1024 dimensions (BGE-base-en, 768, on a CPU) | Meaning-based matching, including Kannada |
+| Sparse search | BM25 | Exact names and terms |
+| Candidates per method | 20 | Wide enough to catch the right passage |
+| Fusion constant | k = 60 | Standard reciprocal-rank fusion constant |
+| Final passages | 3 | Enough context without flooding the prompt |
+| Weather | Open-Meteo, never fabricated | Context without invented data |
+| Language model | Gemini 2.5 Flash, Groq as failover, offline guide last | Quality first, resilience second |
+| Safety check | Dosage regex audit | Flags quantities not in the source |
+
+=== 5.6.3 Module 3: Chatbot
+Module 3 provides a multilingual chatbot with an 8-turn conversational context and a three-tier speech recognition fallback, and it supports Kannada, Kanglish and English. Its key figures are listed in Table 5.4.
+T: Table 5.4: Module 3 key figures
+W: 45,55
+| Measure | Value |
+| Script detection time (fallback router) | Under 1 ms (0.08 ms measured) |
+| Speech-to-text tiers | 3 |
+| Chat context window | 8 turns |
+| Input languages | Kannada, Kanglish, English |
+| Reply language | Kannada script or English, following the user |
+| Chat turn without the language model | 0.22 s (median) |
+
+=== 5.6.4 Module 4: Marketplace
+With direct buyer–grower listings, photo galleries, proximity sorting, search filters and contact information, Module 4 offers a farmer-friendly marketplace that makes trade easier. Its features are listed in Table 5.5.
+T: Table 5.5: Module 4 features
+W: 22,40,38
+| Feature | Implementation | Benefit to the user |
+| Direct listings | Grower to buyer, no commission | Higher share of the price; no intermediary in discovery |
+| Photo galleries | Up to eight photos with captions, stored as sanitised files | Buyers can judge a lot before calling |
+| Unit normalisation | Quantities in kg and prices in Rs./kg, computed on the server | Lots sold in bags, quintals or tonnes can be compared |
+| Proximity | Haversine distance, ascending sort | Nearby lots come first |
+| Filters | Price range, variety, distance and keyword search | Quick narrowing of results |
+| Contact | Maps, tel: and wa.me links | One tap to navigate, call or chat |
+
+= CHAPTER 6 | PROPOSED METHODOLOGY
+This chapter explains the method chosen for each module and the reason for each choice.
+== 6.1 Module 1: Leaf Pathology
+=== 6.1.1 Why ResNet-50
+ResNet-50 was chosen because it is well understood, transfers well from ImageNet to leaf photographs, and fits on a laptop GPU for both training and serving. It is characterised by the residual connection. Each block learns a small correction and the input is then added back, so that gradients are maintained in a deep network and training is much less fragile than with a plain stack of fifty layers. The residual connection is given in Equation (6.1).
+E: H(x) = F(x) + x | (6.1)
+Here F(x) is what the block's layers compute and x is the input carried over the skip connection. If a block has nothing useful to add, it can learn F(x) close to zero and simply pass its input through.
+=== 6.1.2 Classification Head and Softmax
+The network is a fine-tuned ResNet-50 whose original 1000-class head has been replaced by a dropout layer with probability 0.4 followed by a linear layer from 2048 features to 5 outputs. The Phase 2 prototype used a dropout of 0.3. It was raised to 0.4 as a modest step against the generalisation gap discussed in Chapter 8. Raw scores are turned into class probabilities with the softmax function in Equation (6.2).
+E: P(c) = \frac{\exp(z_c)}{\sum_{i} \exp(z_i)} | (6.2)
+Here z is the vector of raw scores from the final layer and c is a class. The probabilities add up to one, which one of the tests checks explicitly.
+=== 6.1.3 Preprocessing
+Every image, whether from training or from a user, goes through the same sequence: convert to RGB, resize to 224 by 224 pixels, convert to a tensor and normalise with the ImageNet mean and standard deviation. This matters more than it might seem, because a model's serving inputs must match its training inputs. Before this, every upload passes an image guard that checks the file signature and size limits, removes metadata such as GPS coordinates and re-encodes the image as a clean JPEG. A test covers corrupted and unreadable uploads, which are rejected cleanly instead of crashing the request.
+=== 6.1.4 The SHA-256 Result Cache
+Rerunning the network for the same request wastes time and GPU capacity. The module therefore calculates a SHA-256 hash of the image, the user, the language and the query, and returns the previous result if this hash has been stored before. The query and language are part of the key on purpose: a first version hashed less, and a test showed that two different questions about the same image could land on the same entry.
+=== 6.1.5 The Confidence Gate
+A classifier always outputs a most likely class, even for an input unlike anything it has seen before. The top softmax confidence is therefore compared with a threshold of 75%. Below it, the system does not commit to a specific disease and provides more general advice. In the current build, a result is also marked uncertain when a disease is predicted but the best retrieved passage scores below 0.60, so that weak evidence is flagged as well. Two caveats are on record. First, 75% is a tunable value and was not taken from a calibration study. Second, softmax outputs are not true probabilities, so a confidence of 75% does not mean that the model is correct 75% of the time.
+== 6.2 Module 2: Hybrid RAG and Advisory Engine
+=== 6.2.1 Purpose
+After a disease has been identified, the grower must know what to do about it. The key principle of this module is that the answer should be drawn from "trusted text" and not from what the language model can recall. The model is used to write the advice in readable form, but the facts it writes are retrieved first, following the retrieval-augmented generation pattern.
+=== 6.2.2 Live Microclimate and the Favourability Score
+Before retrieval starts, the module fetches the temperature, humidity and rainfall for the grower's coordinates from Open-Meteo. They are fed into a simple rule-of-thumb favourability score. The rule is based on the behaviour of coffee leaf rust, which spreads when the leaves are wet and the air is moderately warm (humidity ≥ 80% and 20 to 28 °C). No learned model is used here, so the rule can be explained to a grower and checked by an agronomist. It is also a coarse instrument, based on the weather of the grid cell rather than of the estate, and it needs to be improved with on-farm sensors. The module does not guess: if there is no GPS location, no weather goes into the prompt and no weather advisory is generated. The current build reports the score as a high, moderate or low risk level (high when the rule above holds, moderate when the humidity is at least 65% or it has rained that day) and recommends a spray window from the three-day forecast.
+=== 6.2.3 Three-Stage Hybrid Retrieval
+Retrieval runs in three stages, as shown in Figure 6.1.
+F: fig6_1_rag_pipeline.png | Figure 6.1: Hybrid retrieval, generation and dosage audit pipeline | 4.0
+**Stage 1: Dense and Sparse Search.** The question is expanded with the disease name and searched twice. Dense search uses FAISS over bge-m3 embeddings (BGE-base-en on a CPU) and finds passages that match in meaning. Sparse search uses BM25 and finds passages that match in wording. Each returns its top 20.
+**Stage 2: Reciprocal Rank Fusion.** The two ranked lists are merged with reciprocal rank fusion. A passage earns a score from each list that depends only on its rank, and the scores are added, so a passage that ranks high in both lists rises to the top without anyone having to compare the incompatible raw scores of the two methods. The constant is 60, as shown in Equation (6.3).
+E: \mathrm{RRF}(d) = \frac{1}{60 + \mathrm{rank}_{\mathrm{dense}}(d)} + \frac{1}{60 + \mathrm{rank}_{\mathrm{sparse}}(d)} | (6.3)
+**Stage 3: Cross-Encoder Rerank.** A cross-encoder (bge-reranker-v2-m3 on a GPU, MiniLM on a CPU) reads the question and each candidate passage at the same time and rates the degree of match. A sigmoid squeezes the score into the range 0 to 1 (Equation (6.4)). Passages on the diagnosed disease receive a small preference of 0.1 for ordering, near-duplicate passages are removed, and the best 3 passages are retained.
+E: \sigma(z) = \frac{1}{1 + e^{-z}} | (6.4)
+There is a practical reason for the additional step. The cross-encoder is more precise but slower, while fusion is faster but coarser, so the cheap stage cuts the pool from the entire index to a few dozen passages and the expensive stage cuts it down to the top three.
+=== 6.2.4 Generating the Answer
+The prompt is made up of the disease, the weather summary, the three passages and the user's question, and Gemini 2.5 Flash writes the advisory. The free Gemini tier supports only about 20 requests per day, so the module cannot rely on it alone. If Gemini fails or the quota runs out, the call goes to a 120B model (gpt-oss-120b) hosted on Groq; if that is also not possible, the system displays an offline guide for the disease together with the retrieved CCRI text. During testing, the quota did run out, but the fallbacks ensured that all tests passed.
+=== 6.2.5 The Dosage Audit
+The most critical mistake in agricultural advice is a wrong dose. To minimise it, a regular-expression check finds every dosage in the final answer and searches for it in the retrieved CCRI passages. The advisory is marked "Verified" if every dosage appears exactly as in the source; if any dosage cannot be found, it is labelled "Caution".
+The audit has a limited scope, and it is important not to overstate it. It confirms that a quantity is present in the source text, which catches invented numbers. It does not check whether the quantity is agronomically right for the grower's situation, whether the source is current, or whether the number belongs to the right product.
+In Phase 2, answer quality was measured by asking a domain expert to score the answers to 30 query-reference pairs; answers generated with retrieval had a 6.7% hallucination rate, while answers without retrieval had a 43.3% hallucination rate. The same expert evaluation was not repeated for the Phase 3 pipeline. Instead, Phase 3 adds the automatic dosage check and the automated tests, which check behaviour but are not a substitute for another round of expert review, together with the automated benchmark reported in Section 8.6.
+== 6.3 Module 3: Multimodal Chatbot and Linguistic Pre-Router
+=== 6.3.1 Role of the Chatbot
+The advisory engine gives one answer to one scan, but a grower wants to have a conversation: "What if it rains tomorrow?", "Is it safe to spray now?", "How much is needed for a small plot?". The chatbot handles exactly this. It accepts voice or text in Kannada, Kanglish or English, remembers the earlier turns of the conversation and has access to the scan and weather that started it.
+=== 6.3.2 The Linguistic Pre-Router
+The Phase 2 plan was to produce advice in English and have it translated by a second model call, which added a second source of error and a delay. In Phase 3, a small component called the pre-router handles language. It validates the query and checks whether it contains Kannada script using Unicode character ranges. This regular-expression check takes under a millisecond (0.08 ms as measured) to run. In the current build, the router first asks the language model, in a short JSON-mode call, for the language and one self-contained English search question, and it also receives the last two exchanges so that follow-up questions are understood; the Unicode check is used when the language model is unavailable.
+For a Kannada query the pre-router does two things. It creates an English query for the retrieval engine (because the knowledge base is written in English), and it appends an instruction for the language model to answer in Kannada script. No separate translation of the answer is needed, because only the final reply is in Kannada. The drawback is that the system relies on the written Kannada of the language model, which is good but not perfect; validation by native speakers should be part of future work.
+=== 6.3.3 Voice Input with a Three-Tier Fallback
+The chatbot accepts voice input and uses three tiers of speech recognition, so that a failure of the main method does not leave the grower without a transcript. The weakest aspect of Phase 2 was the speech recognition system, which achieved less than 55% accuracy on Kannada words in the disease vocabulary. In Phase 3 the single browser recogniser was replaced by a three-tier chain (Figure 6.2 and Table 6.1). The audio is first resampled to 16 kHz and then passed to each tier in order until one succeeds. The transcript is placed in the input box for the grower to correct; it is never sent automatically.
+F: fig6_2_speech_chain.png | Figure 6.2: Speech-to-text fallback chain and language pre-router | 6.0
+T: Table 6.1: Speech-to-text tiers
+W: 16,40,20,24
+| Tier | Engine | Where it runs | Used for |
+| Primary | IndicConformer-600M (Kannada) or Svarah Whisper (English) | Local GPU or CPU | First choice; no network needed |
+| Failover 1 | Groq Whisper (whisper-large-v3) | Cloud API | If the local model fails |
+| Failover 2 | Gemini Audio | Cloud API | Last resort |
+
+Putting the local model first has two benefits. It does not depend on a good network connection or on API quotas, and for Kannada it uses a model developed for Indian languages. The published word error rate of the Kannada model is 12.4%; it has not been measured on farmers' recordings in this work. The cloud tiers cover a failure of the local model, so that the grower is not left with nothing.
+=== 6.3.4 Context Fusion
+The chatbot does not reply to a message in isolation. For each request, one prompt is composed from four sources: the previous 8 turns of the conversation, the current weather at the grower's location, the current CNN diagnosis and the passages retrieved by the hybrid RAG engine. The language rule is written in the last line. This context means that the grower does not need to mention the disease when asking "How bad is this?". The 8-turn window is a compromise between the size of the context window and memory. The Phase 2 requirement was at least 10 turns, so the shipped window is slightly smaller than originally required.
+=== 6.3.5 Visual Memory
+If the grower scans a leaf, moves to the chat and then refreshes the page, the photo should still be there. The chatbot saves the leaf images sent by the user and links them to the user's thread, so that each thread keeps its images. In the current build the images are stored as sanitised files rather than as Base64 strings inside the database, which keeps the database rows small and removes any location metadata from the photos.
+== 6.4 Module 4: Direct Spatial Crop Marketplace
+=== 6.4.1 What the Marketplace Does
+The marketplace is where the grower's harvest is sold. A grower lists a lot of coffee, a buyer finds it, and the two contact each other directly. The module is deliberately small: it does not process payments, does not charge any commission and places no intermediary between the two parties during discovery. Its purpose is to make the first step easy: to be visible, to be found by someone nearby and to start a conversation.
+=== 6.4.2 Listings
+A listing contains the variety of coffee, the quantity, the price per kilogram and the grower's contact details. Each listing can have a gallery of up to eight photos, each with a caption. Because growers trade in different units, the server converts quantities to kilograms and prices to rupees per kilogram, so that lots sold in bags, quintals or tonnes can be compared. Data is validated before saving: price and quantity must be above zero, and the phone number must be valid. This may seem obvious, but it is where poor data would otherwise reach the buyers.
+=== 6.4.3 Finding Nearby Lots
+In Phase 2 the design called for a PostGIS spatial index and a Node.js service. In the final build, proximity is computed within the application using the Haversine formula, which gives the straight-line distance between two points on a sphere (Equation (6.5)).
+E: d = 2R \arcsin\left(\sqrt{\sin^{2}\left(\frac{\Delta\varphi}{2}\right) + \cos\varphi_{1}\cos\varphi_{2}\sin^{2}\left(\frac{\Delta\lambda}{2}\right)}\right) | (6.5)
+Here φ is the latitude, λ is the longitude and R is the radius of the Earth (6371 km). For example, two town centres in the coffee belt that are about 0.9 degrees of latitude apart are separated by about 99 km. This is a straight-line distance, and the road distance will be greater. For each listing the app computes the distance from the buyer and sorts the results in ascending order. This is fast enough for a regional marketplace and does not require a spatial database extension. If the number of listings reaches thousands, a spatial index would be worthwhile.
+=== 6.4.4 Filters and One-Tap Actions
+The results can be filtered by a price range, variety, minimum lot size, maximum distance and a keyword search, each applied as a database query. These filters are combined with distance sorting, so a buyer can ask for, say, Arabica below a certain price, nearest first. When a buyer has found a lot, three actions are one tap away: a Google Maps URL opens directions to the farm gate, a tel: link opens the phone dialler with the grower's number, and a wa.me link opens WhatsApp with a pre-written message containing the lot details. These hand-offs are the reason the web app was wrapped with Capacitor: on Android the wrapper passes the links to the operating system, which opens the right app. For the same reason, in-app messaging was not built, because growers and buyers already use WhatsApp and the phone dialler every day.
+== 6.5 Testing Methodology
+=== 6.5.1 Use of Automated Testing
+In Phase 2 each module was tested by hand and the results were reported in tables. This was enough to show that the ideas worked, but it would not have supported integration. Once the modules started calling one another, an error in one module could cause problems three steps away, and manual checking would not catch such errors. The responsibility was also greater because the application gives chemical spraying recommendations and stores user account information, where inaccurate advice or a data breach could have serious real-world consequences. In Phase 3, therefore, an automated suite was created with pytest for the backend, later joined by Vitest and Playwright for the frontend, and it was treated as part of the product.
+=== 6.5.2 Schedule
+Testing was carried out over eight weeks in four sprints, moving from small units to the whole application (Table 6.2).
+T: Table 6.2: Testing sprints
+W: 10,10,80
+| Sprint | Weeks | Activity |
+| 1 | 1-2 | Unit tests per module: ResNet-50 weights and head, FAISS and BM25 index integrity, Kannada script regex, database schema |
+| 2 | 3-4 | Functional tests per module: softmax output, zero-mock weather, RRF and sigmoid arithmetic, chat memory, marketplace create-read-update-delete |
+| 3 | 5-6 | Integration and end to end: authentication, scan to CNN to RAG advisory, cache hit, scan-to-chat hand-off, marketplace to Maps and WhatsApp |
+| 4 | 7-8 | Security and robustness: authentication, tokens, SQL injection, cross-site scripting, dosage guardrail, corrupted uploads |
+
+=== 6.5.3 Test Methods and the Reason for Each
+Table 6.3 lists the test methods used: unit, functional, integration, security, performance, real-model, frontend and end-to-end tests. Together, 373 tests check that individual modules function properly, that the system components are integrated correctly, that security is maintained and that performance is reliable.
+T: Table 6.3: Test methods
+W: 40,10,50
+| Method | Tests | Why it is needed |
+| Unit (per module, pytest) | 162 | Isolates faults to one module before they compound |
+| Functional journeys (multi-step, through the API) | 3 | Checks complete user journeys across modules |
+| Integration (API and database via the FastAPI test client) | 71 | Modules pass data to each other, so the pipeline must be verified as a whole |
+| Security | 59 | The app handles user accounts and gives chemical spray advice, where a wrong answer can cause real harm |
+| Performance (hardware-dependent) | 10 | Latency, load and concurrency checks; figures depend on test hardware |
+| Real model | 4 | Loads the deployed CNN weights and the bge-m3 index |
+| Frontend unit and component (Vitest) | 52 | Checks screens, components and the English and Kannada dictionaries |
+| End-to-end UI (Playwright, Pixel 7) | 12 | Runs complete journeys in a phone-sized browser |
+| Total | 373 | |
+
+The integration tests exercise routing, authentication and the database without starting a server, using the real application in memory with the FastAPI test client. The performance tests are marked hardware-dependent, because their figures reflect the laptop used rather than a universal property of the code.

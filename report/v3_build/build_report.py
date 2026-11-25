@@ -457,13 +457,14 @@ def names_table(font=ARIAL, size=12):
                    keep=True, total_width=Inches(4.2), line=1.15)
     for r in t.rows:
         for c in r.cells:
+            c.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
             for run in c.paragraphs[0].runs:
                 run.bold = True
     return t
 
 
 def cover():
-    p = centre("", 12, before=0)
+    p = centre("", 12, before=26)  # balances the page vertically
     p.add_run().add_picture(LOGO, width=Inches(1.6))
     centre("Dissertation on", 16, bold=True, italic=True, before=10, after=10)
     centre(f"\u201c{TITLE}\u201d", 16, bold=True, after=14)
@@ -488,7 +489,7 @@ def cover():
 
 
 def certificate():
-    p = centre("", 12)
+    p = centre("", 12, before=18)
     p.paragraph_format.page_break_before = True
     p.add_run().add_picture(LOGO, width=Inches(1.3))
     centre("PES UNIVERSITY", 16, bold=True, before=2)
@@ -520,7 +521,11 @@ def certificate():
     rows = [[("Name of the Examiners", {"bold": True}), ("Signature with Date", {"bold": True})],
             ["1. ______________________________", "______________________________"],
             ["2. ______________________________", "______________________________"]]
-    t = make_table(rows, [1, 1], header=False, borders=False, size=10, font=ARIAL, line=1.8)
+    t = make_table(rows, [1, 1], header=False, borders=False, size=10, font=ARIAL, line=1.8,
+                   total_width=Inches(5.4))
+    for r in t.rows:
+        for c in r.cells:
+            c.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
 
 def front_page(title, first=False):
@@ -604,6 +609,7 @@ if VARIANT != "v3":
 # ------------------------------------------------------------------ build
 sec0 = doc.sections[0]
 setup_section(sec0)
+sec0.left_margin = sec0.right_margin = (LM + RM) // 2  # equal side margins, same text width
 st = doc.styles["Normal"]
 st.font.name = TNR
 st.font.size = Pt(12)

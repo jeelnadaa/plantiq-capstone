@@ -18,11 +18,11 @@ Development and testing were done entirely on a Windows 11 laptop equipped with 
 The classifier is a PyTorch ResNet-50 modified with a dropout layer (0.4) and a linear layer from 2048 features to 5 outputs. The saved model is approximately 94 MB. The uploaded image is converted to RGB, resized to 224 x 224, normalised and fed into the network. The result (class, confidence and full probability vector) is cached under the SHA-256 key in the cache table. Training and inference use the same preprocessing function to eliminate one common source of silent error. The procedure is given in Algorithm 7.1.
 A: Algorithm 7.1: Leaf classification with caching and confidence gate
 INPUT: image, user_id, language, query
-1. key <- SHA256(image + user_id + language + query)
+1. key ← SHA256(image + user_id + language + query)
 2. IF key exists in cache THEN RETURN cached result
-3. tensor <- Normalise(Resize(ToRGB(image), 224 x 224))   // reject if unreadable
-4. probs <- Softmax(ResNet50(tensor))
-5. label <- argmax(probs); conf <- 100 * max(probs)
+3. tensor ← Normalise(Resize(ToRGB(image), 224 x 224))   // reject if unreadable
+4. probs ← Softmax(ResNet50(tensor))
+5. label ← argmax(probs); conf ← 100 * max(probs)
 6. IF conf < 75 THEN mark result as "uncertain" (broader guidance)
 7. store (label, conf, probs) in cache under key
 8. RETURN label, conf, probs
@@ -32,29 +32,29 @@ The retrieval code builds two indexes over the same CCRI passages, one from bge-
 The dosage audit extracts quantities from the answer using a regular expression and checks that each quantity appears in the retrieved passages. In the first version of the pattern, the word-boundary marker (which does not match immediately after a percent sign) meant that percentage doses were missed. The boundary logic was rewritten and a regression test was added. Number words are now also converted to digits, so that "four litres" is audited as "4 L". The complete procedure is given in Algorithm 7.2.
 A: Algorithm 7.2: Hybrid retrieval, generation and dosage audit
 INPUT: disease, question, gps (optional)
-1. weather <- OpenMeteo(gps) IF gps given ELSE none   // never fabricate
-2. q <- question + disease
-3. D <- top 20 of FAISS_search(bge-m3(q)); S <- top 20 of BM25_search(q)
-4. FOR each passage d in D and S: score(d) <- 1/(60+rank_D) + 1/(60+rank_S)
-5. C <- passages sorted by score
-6. R <- top 3 of C ranked by Sigmoid(CrossEncoder(q, passage)),
+1. weather ← OpenMeteo(gps) IF gps given ELSE none   // never fabricate
+2. q ← question + disease
+3. D ← top 20 of FAISS_search(bge-m3(q)); S ← top 20 of BM25_search(q)
+4. FOR each passage d in D and S: score(d) ← 1/(60+rank_D) + 1/(60+rank_S)
+5. C ← passages sorted by score
+6. R ← top 3 of C ranked by Sigmoid(CrossEncoder(q, passage)),
       +0.1 if tag = disease, near-duplicates skipped
-7. prompt <- disease + weather + R + question
-8. answer <- Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE offline guide + text of R
-9. IF every dosage in answer occurs in R THEN label <- "Verified" ELSE label <- "Caution"
+7. prompt ← disease + weather + R + question
+8. answer ← Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE offline guide + text of R
+9. IF every dosage in answer occurs in R THEN label ← "Verified" ELSE label ← "Caution"
 10. RETURN answer, label
 
 == 7.5 Module 3: Chatbot
 The language router asks the language model for the language of the message and one English search question, and falls back to a short regular-expression function over Unicode character ranges. For a Kannada query, the English question is used for retrieval and an instruction to answer in Kannada script is added. Audio is resampled to 16 kHz and handed to the speech chain. The conversation history, weather and latest diagnosis are merged with the retrieved passages into the prompt. Leaf images sent in the chat are saved as sanitised files and linked to the thread through SQLAlchemy. One chatbot turn is given in Algorithm 7.3.
 A: Algorithm 7.3: Chatbot turn
 INPUT: text or audio, user_id, thread_id, gps, image (optional)
-1. IF audio THEN text <- STT_Cascade(Resample(audio, 16 kHz))
-2. (english_query, target_language) <- Router(text, last 2 exchanges)   // Unicode check as fallback
-3. weather <- OpenMeteo(gps) IF gps given
-4. diagnosis <- ResNet50 result IF image given ELSE latest scan of user
-5. passages <- HybridRetrieve(english_query, diagnosis)
-6. prompt <- last 8 turns + weather + diagnosis + passages + language rule
-7. reply <- Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE offline reply
+1. IF audio THEN text ← STT_Cascade(Resample(audio, 16 kHz))
+2. (english_query, target_language) ← Router(text, last 2 exchanges)   // Unicode check as fallback
+3. weather ← OpenMeteo(gps) IF gps given
+4. diagnosis ← ResNet50 result IF image given ELSE latest scan of user
+5. passages ← HybridRetrieve(english_query, diagnosis)
+6. prompt ← last 8 turns + weather + diagnosis + passages + language rule
+7. reply ← Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE offline reply
 8. save turn (and image file) to thread_id; RETURN reply
 
 == 7.6 Module 4: Marketplace
@@ -62,12 +62,12 @@ The marketplace is a FastAPI router over SQLAlchemy models. Photos are stored as
 A: Algorithm 7.4: Listing creation and nearby search
 CREATE:
 1. VALIDATE price > 0, quantity > 0, phone is valid   // else reject
-2. qty_kg, price_per_kg <- Normalise(quantity, unit, price, price_unit)
-3. photos <- up to 8 sanitised image files with captions
-4. maps_url <- Maps link from farm latitude and longitude
+2. qty_kg, price_per_kg ← Normalise(quantity, unit, price, price_unit)
+3. photos ← up to 8 sanitised image files with captions
+4. maps_url ← Maps link from farm latitude and longitude
 5. save listing to database
 SEARCH:
-6. FOR each listing L: L.distance <- Haversine(buyer, L.location)
+6. FOR each listing L: L.distance ← Haversine(buyer, L.location)
 7. apply price, variety, distance and keyword filters
 8. sort listings by distance ascending
 9. attach wa.me link with URL-encoded message; RETURN listings
@@ -97,7 +97,7 @@ W: 45,55
 
 These tools help to test the functionality of the APIs, model performance, retrieval accuracy, database security and image processing, ensuring that the system works reliably across all modules.
 == 7.8 Benefits and Drawbacks of the Approach
-**Benefits.** The fast backend suite runs without a GPU, using deterministic fakes for the models, so it was possible to run it after nearly every change. It discovered real bugs, such as cache-key collisions, the failure to audit percentages and the absence of a guard against an empty language-model reply (Section 8.4). It also confirmed the zero-mock weather rule and the 403 response returned when a user attempts to access another user's data, for the cases tested.
+**Benefits.** The fast backend suite runs without a GPU, using deterministic fakes for the models, so it was possible to run it after nearly every change. Real bugs were discovered by the suite, such as cache-key collisions, the failure to audit percentages and the absence of a guard against an empty language-model reply (Section 8.4). The zero-mock weather rule and the 403 response returned when a user attempts to access another user's data were also confirmed, for the cases tested.
 **Drawbacks.** Some tests require NVIDIA hardware, although a CPU fallback exists. The free tier of Gemini is limited to about 20 requests per day, so fallbacks to Groq and local resources were needed. The fast tests rely on synthetic leaf images rather than a large set of actual field photographs, so they do not report the accuracy of the diagnosis in the field.
 
 = CHAPTER 8 | RESULTS AND DISCUSSION
@@ -116,11 +116,11 @@ W: 34,22,26,18
 | Cache-hit speed | Under 5 ms | 0.85 ms | Exceeded |
 | CNN cold start | Under 100 ms | 704 ms | Missed |
 
-Two points should be noted about this table. First, the results "0 leaks" and "401 on tested routes" refer to the cases for which tests were written. They show that these paths are safe, not that they are the only safe paths. Second, the performance figures come from a single laptop and can differ elsewhere.
+Two points should be noted about this table. First, the results "0 leaks" and "401 on tested routes" refer to the cases for which tests were written. They confirm that the tested paths are secure, but they do not guarantee that untested paths are free of vulnerabilities. Second, the performance figures come from a single laptop and can differ elsewhere.
 == 8.2 Accuracy of the Classifier
 The CNN achieved a validation accuracy of 90% and an accuracy of 80% on new leaf images. A later leak-free five-fold cross-validation on the public JMuBEN images measured an accuracy of 97.9% and a macro-F1 of 0.970. These results are compared in Figure 8.1.
 F: fig8_1_accuracy.png | Figure 8.1: Classifier accuracy on the validation set, on new leaves and in leak-free cross-validation | 5.2
-The results show that the model reaches a good accuracy on the validation data and generalises reasonably to unseen leaf images. The validation score shows that the model learned its training distribution. The new-leaf score is closer to what a grower will see, and the 10-point difference is likely due to features such as background or lighting that do not always transfer to a new photo. A model trained on a mix of clean and field images performs best on data similar to its training set, while a real estate includes lighting, soil splashes, partial leaves and overlapping foliage that no curated set captures. The same pattern was observed in Phase 2.
+The results show that the model reaches a good accuracy on the validation data and generalises reasonably to unseen leaf images. The validation score shows that the model learned its training distribution. The new-leaf score is closer to what a grower will see, and the 10-point difference is likely due to features such as background or lighting that do not always transfer to a new photo. A model trained on a mix of clean and field images performs best on data similar to its training set, while an actual coffee estate includes variable lighting, soil splashes, partial leaves and overlapping foliage that no curated set captures. The same pattern was observed in Phase 2.
 The leak-free evaluation was added because an audit of the JMuBEN dataset found that its 58,549 files come from only 861 distinct leaf patches, so a random split places a copy of almost every test image in the training set. With every copy of a patch kept on the same side of each fold, the classifier reaches an accuracy of 97.9%. The hardest pair is Phoma Blight and leaf miner, and the F1-score for Phoma Blight is 0.949. At the 75% confidence gate, the classifier answers 99.3% of the images, with an accuracy of 98.1% on those it answers. These images are close-up, evenly lit patches from a single dataset, so the figure is an upper bound for field photographs.
 Per-class precision and recall on field photographs have not yet been calculated, so it cannot be claimed that one disease is recognised in the field more reliably than another. The practical answer that the system gives to the gap is the 75% confidence gate: when the model is unsure, the advice becomes broader and the model does not claim to be specific. The prudent course is therefore to gather more field photos, keep the gate in place and present the results as a decision aid to be verified with an agronomist.
 == 8.3 Speed
@@ -153,7 +153,7 @@ Gemini 2.5 Flash sometimes spent its output budget on internal "thinking" tokens
 === 8.4.5 Language-Model Quota
 The free Gemini tier allows about 20 requests per day, and the quota ran out during testing. The Groq fallback and the offline guide kept every test passing, which confirmed that the fallback chain works in practice and not only on paper.
 === 8.4.6 Chatbot Faults Found by the Benchmark
-The chatbot benchmark exposed three faults. The language router saw only the current message, so two of ten follow-up questions were answered wrongly; weather keywords matched inside two Kannada compound words; and the offline reply for Kannada users quoted English excerpts. The router now receives the last two exchanges, weather keywords must start a word, and the offline Kannada reply cites the document pages in Kannada. Regression tests were added for all three fixes.
+Three faults were exposed by the chatbot benchmark. The language router saw only the current message, so two of ten follow-up questions were answered wrongly; weather keywords matched inside two Kannada compound words; and the offline reply for Kannada users quoted English excerpts. The router now receives the last two exchanges, weather keywords must start a word, and the offline Kannada reply cites the document pages in Kannada. Regression tests were added for all three fixes.
 == 8.5 Field Feedback
 An initial round of field testing was carried out with coffee planters who were willing to try the application and give their honest feedback. Their comments on usability were positive. The round was informal: no task-completion or time-on-task figures were recorded, and the number of participants was small. A structured pilot with more growers and buyers is planned (Section 9.8).
 == 8.6 Comparison with Common Alternatives
@@ -275,7 +275,7 @@ W: 22,78
 # Re-score a new sample of advisories, and have native speakers review the Kannada output.
 # Run a structured pilot with more growers and buyers, recording task completion and time on task.
 == 9.9 Closing Remark
-PlantIQ takes a grower from a sick leaf to an informed treatment decision, which should always be confirmed with an agronomist, and on to a direct sale, in the grower's own language. The project's usefulness is derived from the combined contribution of all these components rather than from any single component individually.
+A grower is guided by PlantIQ from a sick leaf to an informed treatment decision, which should always be confirmed with an agronomist, and on to a direct sale, in the grower's own language. The project's usefulness is derived from the combined contribution of all these components rather than from any single component individually.
 
 = REFERENCES
 R: S. Selva Kumar, I. A. Banday, V. V. Shanbhag, A. K. M. A. Khan and M. Gada, "Overcoming LLM challenges using RAG-driven precision in coffee leaf disease remediation," in ~Proc. Int. Conf. Emerging Technologies in Computer Science for Interdisciplinary Applications (ICETCS)~, Bengaluru, India, 2024, doi: 10.1109/ICETCS61022.2024.10543859.

@@ -569,15 +569,15 @@ ACK = [
 
 ABSTRACT = [
     "While Karnataka is the leading producer of coffee in India, its small farmers lack timely advice on leaf diseases "
-    "in their local language and have little direct access to buyers without intermediaries. PlantIQ brings diagnosis, "
-    "advice, conversation and market access together in one application. A fine-tuned ResNet-50 identifies five leaf "
-    "conditions, scoring about 90% on validation images, about 80% on unseen leaves and 97.9% in a leak-free "
-    "cross-validation on public images. Its result feeds a hybrid retrieval-augmented advisory engine that combines "
-    "FAISS, BM25, rank fusion, a cross-encoder reranker and live weather, and a dosage audit labels each answer "
-    "Verified or Caution.",
-    "A Kannada and English chatbot accepts voice or text, and a direct marketplace sorts listings by distance with "
-    "one-tap Maps, call and WhatsApp. On 75 coffee questions, the hybrid retriever finds the supporting evidence for "
-    "87% of questions, against 50% for dense-only retrieval. All 373 automated tests pass; one latency target, the "
+    "in their local language and have little direct access to buyers without intermediaries. Diagnosis, advice, "
+    "conversation and market access are brought together in one application. Five leaf conditions are identified by a "
+    "fine-tuned ResNet-50, which scores about 90% on validation images, about 80% on unseen leaves and 97.9% in a leak-free "
+    "cross-validation on public images. Its result is passed to a hybrid retrieval-augmented advisory engine that combines "
+    "FAISS, BM25, rank fusion, a cross-encoder reranker and live weather, and each answer is labelled Verified or "
+    "Caution by a dosage audit.",
+    "Voice or text input is accepted by a Kannada and English chatbot, and listings are sorted by distance in a direct "
+    "marketplace with one-tap Maps, call and WhatsApp. On 75 coffee questions, the supporting evidence is found by the "
+    "hybrid retriever for 87% of questions, against 50% for dense-only retrieval. All 373 automated tests pass; one latency target, the "
     "first CNN call after start-up (704 ms), was missed.",
 ]
 
@@ -595,12 +595,12 @@ def list_page(title, header, entries, groups=None):
 
 ABSTRACT_OLD = [
     "While Karnataka is the leading producer of coffee in India, its small farmers lack timely advice on leaf diseases "
-    "in their local language and have little direct access to buyers without intermediaries. A fine-tuned ResNet-50 "
-    "identifies five leaf conditions, scoring about 90% on validation images and about 80% on unseen leaves. Its result "
-    "feeds a hybrid retrieval-augmented advisory engine that combines FAISS, BM25, rank fusion, a cross-encoder reranker "
-    "and live weather, and a dosage audit labels each answer Verified or Caution.",
-    "A Kannada and English chatbot accepts voice or text, and a direct marketplace sorts listings by distance with "
-    "one-tap Maps, call and WhatsApp. All 48 automated tests pass in about 103 seconds; one latency target, the first "
+    "in their local language and have little direct access to buyers without intermediaries. Five leaf conditions "
+    "are identified by a fine-tuned ResNet-50, which scores about 90% on validation images and about 80% on unseen "
+    "leaves. Its result is passed to a hybrid retrieval-augmented advisory engine that combines FAISS, BM25, rank "
+    "fusion, a cross-encoder reranker and live weather, and each answer is labelled Verified or Caution by a dosage audit.",
+    "Voice or text input is accepted by a Kannada and English chatbot, and listings are sorted by distance in a direct "
+    "marketplace with one-tap Maps, call and WhatsApp. All 48 automated tests pass in about 103 seconds; one latency target, the first "
     "CNN call after start-up (704 ms), was missed.",
 ]
 if VARIANT != "v3":

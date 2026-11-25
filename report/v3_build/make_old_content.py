@@ -128,31 +128,31 @@ R[3] += [
     ("one from bge-m3 vectors and another", "one from BGE-base-en vectors and another"),
     ("it falls back to the Groq-hosted model, and finally to the offline guide and the retrieved text.", "it falls back to the Groq-hosted model, and finally to the retrieved text."),
     (' Number words are now also converted to digits, so that "four litres" is audited as "4 L".', ""),
-    ("3. D <- top 20 of FAISS_search(bge-m3(q)); S <- top 20 of BM25_search(q)", "3. D <- top 15 of FAISS_search(BGE(q)); S <- top 15 of BM25_search(q)"),
-    ("5. C <- passages sorted by score\n6. R <- top 3 of C ranked by Sigmoid(CrossEncoder(q, passage)),\n      +0.1 if tag = disease, near-duplicates skipped",
-     "5. C <- passages sorted by score, filtered to tag = disease\n6. R <- top 3 of C ranked by Sigmoid(CrossEncoder(q, passage))"),
-    ("8. answer <- Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE offline guide + text of R", "8. answer <- Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE text of R"),
+    ("3. D ← top 20 of FAISS_search(bge-m3(q)); S ← top 20 of BM25_search(q)", "3. D ← top 15 of FAISS_search(BGE(q)); S ← top 15 of BM25_search(q)"),
+    ("5. C ← passages sorted by score\n6. R ← top 3 of C ranked by Sigmoid(CrossEncoder(q, passage)),\n      +0.1 if tag = disease, near-duplicates skipped",
+     "5. C ← passages sorted by score, filtered to tag = disease\n6. R ← top 3 of C ranked by Sigmoid(CrossEncoder(q, passage))"),
+    ("8. answer ← Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE offline guide + text of R", "8. answer ← Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE text of R"),
     ("The language router asks the language model for the language of the message and one English search question, and falls back to a short regular-expression function over Unicode character ranges. For a Kannada query, the English question is used for retrieval and an instruction to answer in Kannada script is added.",
      "The pre-router is a short regular-expression function over Unicode character ranges. For a Kannada query, it creates an English query for retrieval and adds an instruction to return the answer in Kannada script."),
     ("Leaf images sent in the chat are saved as sanitised files and linked to the thread through SQLAlchemy.", "Leaf images sent in the chat are saved as Base64 strings through SQLAlchemy."),
-    ("2. (english_query, target_language) <- Router(text, last 2 exchanges)   // Unicode check as fallback", "2. (english_query, target_language) <- PreRoute(text)   // Unicode script check"),
-    ("7. reply <- Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE offline reply", "7. reply <- Gemini(prompt) ON FAILURE Groq(prompt)"),
+    ("2. (english_query, target_language) ← Router(text, last 2 exchanges)   // Unicode check as fallback", "2. (english_query, target_language) ← PreRoute(text)   // Unicode script check"),
+    ("7. reply ← Gemini(prompt) ON FAILURE Groq(prompt) ON FAILURE offline reply", "7. reply ← Gemini(prompt) ON FAILURE Groq(prompt)"),
     ("8. save turn (and image file) to thread_id; RETURN reply", "8. save turn (and Base64 image) to thread_id; RETURN reply"),
     ("Photos are stored as sanitised files, with their captions in the database.", "Photo galleries are stored as a JSON list of objects with a URL and a caption."),
-    ("""2. qty_kg, price_per_kg <- Normalise(quantity, unit, price, price_unit)
-3. photos <- up to 8 sanitised image files with captions
-4. maps_url <- Maps link from farm latitude and longitude
+    ("""2. qty_kg, price_per_kg ← Normalise(quantity, unit, price, price_unit)
+3. photos ← up to 8 sanitised image files with captions
+4. maps_url ← Maps link from farm latitude and longitude
 5. save listing to database
 SEARCH:
-6. FOR each listing L: L.distance <- Haversine(buyer, L.location)
+6. FOR each listing L: L.distance ← Haversine(buyer, L.location)
 7. apply price, variety, distance and keyword filters
 8. sort listings by distance ascending
 9. attach wa.me link with URL-encoded message; RETURN listings""",
-     """2. gallery <- JSON list of {url, caption}
-3. maps_url <- Maps link from farm latitude and longitude
+     """2. gallery ← JSON list of {url, caption}
+3. maps_url ← Maps link from farm latitude and longitude
 4. save listing to database
 SEARCH:
-5. FOR each listing L: L.distance <- Haversine(buyer, L.location)
+5. FOR each listing L: L.distance ← Haversine(buyer, L.location)
 6. apply price range and keyword filters
 7. sort listings by distance ascending
 8. attach wa.me link with URL-encoded message; RETURN listings"""),
@@ -198,7 +198,7 @@ Per-class precision and recall on field photographs have not yet been calculated
      """The language model occasionally returned an empty reply, which the first version of the generator accepted as an answer. A guard now treats an empty reply as a failure that moves the request to the next fallback, and a regression test checks this behaviour."""),
     ("The Groq fallback and the offline guide kept every test passing,", "The Groq and CCRI fallbacks kept every test passing,"),
     ("""=== 8.4.6 Chatbot Faults Found by the Benchmark
-The chatbot benchmark exposed three faults. The language router saw only the current message, so two of ten follow-up questions were answered wrongly; weather keywords matched inside two Kannada compound words; and the offline reply for Kannada users quoted English excerpts. The router now receives the last two exchanges, weather keywords must start a word, and the offline Kannada reply cites the document pages in Kannada. Regression tests were added for all three fixes.
+Three faults were exposed by the chatbot benchmark. The language router saw only the current message, so two of ten follow-up questions were answered wrongly; weather keywords matched inside two Kannada compound words; and the offline reply for Kannada users quoted English excerpts. The router now receives the last two exchanges, weather keywords must start a word, and the offline Kannada reply cites the document pages in Kannada. Regression tests were added for all three fixes.
 """, ""),
     ("| Language router and English search query | Neural translation of Kannada | One short routing call (0.08 ms script check as fallback); no translation of the answer |",
      "| Regex pre-router and English search query | Neural translation of Kannada | Script check takes 0.08 ms; no separate translation call |"),

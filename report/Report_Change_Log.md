@@ -34,6 +34,7 @@ How to read this log: ~~struck-through words~~ were removed, **bold words** were
 | A23 | References | Mixed author formats; venue not italic; [4] and [5] venues wrong | IEEE style with hanging numbers; journal and conference names in *italic*; details taken from `IEEE-Paper/references.bib` ([4] is a preprint, [5] is arXiv:2409.08916) |
 | A24 | Consistency | British and American spelling mixed; "percent", "per cent" and "%"; "Grok" | British spelling; "%" after numbers; "Groq" everywhere |
 | A25 | Voice | we ×12, our ×14, us ×4, you/your ×5, "he or she", "his/her" in the chapters | None left outside the Acknowledgement and the standard Declaration (checked automatically) |
+| A27 | Sections across pages | About 35 sections started at the bottom of one page and continued on the next | Every section that fits on one page is kept whole (heading and text move to the next page together); found by measuring the laid-out pages in Word and repeated until nothing changed. Only sections longer than a full page still continue onto the next page |
 
 ## B. Data updated from the current project (`TESTING.md`, `progress.md`, `IEEE-Paper/paper_content.tex`)
 

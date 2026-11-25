@@ -640,6 +640,50 @@ for f in CONTENT:
 first_body = doc.paragraphs[[p._p for p in doc.paragraphs].index(marker_el) + 1]
 first_body.paragraph_format.page_break_before = False
 
+
+# ---- keep chosen sections on one page (ids listed in keep_<variant>.txt by fit_sections.py)
+def keep_sections(ids):
+    W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+
+    from docx.text.paragraph import Paragraph as _P
+
+    def set_keep(p_el):
+        f = _P(p_el, None).paragraph_format  # python-docx writes the elements in schema order
+        f.keep_with_next = True
+        f.keep_together = True
+
+    current, members = None, {}
+    for el in doc.element.body.iterchildren():
+        if el.tag == W + "p":
+            ppr = el.find(W + "pPr")
+            if ppr is not None and ppr.find(W + "pageBreakBefore") is not None:
+                current = None  # a new page ends the current section
+            for bm in el.iter(W + "bookmarkStart"):
+                name = bm.get(qn("w:name"))
+                if name and name.startswith("_toc_"):
+                    current = int(name[5:])
+        if current in ids:
+            members.setdefault(current, []).append(el)
+    for sid, els in members.items():
+        # trailing empty spacer paragraphs do not count as the section's last element
+        while els and els[-1].tag == W + "p" and not "".join(els[-1].itertext()).strip() \
+                and not list(els[-1].iter(W + "drawing")):
+            els.pop()
+        for k, el in enumerate(els):
+            ps = [el] if el.tag == W + "p" else list(el.iter(W + "p"))
+            for p_el in ps:
+                if k < len(els) - 1:
+                    set_keep(p_el)
+                else:  # last element: never split it, but do not chain it to the next section
+                    _P(p_el, None).paragraph_format.keep_together = True
+
+
+try:
+    KEEP = {int(x) for x in open(f"keep_{VARIANT}.txt").read().split()}
+except FileNotFoundError:
+    KEEP = set()
+keep_sections(KEEP)
+
 # ---- TOC / LOF / LOT, built at the end of the document, then moved before the marker
 tail_before = len(doc.element.body) - 1  # last element is sectPr
 front_page("TABLE OF CONTENTS")

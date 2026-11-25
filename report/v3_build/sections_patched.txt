@@ -1,0 +1,155 @@
+﻿0	15	15	120	120	INTRODUCTION
+1	15	15	162	385	1.1 Coffee Cultivation in Karnataka
+2	15	16	424	240	1.2 About PlantIQ
+3	16	16	302	518	1.3 Progress Up to Phase 2
+4	16	17	556	402	1.4 Scope of Phase 3
+5	17	18	464	286	1.5 Feedback from Reviews 1 and 2
+6	18	18	356	504	1.5.1 Local Language Integration
+7	18	18	537	645	1.5.2 A Standard Input for RAG and CNN
+8	18	19	677	111	1.5.3 Testing with People Who Know the Field
+9	19	19	144	272	1.5.4 Testing the Newly Trained CNN
+10	19	19	304	453	1.5.5 Streamlining the Integration Flow
+11	19	20	492	90	1.6 Organisation of the Report
+12	20	20	120	203	PROBLEM STATEMENT
+13	20	20	242	354	2.1 Scattered Cultivation Knowledge
+14	20	20	393	484	2.2 The Gap Between Diagnosis and Action
+15	20	20	523	705	2.3 Trust and Language in AI Advice
+16	21	21	90	181	2.4 Limited Market Visibility
+17	21	21	220	340	2.5 Formal Problem Statement
+18	21	22	379	90	2.6 Scope of the Work
+19	22	22	120	224	LITERATURE REVIEW
+20	22	22	263	263	3.1 RAG for Coffee Leaf Disease Remediation [1]
+21	22	22	296	527	3.1.1 Abstract
+22	22	22	560	688	3.1.2 Research Gap
+23	23	23	90	218	3.1.3 Advantages
+24	23	23	251	358	3.1.4 Disadvantages
+25	23	23	397	397	3.2 Language Models with Agricultural Knowledge Graphs [2]
+26	23	23	430	662	3.2.1 Abstract
+27	23	24	694	173	3.2.2 Research Gap
+28	24	24	206	334	3.2.3 Advantages
+29	24	24	366	494	3.2.4 Disadvantages
+30	24	24	533	533	3.3 Coffee Leaf Disease Detection with a CNN [3]
+31	24	25	566	111	3.3.1 Abstract
+32	25	25	144	272	3.3.2 Research Gap
+33	25	25	304	432	3.3.3 Advantages
+34	25	25	465	593	3.3.4 Disadvantages
+35	25	25	632	632	3.4 Multimodal Language Models in Agriculture [4]
+36	25	26	665	194	3.4.1 Abstract
+37	26	26	226	375	3.4.2 Research Gap
+38	26	26	408	515	3.4.3 Advantages
+39	26	26	548	676	3.4.4 Disadvantages
+40	27	27	90	90	3.5 Farmer.Chat [5]
+41	27	27	123	334	3.5.1 Abstract
+42	27	27	367	515	3.5.2 Research Gap
+43	27	27	548	676	3.5.3 Advantages
+44	28	28	90	218	3.5.4 Disadvantages
+45	28	28	257	257	3.6 Ensemble Models for Coffee Yield Prediction [6]
+46	28	28	290	501	3.6.1 Abstract
+47	28	28	534	703	3.6.2 Research Gap
+48	29	29	90	218	3.6.3 Advantages
+49	29	29	251	379	3.6.4 Disadvantages
+50	29	29	418	418	3.7 Elevation and Rainfall Effects on Coffee [7]
+51	29	29	451	641	3.7.1 Abstract
+52	29	30	674	132	3.7.2 Research Gap
+53	30	30	164	292	3.7.3 Advantages
+54	30	30	325	453	3.7.4 Disadvantages
+55	30	31	492	392	3.8 Summary of the Literature Surveyed
+56	31	33	468	90	3.9 Research Gap
+57	33	33	120	120	PROJECT REQUIREMENTS SPECIFICATION
+58	33	33	162	274	4.1 Purpose and Scope
+59	33	33	313	313	4.2 Objectives
+60	33	33	346	548	4.2.1 Primary Objectives
+61	33	34	580	111	4.2.2 Secondary Objectives
+62	34	34	150	681	4.3 Functional Requirements
+63	35	35	90	335	4.4 Non-Functional Requirements
+64	35	35	397	397	4.5 Data Requirements
+65	35	35	430	719	4.5.1 Leaf Images
+66	36	36	90	330	4.5.2 Advisory Knowledge Base
+67	36	36	362	470	4.5.3 Live Weather
+68	36	37	502	286	4.5.4 Application Data
+69	37	37	348	481	4.6 Software and Hardware Environment
+70	37	37	520	705	4.7 Constraints and Assumptions
+71	38	39	90	90	4.8 Status of the Objectives
+72	39	39	120	120	SYSTEM DESIGN
+73	39	39	162	614	5.1 Architectural Overview
+74	39	40	652	323	5.2 The Four Layers
+75	40	41	412	309	5.3 Request Flow
+76	41	41	348	712	5.4 Design Decisions
+77	42	42	90	202	5.5 Client and Deployment
+78	42	42	241	241	5.6 Module Design Summaries
+79	42	42	274	528	5.6.1 Module 1: Leaf Pathology
+80	42	43	570	301	5.6.2 Module 2: Advisory Engine
+81	43	43	356	564	5.6.3 Module 3: Chatbot
+82	43	45	606	90	5.6.4 Module 4: Marketplace
+83	45	45	120	162	PROPOSED METHODOLOGY
+84	45	45	201	201	6.1 Module 1: Leaf Pathology
+85	45	45	234	450	6.1.1 Why ResNet-50
+86	45	45	483	699	6.1.2 Classification Head and Softmax
+87	46	46	90	198	6.1.3 Preprocessing
+88	46	46	230	338	6.1.4 The SHA-256 Result Cache
+89	46	46	370	498	6.1.5 The Confidence Gate
+90	46	46	537	537	6.2 Module 2: Hybrid RAG and Advisory Engine
+91	46	46	570	657	6.2.1 Purpose
+92	46	47	689	194	6.2.2 Live Microclimate and the Favourability Score
+93	47	48	226	362	6.2.3 Three-Stage Hybrid Retrieval
+94	48	48	395	523	6.2.4 Generating the Answer
+95	48	49	555	194	6.2.5 The Dosage Audit
+96	49	49	232	232	6.3 Module 3: Multimodal Chatbot and Linguistic Pre-Router
+97	49	49	266	373	6.3.1 Role of the Chatbot
+98	49	49	406	645	6.3.2 The Linguistic Pre-Router
+99	49	50	678	704	6.3.3 Voice Input with a Three-Tier Fallback
+100	51	51	90	239	6.3.4 Context Fusion
+101	51	51	272	358	6.3.5 Visual Memory
+102	51	51	397	397	6.4 Module 4: Direct Spatial Crop Marketplace
+103	51	51	430	538	6.4.1 What the Marketplace Does
+104	51	51	570	698	6.4.2 Listings
+105	52	52	90	363	6.4.3 Finding Nearby Lots
+106	52	52	395	585	6.4.4 Filters and One-Tap Actions
+107	52	52	624	624	6.5 Testing Methodology
+108	52	53	657	152	6.5.1 Use of Automated Testing
+109	53	53	185	409	6.5.2 Schedule
+110	53	55	465	90	6.5.3 Test Methods and the Reason for Each
+111	55	55	120	182	IMPLEMENTATION AND PSEUDOCODE
+112	55	55	221	528	7.1 Technology Stack
+113	55	55	567	658	7.2 Development and Test Environment
+114	55	56	697	204	7.3 Module 1: Leaf Pathology
+115	56	57	374	113	7.4 Module 2: Advisory Engine
+116	57	57	311	494	7.5 Module 3: Chatbot
+117	57	58	665	162	7.6 Module 4: Marketplace
+118	58	59	333	309	7.7 Test Suite Implementation
+119	59	60	348	90	7.8 Benefits and Drawbacks of the Approach
+120	60	60	120	120	RESULTS AND DISCUSSION
+121	60	60	162	545	8.1 Expected Versus Actual Results
+122	60	61	584	633	8.2 Accuracy of the Classifier
+123	61	62	672	561	8.3 Speed
+124	62	62	600	650	8.4 Deviations and What Was Learned
+125	62	62	683	749	8.4.1 CNN Cold Start
+126	63	63	90	156	8.4.2 Cache-Key Collisions
+127	63	63	189	255	8.4.3 Percentages Missed by the Dosage Audit
+128	63	63	287	353	8.4.4 Empty Language-Model Replies
+129	63	63	386	452	8.4.5 Language-Model Quota
+130	63	63	491	603	8.5 Field Feedback
+131	63	64	641	476	8.6 Comparison with Common Alternatives
+132	64	65	515	511	8.7 Limitations
+133	65	66	550	411	8.8 Risk Register Revisited
+134	66	67	473	90	8.9 Overall Assessment
+135	67	67	120	285	CONCLUSION AND FUTURE WORK
+136	67	67	324	564	9.1 Summary of Work Carried Out
+137	67	68	626	208	9.2 Plan of Work Across the Capstone Phases
+138	68	68	283	556	9.3 Key Takeaways
+139	68	68	595	728	9.4 What Remains Uncertain
+140	69	69	90	422	9.5 Future Scope
+141	69	70	512	243	9.6 Reasons for These Upgrades
+142	70	70	282	416	9.7 Timeline
+143	70	70	464	654	9.8 Near-Term Steps
+144	70	71	693	111	9.9 Closing Remark
+145	72	73	90	90	REFERENCES
+146	73	75	120	90	DEFINITIONS, ACRONYMS AND ABBREVIATIONS
+147	75	75	120	182	USER MANUAL
+148	75	75	221	312	B.1 Sign In or Register
+149	75	75	351	442	B.2 Scan a Leaf
+150	75	75	481	593	B.3 Get Advice
+151	75	75	632	723	B.4 Ask in Kannada
+152	76	77	90	90	B.5 List and Sell
+153	77	78	120	90	AUTOMATED TEST CATALOGUE
+154	78	78	120	354	TEAM CONTRIBUTIONS

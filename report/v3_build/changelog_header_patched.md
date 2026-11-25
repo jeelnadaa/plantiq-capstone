@@ -28,6 +28,7 @@
 | A24 | Consistency | British and American spelling mixed; "percent", "per cent" and "%" | British spelling; "%" after numbers |
 | A25 | Spelling of Groq | "Grok" in 3 places | "Groq" everywhere |
 | A26 | Voice | we ×12, our ×14, us ×4, you/your ×5, "he or she", "his/her" in the chapters | None left outside the Acknowledgement and the standard Declaration (checked automatically) |
+| A27 | Sections across pages | About 35 sections started at the bottom of one page and continued on the next | Every section that fits on one page is kept whole (heading and text move to the next page together); found by measuring the laid-out pages in Word and repeated until nothing changed. Only sections longer than a full page still continue onto the next page |
 
 ## B. Data
 

@@ -35,7 +35,10 @@ for it in range(12):
     subprocess.run([sys.executable, "build_report.py", VARIANT], check=True, capture_output=True)
     rows = measure()
     split = [r for r in rows if r[1] != r[2]]
-    fixable = [r for r in split if height(r[1], r[2], r[3], r[4]) <= USABLE - 6 and r[0] not in keep]
+    fixable = [r for r in split
+               if height(r[1], r[2], r[3], r[4]) <= USABLE - 6
+               and (BOTTOM - r[3]) <= 220
+               and r[0] not in keep]
     print(f"pass {it + 1}: {len(rows)} sections, {len(split)} split, {len(fixable)} newly fixable")
     if not fixable:
         break

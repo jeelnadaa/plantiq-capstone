@@ -188,8 +188,15 @@ def cell_margins(table, top=40, bottom=40, left=80, right=80):
     tblPr.append(m)
 
 
+def tbl_header(row):
+    trPr = row._tr.get_or_add_trPr()
+    el = OxmlElement("w:tblHeader")
+    trPr.append(el)
+
+
 def make_table(rows, widths_pct, header=True, borders=True, size=12, font=TNR, keep=True,
-               header_fill="F2F2F2", total_width=None, align=WD_TABLE_ALIGNMENT.CENTER, line=1.0):
+               header_fill="F2F2F2", total_width=None, align=WD_TABLE_ALIGNMENT.CENTER, line=1.0,
+               repeat_header=False):
     total = total_width or TEXT_W
     t = doc.add_table(rows=len(rows), cols=len(rows[0]))
     t.alignment = align
@@ -197,6 +204,8 @@ def make_table(rows, widths_pct, header=True, borders=True, size=12, font=TNR, k
     table_borders(t, "single" if borders else "nil")
     cell_margins(t)
     widths = [int(total * w / sum(widths_pct)) for w in widths_pct]
+    if header and repeat_header:
+        tbl_header(t.rows[0])
     for ri, row in enumerate(rows):
         cant_split(t.rows[ri])
         for ci, val in enumerate(row):
@@ -205,7 +214,7 @@ def make_table(rows, widths_pct, header=True, borders=True, size=12, font=TNR, k
             c.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
             p = c.paragraphs[0]
             last = ri == len(rows) - 1
-            pfmt(p, before=0, after=0, line=line, keep=keep and not last)
+            pfmt(p, before=0, after=0, line=line, keep=(ri == 0 and not last) if not keep else (keep and not last))
             is_head = header and ri == 0
             if isinstance(val, tuple):  # (text, dict of options)
                 txt, opt = val
@@ -438,7 +447,8 @@ def render(path):
                 rows.append([c.strip() for c in lines[i].strip().strip("|").split("|")])
                 i += 1
             caption(cap, "tab", keep=True)
-            make_table(rows, widths or [1] * len(rows[0]))
+            multi_page_tbl = cap.startswith("Table A.1:")
+            make_table(rows, widths or [1] * len(rows[0]), keep=not multi_page_tbl, repeat_header=multi_page_tbl)
             para("", after=2, line=1.0)
             continue
         elif ln.startswith("F: "):

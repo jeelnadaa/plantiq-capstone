@@ -249,13 +249,13 @@ The answers and their scores were produced by a single language model from the e
      "If a chemical dose mentioned in the advice is found in the source text, it is marked VERIFIED; if it is not found, it is marked CAUTION. Treat CAUTION as a reminder"),
 ]
 
-OLD_REFS = """R: S. Selva Kumar, I. A. Banday, V. V. Shanbhag, A. K. M. A. Khan and M. Gada, "Overcoming LLM challenges using RAG-driven precision in coffee leaf disease remediation," in ~IEEE Int. Conf. Emerging Technologies in Computer Science~, 2024.
-R: X. Zhao et al., "Implementation of large language models and agricultural knowledge graphs for efficient plant disease detection," ~Agriculture~, vol. 14, no. 8, 2024.
-R: A. K. S. et al., "Coffee leaf disease detection using convolution neural network," ~Grenze Int. J. Eng. Technol.~, 2024.
-R: R. Sapkota et al., "Multi-modal LLMs in agriculture: A comprehensive review," ~IEEE Trans. Autom. Sci. Eng.~, 2024.
-R: N. Singh et al., "Farmer.Chat: Scaling AI-powered agricultural services for smallholder farmers," in ~ACM Proceedings~, 2024.
-R: C. S. Santhosha and K. K. Umesh, "An ensemble approach for coffee crop yield prediction based on agronomic factors," ~ASEAN Eng. J.~, vol. 13, no. 3, 2023.
-R: S. Patil et al., "Influence of elevation and rainfall on leaf growth, bean characteristics and yield components of coffee under changing climatic conditions in Karnataka, India," ~J. Plantation Crops~, vol. 50, no. 2, pp. 78-84, 2022.
+OLD_REFS = """R: S. Selva Kumar, I. A. Banday, V. V. Shanbhag, A. K. M. A. Khan and M. Gada, "Overcoming LLM challenges using RAG-driven precision in coffee leaf disease remediation," in ~Proc. Int. Conf. Emerging Technologies in Computer Science for Interdisciplinary Applications (ICETCS)~, Bengaluru, India, 2024, doi: 10.1109/ICETCS61022.2024.10543859.
+R: X. Zhao, B. Chen, M. Ji, X. Wang, Y. Yan, J. Zhang, S. Liu, M. Ye and C. Lv, "Implementation of large language models and agricultural knowledge graphs for efficient plant disease detection," ~Agriculture~, vol. 14, no. 8, p. 1359, 2024, doi: 10.3390/agriculture14081359.
+R: K. S. Anudeep, K. M. Prajwal, H. Sireesh Gowda, G. N. Venkatesh Prasad and G. Jagadamba, "Coffee leaf disease detection using convolution neural network," ~Grenze Int. J. Eng. Technol.~, vol. 10, no. 2, Jun. 2024.
+R: R. Sapkota, R. Qureshi, M. U. Hadi, S. Z. Hassan, F. Sadak, M. Shoman, M. Sajjad, F. A. Dharejo, A. Paudel, J. Li, Z. Meng, J. Shutske and M. Karkee, "Multi-modal LLMs in agriculture: A comprehensive review," preprint, 2024.
+R: N. Singh, J. Wang'ombe, N. Okanga, T. Zelenska, J. Repishti, Jayasankar G K, S. Mishra, R. Manokaran, V. Singh, M. I. Rafiq, R. Gandhi and A. Nambi, "Farmer.Chat: Scaling AI-powered agricultural services for smallholder farmers," arXiv preprint arXiv:2409.08916, 2024.
+R: C. S. Santhosha and K. K. Umesh, "An ensemble approach for coffee crop yield prediction based on agronomic factors," ~ASEAN Eng. J.~, vol. 13, no. 3, pp. 29-38, 2023, doi: 10.11113/aej.V13.18846.
+R: S. Patil, J. Devasia, G. Daniel and N. Surya Prakash Rao, "Influence of elevation and rainfall on leaf growth, bean characteristics and yield components of arabica and robusta coffee under changing climatic conditions in Karnataka state, India," ~J. Plantation Crops~, vol. 50, no. 2, pp. 78-84, 2022, doi: 10.25081/jpc.2022.v50.i2.7981.
 """
 
 OLD_T72 = """| Member | Module | Test file and responsibility |

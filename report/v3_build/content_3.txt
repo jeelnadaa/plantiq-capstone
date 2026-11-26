@@ -73,7 +73,7 @@ SEARCH:
 9. attach wa.me link with URL-encoded message; RETURN listings
 
 == 7.7 Test Suite Implementation
-Each team member was responsible for developing and maintaining the tests for their own module (Table 7.2), and the cross-cutting tests were written jointly. The integration tests use the FastAPI test client, the data layer runs on SQLAlchemy, Pillow generates the synthetic and corrupted images, and Vitest and Playwright test the frontend.
+Tests for each module were developed and maintained by the corresponding contributor (Table 7.2), and the cross-cutting tests were written jointly. The integration tests use the FastAPI test client, the data layer runs on SQLAlchemy, Pillow generates the synthetic and corrupted images, and Vitest and Playwright test the frontend.
 T: Table 7.2: Individual contribution towards testing
 W: 18,22,60
 | Member | Module | Tests and responsibility |
@@ -194,7 +194,7 @@ The following limitations have been identified and are acknowledged throughout t
 # **No transactions:** The marketplace connects growers and buyers but does not handle contract negotiation or payment.
 # **Server dependence:** Diagnosis requires access to the backend, so growers in valleys without adequate coverage cannot use it until offline support is added.
 # **Hardware-dependent performance:** Latency figures were measured on one laptop with an NVIDIA GPU and are therefore indicative.
-# **Benchmarks written by the team:** The retrieval and chatbot questions were written from the knowledge-base documents and scored by a language model, so a question set collected from growers is still needed.
+# **Locally authored benchmarks:** The retrieval and chatbot questions were written from the knowledge-base documents and scored by a language model, so a question set collected from growers is still needed.
 == 8.8 Risk Register Revisited
 Eight risks were listed in the Phase 2 report; their status at the end of Phase 3 is given in Table 8.5.
 T: Table 8.5: Status of the Phase 2 risks
@@ -282,7 +282,7 @@ R: S. Selva Kumar, I. A. Banday, V. V. Shanbhag, A. K. M. A. Khan and M. Gada, "
 R: X. Zhao, B. Chen, M. Ji, X. Wang, Y. Yan, J. Zhang, S. Liu, M. Ye and C. Lv, "Implementation of large language models and agricultural knowledge graphs for efficient plant disease detection," ~Agriculture~, vol. 14, no. 8, p. 1359, 2024, doi: 10.3390/agriculture14081359.
 R: K. S. Anudeep, K. M. Prajwal, H. Sireesh Gowda, G. N. Venkatesh Prasad and G. Jagadamba, "Coffee leaf disease detection using convolution neural network," ~Grenze Int. J. Eng. Technol.~, vol. 10, no. 2, Jun. 2024.
 R: R. Sapkota, R. Qureshi, M. U. Hadi, S. Z. Hassan, F. Sadak, M. Shoman, M. Sajjad, F. A. Dharejo, A. Paudel, J. Li, Z. Meng, J. Shutske and M. Karkee, "Multi-modal LLMs in agriculture: A comprehensive review," preprint, 2024.
-R: N. Singh, J. Wang'ombe, N. Okanga, T. Zelenska, J. Repishti, Jayasankar G K, S. Mishra, R. Manokaran, V. Singh, M. I. Rafiq, R. Gandhi and A. Nambi, "Farmer.Chat: Scaling AI-powered agricultural services for smallholder farmers," ~arXiv preprint arXiv:2409.08916~, 2024.
+R: N. Singh, J. Wang'ombe, N. Okanga, T. Zelenska, J. Repishti, Jayasankar G K, S. Mishra, R. Manokaran, V. Singh, M. I. Rafiq, R. Gandhi and A. Nambi, "Farmer.Chat: Scaling AI-powered agricultural services for smallholder farmers," arXiv preprint arXiv:2409.08916, 2024.
 R: C. S. Santhosha and K. K. Umesh, "An ensemble approach for coffee crop yield prediction based on agronomic factors," ~ASEAN Eng. J.~, vol. 13, no. 3, pp. 29-38, 2023, doi: 10.11113/aej.V13.18846.
 R: S. Patil, J. Devasia, G. Daniel and N. Surya Prakash Rao, "Influence of elevation and rainfall on leaf growth, bean characteristics and yield components of arabica and robusta coffee under changing climatic conditions in Karnataka state, India," ~J. Plantation Crops~, vol. 50, no. 2, pp. 78-84, 2022, doi: 10.25081/jpc.2022.v50.i2.7981.
 

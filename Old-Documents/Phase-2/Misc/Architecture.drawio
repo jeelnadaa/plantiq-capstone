@@ -1,0 +1,94 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" version="29.3.8">
+  <diagram name="Page-1" id="SQicgwgMXVp-mnkc8HR5">
+    <mxGraphModel dx="2022" dy="1032" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="userLayer" parent="1" style="swimlane;vertical=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=24;strokeWidth=2;fontFamily=Georgia;" value="USER LAYER" vertex="1">
+          <mxGeometry height="700" width="320" x="50" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="farmer" parent="userLayer" style="rounded=1;whiteSpace=wrap;fontSize=22;fillColor=#ffffff;strokeColor=#6c8ebf;strokeWidth=2;spacing=15;align=center;fontFamily=Georgia;" value="Farmer" vertex="1">
+          <mxGeometry height="100" width="260" x="30" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="buyer" parent="userLayer" style="rounded=1;whiteSpace=wrap;fontSize=22;fillColor=#ffffff;strokeColor=#6c8ebf;strokeWidth=2;spacing=15;align=center;fontFamily=Georgia;" value="Buyer" vertex="1">
+          <mxGeometry height="100" width="260" x="30" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="presentationLayer" parent="1" style="swimlane;vertical=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=24;strokeWidth=2;fontFamily=Georgia;" value="PRESENTATION LAYER" vertex="1">
+          <mxGeometry height="700" width="360" x="420" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ui" parent="presentationLayer" style="rounded=1;whiteSpace=wrap;fontSize=22;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=2;spacing=15;align=center;fontFamily=Georgia;" value="Web Application &amp; Chatbot UI" vertex="1">
+          <mxGeometry height="150" width="300" x="30" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="backendLayer" parent="1" style="swimlane;vertical=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=24;strokeWidth=2;fontFamily=Georgia;" value="MONOLITHIC AI BACKEND" vertex="1">
+          <mxGeometry height="700" width="900" x="830" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="diseaseModule" parent="backendLayer" style="rounded=1;whiteSpace=wrap;fontSize=22;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;spacing=15;align=left;verticalAlign=top;fontFamily=Georgia;" value="Disease Detection Module&#xa;&#xa;• Image Controller&#xa;• CNN Model&#xa;• Disease Classifier" vertex="1">
+          <mxGeometry height="170" width="380" x="40" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="contextModule" parent="backendLayer" style="rounded=1;whiteSpace=wrap;fontSize=22;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;spacing=15;align=left;verticalAlign=top;fontFamily=Georgia;" value="Context &amp; Intelligence&#xa;&#xa;• Context Manager&#xa;• Knowledge Graph&#xa;• RAG Engine&#xa;• Advisory Generator" vertex="1">
+          <mxGeometry height="220" width="380" x="470" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="chatbotModule" parent="backendLayer" style="rounded=1;whiteSpace=wrap;fontSize=22;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;spacing=15;align=left;verticalAlign=top;fontFamily=Georgia;" value="Chatbot Module&#xa;&#xa;• Query Handler&#xa;• Response Formatter" vertex="1">
+          <mxGeometry height="160" width="380" x="40" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="marketModule" parent="backendLayer" style="rounded=1;whiteSpace=wrap;fontSize=22;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;spacing=15;align=left;verticalAlign=top;fontFamily=Georgia;" value="Market Discovery&#xa;&#xa;• Listing Service&#xa;• Buyer Match Engine" vertex="1">
+          <mxGeometry height="160" width="380" x="40" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="dataLayer" parent="1" style="swimlane;vertical=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=24;strokeWidth=2;fontFamily=Georgia;" value="DATA LAYER" vertex="1">
+          <mxGeometry height="700" width="360" x="1780" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="imageDB" parent="dataLayer" style="rounded=1;fontSize=22;fillColor=#ffffff;strokeColor=#d6b656;strokeWidth=2;spacing=15;align=center;shape=cylinder3;size=15;fontFamily=Georgia;" value="Image DB" vertex="1">
+          <mxGeometry height="100" width="300" x="30" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="knowledgeDB" parent="dataLayer" style="rounded=1;fontSize=22;fillColor=#ffffff;strokeColor=#d6b656;strokeWidth=2;spacing=15;align=center;shape=cylinder3;size=15;fontFamily=Georgia;" value="Knowledge Base" vertex="1">
+          <mxGeometry height="100" width="300" x="30" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="vectorDB" parent="dataLayer" style="rounded=1;fontSize=22;fillColor=#ffffff;strokeColor=#d6b656;strokeWidth=2;spacing=15;align=center;shape=cylinder3;size=15;fontFamily=Georgia;" value="Vector DB" vertex="1">
+          <mxGeometry height="100" width="300" x="30" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="buyerDB" parent="dataLayer" style="rounded=1;fontSize=22;fillColor=#ffffff;strokeColor=#d6b656;strokeWidth=2;spacing=15;align=center;shape=cylinder3;size=15;fontFamily=Georgia;" value="Buyer Listings DB" vertex="1">
+          <mxGeometry height="100" width="300" x="30" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="externalBox" parent="1" style="rounded=1;whiteSpace=wrap;fontSize=22;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;spacing=15;align=left;verticalAlign=top;fontFamily=Georgia;" value="EXTERNAL SERVICES&#xa;&#xa;• NASA POWER API&#xa;• Open Elevation API&#xa;• LLM API (GPT/Claude)" vertex="1">
+          <mxGeometry height="240" width="340" x="2190" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="farmer" style="endArrow=classic;strokeWidth=3;strokeColor=#6c8ebf;curved=1;" target="ui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="buyer" style="endArrow=classic;strokeWidth=3;strokeColor=#6c8ebf;curved=1;" target="ui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="ui" style="endArrow=classic;strokeWidth=3;strokeColor=#d6b656;curved=1;" target="diseaseModule">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="ui" style="endArrow=classic;strokeWidth=3;strokeColor=#82b366;curved=1;" target="chatbotModule">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="ui" style="endArrow=classic;strokeWidth=3;strokeColor=#b85450;curved=1;" target="marketModule">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="diseaseModule" style="endArrow=classic;strokeWidth=3;strokeColor=#9673a6;curved=1;" target="contextModule">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="chatbotModule" style="endArrow=classic;strokeWidth=3;strokeColor=#9673a6;curved=1;" target="contextModule">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="contextModule" style="endArrow=classic;strokeWidth=3;strokeColor=#d6b656;curved=1;" target="knowledgeDB">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="contextModule" style="endArrow=classic;strokeWidth=3;strokeColor=#d6b656;curved=1;" target="vectorDB">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="marketModule" style="endArrow=classic;strokeWidth=3;strokeColor=#b85450;curved=1;" target="buyerDB">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="diseaseModule" style="endArrow=classic;strokeWidth=3;strokeColor=#d6b656;curved=1;" target="imageDB">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="contextModule" style="endArrow=classic;strokeWidth=3;strokeColor=#6c8ebf;curved=1;" target="externalBox">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

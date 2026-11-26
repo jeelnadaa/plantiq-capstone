@@ -789,8 +789,6 @@ for r in t.rows:  # TOC is long: allow it to flow across pages
     for c in r.cells:
         c.paragraphs[0].paragraph_format.keep_with_next = False
 
-list_page("LIST OF FIGURES", ["Figure No.", "Title", "Page No."],
-          [[n, t_, ("", {"pageref": nm})] for n, t_, nm in lof])
 rows_t = [[n, t_, ("", {"pageref": nm})] for n, t_, nm in lot]
 rows_t.append(["", ("Algorithms", {"bold": True}), ""])
 rows_t += [[n, t_, ("", {"pageref": nm})] for n, t_, nm in loa]
@@ -798,6 +796,8 @@ tt = list_page("LIST OF TABLES", ["Table No.", "Title", "Page No."], rows_t)
 for r in tt.rows:
     for c in r.cells:
         c.paragraphs[0].paragraph_format.keep_with_next = False
+list_page("LIST OF FIGURES", ["Figure No.", "Title", "Page No."],
+          [[n, t_, ("", {"pageref": nm})] for n, t_, nm in lof])
 
 body = doc.element.body
 tail = list(body)[tail_before:]

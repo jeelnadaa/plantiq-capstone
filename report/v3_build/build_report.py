@@ -299,14 +299,14 @@ def equation(latex, number):
 
 
 ALG_TOK_RE = re.compile(
-    r'(//.*|"[^"]*"|\b(?:INPUT|CREATE|SEARCH|IF|THEN|ELSE|FOR|RETURN|ON FAILURE|VALIDATE|each|in|exists|and|if)\b|\b\d+(?:\.\d+)?\b)'
+    r'(//.*|"[^"]*"|\b(?:INPUT|CREATE|SEARCH|IF|THEN|ELSE|FOR|RETURN|ON FAILURE|VALIDATE|each|in|exists|and|if)\b|[A-Za-z_][A-Za-z0-9_-]*(?=\()|\b\d+(?:\.\d+)?\b)'
 )
 ALG_KW = {"INPUT", "CREATE", "SEARCH", "IF", "THEN", "ELSE", "FOR", "RETURN", "ON FAILURE", "VALIDATE",
           "each", "in", "exists", "and", "if"}
 
 
 def add_code_runs(p, text, base_bold=False):
-    for tok in ALG_TOK_RE.split(text):
+    for i, tok in enumerate(ALG_TOK_RE.split(text)):
         if not tok:
             continue
         if tok.startswith("//"):
@@ -315,6 +315,8 @@ def add_code_runs(p, text, base_bold=False):
             set_font(p.add_run(tok), 10, font="Consolas", bold=base_bold, color="880000")
         elif tok in ALG_KW:
             set_font(p.add_run(tok), 10, font="Consolas", bold=True, color="444444")
+        elif i % 2 == 1:  # function call matched before '('
+            set_font(p.add_run(tok), 10, font="Consolas", bold=True, color="397300")
         else:
             set_font(p.add_run(tok), 10, font="Consolas", bold=base_bold, color="444444")
 
@@ -356,19 +358,23 @@ _body_started = [False]
 
 
 def chapter(label, title, number=None):
+    pb = True
     if not _body_started[0]:
         _body_started[0] = True
-    else:
+        pb = False
+    elif label is None and title.upper() == "REFERENCES":
+        # Start a new section at REFERENCES so headers are omitted from REFERENCES onward
         s = doc.add_section(WD_SECTION.NEW_PAGE)
         setup_section(s)
         set_page_borders(s, False)
+        pb = False
     if label:
-        para(label, size=18, bold=True, before=0, after=6, line=1.15, keep=True, page_break=False, refs=False)
+        para(label, size=18, bold=True, before=0, after=6, line=1.15, keep=True, page_break=pb, refs=False)
         t = para(title, size=18, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, before=0, after=18, line=1.15,
                  keep=True, refs=False)
     else:
         t = para(title, size=18, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, before=0, after=18, line=1.15,
-                 keep=True, page_break=False, refs=False)
+                 keep=True, page_break=pb, refs=False)
     name = f"_toc_{len(toc)}"
     bookmark(t, name)
     toc.append((0, number, title if not label or label.startswith("CHAPTER") else f"{label}: {title}", name))
@@ -833,35 +839,30 @@ for s in doc.sections[:2]:
     for hp in (s.header, s.footer):
         hp.is_linked_to_previous = False
 
-# first body section (Chapter 1): restart page numbering at 1, empty first-page header, full footer on all pages
-ch1_sec = doc.sections[2]
-ch1_sec.different_first_page_header_footer = True
-ch1_sec.header.is_linked_to_previous = False
-ch1_sec.first_page_header.is_linked_to_previous = False
-ch1_sec.footer.is_linked_to_previous = False
-ch1_sec.first_page_footer.is_linked_to_previous = False
+# Chapters 1-9 section: header and footer on every page, page numbering starts at 1
+ch_sec = doc.sections[2]
+ch_sec.different_first_page_header_footer = False
+ch_sec.header.is_linked_to_previous = False
+ch_sec.footer.is_linked_to_previous = False
 
-pg = ch1_sec._sectPr.find(qn("w:pgNumType"))
+pg = ch_sec._sectPr.find(qn("w:pgNumType"))
 if pg is None:
     pg = OxmlElement("w:pgNumType")
-    ch1_sec._sectPr.append(pg)
+    ch_sec._sectPr.append(pg)
 pg.set(qn("w:start"), "1")
 pg.set(qn("w:fmt"), "decimal")
 
-build_header(ch1_sec.header)
-build_footer(ch1_sec.footer)
-build_footer(ch1_sec.first_page_footer)
+build_header(ch_sec.header)
+build_footer(ch_sec.footer)
 
-# subsequent chapter / reference / appendix sections inherit Ch 1 header, empty first-page header, and footers
-for s in doc.sections[3:]:
-    s.different_first_page_header_footer = True
-    s.header.is_linked_to_previous = True
-    s.first_page_header.is_linked_to_previous = True
-    s.footer.is_linked_to_previous = True
-    s.first_page_footer.is_linked_to_previous = True
-    old_pg = s._sectPr.find(qn("w:pgNumType"))
-    if old_pg is not None:
-        s._sectPr.remove(old_pg)
+# REFERENCES through Appendix D: no header on any page; keep continuous footer
+ref_sec = doc.sections[3]
+ref_sec.different_first_page_header_footer = False
+ref_sec.header.is_linked_to_previous = False
+ref_sec.footer.is_linked_to_previous = True
+old_pg = ref_sec._sectPr.find(qn("w:pgNumType"))
+if old_pg is not None:
+    ref_sec._sectPr.remove(old_pg)
 
 doc.core_properties.title = "PlantIQ Capstone Report"
 doc.core_properties.author = "Team 35"

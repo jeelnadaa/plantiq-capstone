@@ -79,7 +79,7 @@ def pfmt(p, align=WD_ALIGN_PARAGRAPH.LEFT, before=0, after=8, line=1.5, keep=Fal
 REF_RE = re.compile(r"(Figures? \d+\.\d+|Tables? [0-9A-D]+\.\d+|Algorithm \d+\.\d+|Equation \(\d+\.\d+\))")
 
 
-def add_rich(p, text, size=12, font=TNR, base_bold=False, base_italic=False, refs=True):
+def add_rich(p, text, size=12, font=TNR, base_bold=False, base_italic=False, refs=True, color=None):
     """**bold**, ~italic~ and automatic italics for figure/table/algorithm/equation references."""
     for tok in re.split(r"(\*\*.+?\*\*|~.+?~)", text):
         if not tok:
@@ -94,7 +94,8 @@ def add_rich(p, text, size=12, font=TNR, base_bold=False, base_italic=False, ref
             if not part:
                 continue
             is_ref = refs and REF_RE.fullmatch(part) is not None
-            set_font(p.add_run(part), size, bold=(False if is_ref else b), italic=(True if is_ref else i), font=font)
+            set_font(p.add_run(part), size, bold=(False if is_ref else b), italic=(True if is_ref else i),
+                     font=font, color=color)
     return p
 
 
@@ -231,21 +232,22 @@ def para(text="", **kw):
     bold = kw.pop("bold", False)
     italic = kw.pop("italic", False)
     refs = kw.pop("refs", True)
+    color = kw.pop("color", None)
     p = doc.add_paragraph()
     pfmt(p, **kw)
     if text:
-        add_rich(p, text, size=size, font=font, base_bold=bold, base_italic=italic, refs=refs)
+        add_rich(p, text, size=size, font=font, base_bold=bold, base_italic=italic, refs=refs, color=color)
     return p
 
 
 def caption(text, kind, keep):
-    """Caption: TNR 10, italic, not bold, centred. kind: fig/tab/alg."""
+    """Caption: TNR 10, italic, not bold, centred, muted navy (#444499). kind: fig/tab/alg."""
     m = re.match(r"(Figure|Table|Algorithm) ([0-9A-D]+\.\d+):\s*(.*)", text)
     label, num, title = m.group(1), m.group(2), m.group(3)
     p = doc.add_paragraph()
     pfmt(p, align=WD_ALIGN_PARAGRAPH.CENTER, before=6 if kind != "fig" else 4, after=6 if kind != "fig" else 12,
          line=1.0, keep=keep)
-    set_font(p.add_run(f"{label} {num}: {title}"), 10, bold=False, italic=True)
+    set_font(p.add_run(f"{label} {num}: {title}"), 10, bold=False, italic=True, color="444499")
     name = f"_{kind}_{num.replace('.', '_')}"
     bookmark(p, name)
     {"fig": lof, "tab": lot, "alg": loa}[kind].append((num, title, name))
@@ -296,6 +298,27 @@ def equation(latex, number):
     para("", after=2, line=1.0)
 
 
+ALG_TOK_RE = re.compile(
+    r'(//.*|"[^"]*"|\b(?:INPUT|CREATE|SEARCH|IF|THEN|ELSE|FOR|RETURN|ON FAILURE|VALIDATE|each|in|exists|and|if)\b|\b\d+(?:\.\d+)?\b)'
+)
+ALG_KW = {"INPUT", "CREATE", "SEARCH", "IF", "THEN", "ELSE", "FOR", "RETURN", "ON FAILURE", "VALIDATE",
+          "each", "in", "exists", "and", "if"}
+
+
+def add_code_runs(p, text, base_bold=False):
+    for tok in ALG_TOK_RE.split(text):
+        if not tok:
+            continue
+        if tok.startswith("//"):
+            set_font(p.add_run(tok), 10, font="Consolas", color="888888")
+        elif tok.startswith('"') or re.fullmatch(r"\d+(?:\.\d+)?", tok):
+            set_font(p.add_run(tok), 10, font="Consolas", bold=base_bold, color="880000")
+        elif tok in ALG_KW:
+            set_font(p.add_run(tok), 10, font="Consolas", bold=True, color="444444")
+        else:
+            set_font(p.add_run(tok), 10, font="Consolas", bold=base_bold, color="444444")
+
+
 def algorithm(cap, lines):
     caption(cap, "alg", keep=True)
     t = doc.add_table(rows=1, cols=1)
@@ -316,9 +339,9 @@ def algorithm(cap, lines):
              left=Inches(0.3) if (m or cont) else Inches(0), first=Inches(-0.3) if m else Inches(0))
         if m:
             p.paragraph_format.tab_stops.add_tab_stop(Inches(0.3))
-            ln = ln.replace(m.group(0), m.group(1) + ".\t", 1)
-        set_font(p.add_run(ln.strip() if cont else ln), 10, font="Consolas",
-                 bold=bool(re.match(r"^(INPUT|CREATE|SEARCH)", ln)))
+            set_font(p.add_run(m.group(1) + ".\t"), 10, font="Consolas", color="444444")
+            ln = ln[len(m.group(0)):]
+        add_code_runs(p, ln.strip() if cont else ln)
     para("", after=4, line=1.0)
 
 
@@ -329,14 +352,23 @@ def figure(path, cap, width_in):
     caption(cap, "fig", keep=False)
 
 
+_body_started = [False]
+
+
 def chapter(label, title, number=None):
+    if not _body_started[0]:
+        _body_started[0] = True
+    else:
+        s = doc.add_section(WD_SECTION.NEW_PAGE)
+        setup_section(s)
+        set_page_borders(s, False)
     if label:
-        p = para(label, size=18, bold=True, before=0, after=6, line=1.15, keep=True, page_break=True, refs=False)
+        para(label, size=18, bold=True, before=0, after=6, line=1.15, keep=True, page_break=False, refs=False)
         t = para(title, size=18, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, before=0, after=18, line=1.15,
                  keep=True, refs=False)
     else:
         t = para(title, size=18, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, before=0, after=18, line=1.15,
-                 keep=True, page_break=True, refs=False)
+                 keep=True, page_break=False, refs=False)
     name = f"_toc_{len(toc)}"
     bookmark(t, name)
     toc.append((0, number, title if not label or label.startswith("CHAPTER") else f"{label}: {title}", name))
@@ -444,9 +476,32 @@ def setup_section(sec):
     sec.footer_distance = Inches(0.45)
 
 
-def centre(text, size, bold=False, italic=False, font=ARIAL, before=0, after=0, line=1.15):
+def set_page_borders(sec, enabled=True, sz="24", space="18", color="000000"):
+    sectPr = sec._sectPr
+    old = sectPr.find(qn("w:pgBorders"))
+    if old is not None:
+        sectPr.remove(old)
+    if not enabled:
+        return
+    pb = OxmlElement("w:pgBorders")
+    pb.set(qn("w:offsetFrom"), "text")
+    for edge in ("top", "left", "bottom", "right"):
+        el = OxmlElement(f"w:{edge}")
+        el.set(qn("w:val"), "single")
+        el.set(qn("w:sz"), sz)
+        el.set(qn("w:space"), space)
+        el.set(qn("w:color"), color)
+        pb.append(el)
+    pgMar = sectPr.find(qn("w:pgMar"))
+    if pgMar is not None:
+        pgMar.addnext(pb)
+    else:
+        sectPr.append(pb)
+
+
+def centre(text, size, bold=False, italic=False, font=ARIAL, before=0, after=0, line=1.15, color=None):
     return para(text, size=size, bold=bold, italic=italic, font=font, align=WD_ALIGN_PARAGRAPH.CENTER,
-                before=before, after=after, line=line, refs=False)
+                before=before, after=after, line=line, refs=False, color=color)
 
 
 MEMBERS = [("Jeel Nada", "PES2UG23CS357"), ("Nidhi N", "PES2UG23CS384"), ("Mohammed Ayaan", "PES2UG23AM058")]
@@ -467,7 +522,7 @@ def cover():
     p = centre("", 12, before=26)  # balances the page vertically
     p.add_run().add_picture(LOGO, width=Inches(1.6))
     centre("Dissertation on", 16, bold=True, italic=True, before=10, after=10)
-    centre(f"\u201c{TITLE}\u201d", 16, bold=True, after=14)
+    centre(f"\u201c{TITLE}\u201d", 16, bold=True, after=14, color="006FBF")
     centre("Submitted in partial fulfilment of the requirements for the award of degree of", 12.5,
            italic=True, after=10)
     centre("Bachelor of Technology", 16, bold=True)
@@ -480,7 +535,7 @@ def cover():
     centre("Prof. Deepti C.", 14, bold=True, font=TNR)
     centre("Assistant Professor", 14, font=TNR)
     centre("PES University", 14, font=TNR, after=14)
-    centre("Aug - Nov 2026", 12, bold=True, after=14)
+    centre("Aug - Nov 2026", 12, bold=True, after=14, color="BF4F4C")
     centre("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING", 12, bold=True)
     centre("FACULTY OF ENGINEERING", 12)
     centre("PES UNIVERSITY", 12, bold=True)
@@ -528,14 +583,14 @@ def certificate():
             c.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
 
-def front_page(title, first=False):
+def front_page(title, first=False, page_break=True):
     p = para(title, size=18, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, before=0, after=24, line=1.15,
-             page_break=True, refs=False)
+             page_break=page_break, refs=False)
     return p
 
 
 def declaration():
-    front_page("DECLARATION")
+    front_page("DECLARATION", page_break=False)
     p = para("", size=14, align=WD_ALIGN_PARAGRAPH.JUSTIFY, line=1.5, after=24)
     add_rich(p, "We hereby declare that the Capstone Project Phase - 3 entitled **\u201c" + TITLE + "\u201d** has been "
              "carried out by us under the guidance of Prof. Deepti C., Assistant Professor, and submitted in partial "
@@ -610,6 +665,8 @@ if VARIANT != "v3":
 sec0 = doc.sections[0]
 setup_section(sec0)
 sec0.left_margin = sec0.right_margin = (LM + RM) // 2  # equal side margins, same text width
+sec0.header_distance, sec0.footer_distance = TM, BM  # keep pgBorders aligned with body margins, not empty header/footer distance
+set_page_borders(sec0, True)
 st = doc.styles["Normal"]
 st.font.name = TNR
 st.font.size = Pt(12)
@@ -617,6 +674,13 @@ st.element.rPr.rFonts.set(qn("w:eastAsia"), TNR)
 
 cover()
 certificate()
+
+# Remaining front matter (Declaration through List of Tables) has no page border
+front_sec = doc.add_section(WD_SECTION.NEW_PAGE)
+setup_section(front_sec)
+front_sec.left_margin = front_sec.right_margin = (LM + RM) // 2
+set_page_borders(front_sec, False)
+
 declaration()
 front_page("ACKNOWLEDGEMENT")
 for a in ACK:
@@ -629,16 +693,13 @@ for a in ABSTRACT:
 marker = para("")
 marker_el = marker._p
 
-# body section
+# body section (Chapter 1 starts here; subsequent chapters add new sections in chapter())
 body_sec = doc.add_section(WD_SECTION.NEW_PAGE)
 setup_section(body_sec)
+set_page_borders(body_sec, False)
 body_start = len(doc.element.body)
 for f in CONTENT:
     render(f)
-
-# first body paragraph already has page_break_before; avoid an empty page after the section break
-first_body = doc.paragraphs[[p._p for p in doc.paragraphs].index(marker_el) + 1]
-first_body.paragraph_format.page_break_before = False
 
 
 # ---- keep chosen sections on one page (ids listed in keep_<variant>.txt by fit_sections.py)
@@ -664,6 +725,10 @@ def keep_sections(ids):
                     current = int(name[5:])
         if current in ids:
             members.setdefault(current, []).append(el)
+        if el.tag == W + "p":
+            ppr = el.find(W + "pPr")
+            if ppr is not None and ppr.find(W + "sectPr") is not None:
+                current = None  # section break starts the next chapter on a new page
     for sid, els in members.items():
         # trailing empty spacer paragraphs do not count as the section's last element
         while els and els[-1].tag == W + "p" and not "".join(els[-1].itertext()).strip() \
@@ -722,56 +787,81 @@ for el in tail:
     marker_el.addprevious(el)
 # the marker paragraph carries the front-matter section break (sectPr of section 0)
 
-# ---- header / footer for the body section
-body_sec = doc.sections[1]
-body_sec.header.is_linked_to_previous = False
-body_sec.footer.is_linked_to_previous = False
-# front matter: empty header/footer
-for hp in (doc.sections[0].header, doc.sections[0].footer):
-    hp.is_linked_to_previous = False
-pg = body_sec._sectPr.find(qn("w:pgNumType"))
+# ---- header / footer for body sections (no header on chapter opening pages; footer on all body pages)
+def build_header(h):
+    hp = h.paragraphs[0]
+    ht = h.add_table(rows=1, cols=2, width=TEXT_W)
+    table_borders(ht, "nil")
+    ht.autofit = False
+    c0, c1 = ht.cell(0, 0), ht.cell(0, 1)
+    c0.width, c1.width = int(TEXT_W * 0.78), int(TEXT_W * 0.22)
+    c0.vertical_alignment = c1.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+    set_cell_borders(c0, bottom="single")
+    set_cell_borders(c1, bottom="single")
+    p = c0.paragraphs[0]
+    pfmt(p, before=0, after=2, line=1.0)
+    set_font(p.add_run(TITLE), 10)
+    p = c1.paragraphs[0]
+    pfmt(p, align=WD_ALIGN_PARAGRAPH.RIGHT, before=0, after=2, line=1.0)
+    p.add_run().add_picture(LOGO, width=Inches(1.0))
+    hp._p.getparent().remove(hp._p)
+    ep = h.add_paragraph()
+    pfmt(ep, before=0, after=0, line=1.0)
+    set_font(ep.add_run(""), 4)
+
+
+def build_footer(f):
+    fp = f.paragraphs[0]
+    pfmt(fp, before=0, after=0, line=1.0)
+    pPr = fp._p.get_or_add_pPr()
+    pb = OxmlElement("w:pBdr")
+    top = OxmlElement("w:top")
+    for k, v in (("w:val", "single"), ("w:sz", "6"), ("w:space", "6"), ("w:color", "000000")):
+        top.set(qn(k), v)
+    pb.append(top)
+    pPr.append(pb)
+    ts = fp.paragraph_format.tab_stops
+    ts.add_tab_stop(int(TEXT_W / 2), WD_TAB_ALIGNMENT.CENTER)
+    ts.add_tab_stop(TEXT_W, WD_TAB_ALIGNMENT.RIGHT)
+    set_font(fp.add_run("Dept. of CSE\tAugust - November, 2026\tPage No."), 10)
+    field(fp, "PAGE", size=10)
+
+
+# front matter sections (Cover/Certificate and Declaration..LOT): empty header/footer
+for s in doc.sections[:2]:
+    s.different_first_page_header_footer = False
+    for hp in (s.header, s.footer):
+        hp.is_linked_to_previous = False
+
+# first body section (Chapter 1): restart page numbering at 1, empty first-page header, full footer on all pages
+ch1_sec = doc.sections[2]
+ch1_sec.different_first_page_header_footer = True
+ch1_sec.header.is_linked_to_previous = False
+ch1_sec.first_page_header.is_linked_to_previous = False
+ch1_sec.footer.is_linked_to_previous = False
+ch1_sec.first_page_footer.is_linked_to_previous = False
+
+pg = ch1_sec._sectPr.find(qn("w:pgNumType"))
 if pg is None:
     pg = OxmlElement("w:pgNumType")
-    body_sec._sectPr.append(pg)
+    ch1_sec._sectPr.append(pg)
 pg.set(qn("w:start"), "1")
 pg.set(qn("w:fmt"), "decimal")
 
-h = body_sec.header
-hp = h.paragraphs[0]
-ht = h.add_table(rows=1, cols=2, width=TEXT_W)
-table_borders(ht, "nil")
-ht.autofit = False
-c0, c1 = ht.cell(0, 0), ht.cell(0, 1)
-c0.width, c1.width = int(TEXT_W * 0.78), int(TEXT_W * 0.22)
-c0.vertical_alignment = c1.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
-set_cell_borders(c0, bottom="single")
-set_cell_borders(c1, bottom="single")
-p = c0.paragraphs[0]
-pfmt(p, before=0, after=2, line=1.0)
-set_font(p.add_run(TITLE), 10)
-p = c1.paragraphs[0]
-pfmt(p, align=WD_ALIGN_PARAGRAPH.RIGHT, before=0, after=2, line=1.0)
-p.add_run().add_picture(LOGO, width=Inches(1.0))
-hp._p.getparent().remove(hp._p)
-ep = h.add_paragraph()
-pfmt(ep, before=0, after=0, line=1.0)
-set_font(ep.add_run(""), 4)
+build_header(ch1_sec.header)
+build_footer(ch1_sec.footer)
+build_footer(ch1_sec.first_page_footer)
 
-f = body_sec.footer
-fp = f.paragraphs[0]
-pfmt(fp, before=0, after=0, line=1.0)
-pPr = fp._p.get_or_add_pPr()
-pb = OxmlElement("w:pBdr")
-top = OxmlElement("w:top")
-for k, v in (("w:val", "single"), ("w:sz", "6"), ("w:space", "6"), ("w:color", "000000")):
-    top.set(qn(k), v)
-pb.append(top)
-pPr.append(pb)
-ts = fp.paragraph_format.tab_stops
-ts.add_tab_stop(int(TEXT_W / 2), WD_TAB_ALIGNMENT.CENTER)
-ts.add_tab_stop(TEXT_W, WD_TAB_ALIGNMENT.RIGHT)
-set_font(fp.add_run("Dept. of CSE\tAugust - November, 2026\tPage No."), 10)
-field(fp, "PAGE", size=10)
+# subsequent chapter / reference / appendix sections inherit Ch 1 header, empty first-page header, and footers
+for s in doc.sections[3:]:
+    s.different_first_page_header_footer = True
+    s.header.is_linked_to_previous = True
+    s.first_page_header.is_linked_to_previous = True
+    s.footer.is_linked_to_previous = True
+    s.first_page_footer.is_linked_to_previous = True
+    old_pg = s._sectPr.find(qn("w:pgNumType"))
+    if old_pg is not None:
+        s._sectPr.remove(old_pg)
 
 doc.core_properties.title = "PlantIQ Capstone Report"
 doc.core_properties.author = "Team 35"

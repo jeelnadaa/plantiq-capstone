@@ -1,53 +1,53 @@
-% Figure 1 of the project summary: PlantIQ system architecture (>= 11 pt rendered text at 1:1 width).
-\documentclass[border=2pt,12pt]{standalone}
+% Figure 1 of the project summary: PlantIQ system architecture.
+\documentclass[border=2pt,10pt]{standalone}
 \usepackage[T1]{fontenc}
 \usepackage{newtxtext}
 \usepackage{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc}
 \tikzset{
-  box/.style={draw=black!75, rounded corners=2pt, align=center, font=\fontsize{11.3}{12.6}\selectfont, inner sep=2.5pt, fill=white},
-  mod/.style={box, fill=blue!6, minimum width=2.75cm, minimum height=0.95cm},
-  ext/.style={box, fill=black!4, dashed, inner sep=2.5pt},
-  arr/.style={-{Stealth[length=4.5pt]}, black!80, line width=0.6pt},
-  lbl/.style={font=\fontsize{11.2}{12.2}\selectfont, inner sep=1pt},
-  grp/.style={draw=black!40, rounded corners=2.5pt, inner sep=3.5pt},
-  grplabel/.style={font=\fontsize{11.5}{13}\selectfont\bfseries, black!80},
+  box/.style={draw=black!75, rounded corners=2pt, align=center, font=\fontsize{9}{10.5}\selectfont, inner sep=3pt, fill=white},
+  mod/.style={box, fill=blue!6, minimum width=2.6cm, minimum height=0.9cm},
+  ext/.style={box, fill=black!4, dashed, inner sep=3pt},
+  arr/.style={-{Stealth[length=4pt]}, black!80, line width=0.55pt},
+  lbl/.style={font=\fontsize{8.5}{9.5}\selectfont, inner sep=1.5pt},
+  grp/.style={draw=black!40, rounded corners=2.5pt, inner sep=4pt},
+  grplabel/.style={font=\fontsize{9.5}{11}\selectfont\bfseries, black!80},
 }
 \begin{document}
 \begin{tikzpicture}
   % 2 x 2 modules
-  \node[mod] (m1) at (0,0) {\textbf{M1: CNN}\\ResNet-50\\5 cls, 75\% gate};
-  \node[mod, right=9.5mm of m1] (m2) {\textbf{M2: RAG+Env}\\hybrid+rerank\\risk, spray};
-  \node[mod, below=4.5mm of m1] (m3) {\textbf{M3: Chatbot}\\EN/KN router\\memory, STT};
-  \node[mod, below=4.5mm of m2] (m4) {\textbf{M4: Market}\\kg, Rs./kg\\Haversine};
-  \draw[arr] (m1) -- node[above=0.5pt, lbl]{diag.} (m2);
-  \draw[arr, dashed] (m3) -- node[left=1pt, lbl]{img} (m1);
+  \node[mod] (m1) at (0,0) {\textbf{M1: CNN}\\ResNet-50, 5 classes\\75\% confidence gate};
+  \node[mod, right=11mm of m1] (m2) {\textbf{M2: RAG + Env.}\\hybrid + rerank\\risk, spray window};
+  \node[mod, below=5mm of m1] (m3) {\textbf{M3: Chatbot}\\EN / KN router\\memory, STT};
+  \node[mod, below=5mm of m2] (m4) {\textbf{M4: Market}\\kg, Rs./kg norm\\Haversine ranking};
+  \draw[arr] (m1) -- node[above=1pt, lbl]{diagnosis} (m2);
+  \draw[arr, dashed] (m3) -- node[left=1pt, lbl]{photos} (m1);
   \draw[arr, dashed] (m3.north east) -- node[pos=0.52, right=1pt, lbl]{RAG} (m2.south west);
 
   % gateway and client
-  \node[box, left=4mm of $(m1.west)!0.5!(m3.west)$, minimum width=2.2cm, minimum height=2.15cm] (gw)
-       {\textbf{FastAPI}\\CSP, auth\\rate limit\\JWT, guard\\Pydantic};
-  \node[box, left=15.5mm of gw, minimum width=2.2cm, minimum height=2.15cm, fill=green!6] (app)
-       {\textbf{PlantIQ App}\\React+TS\\APK / Web\\EN / KN\\Cam, Mic};
-  \draw[arr, <->] (app) -- node[above=0.5pt, lbl]{HTTPS} node[below=0.5pt, lbl]{JSON} (gw);
+  \node[box, left=5mm of $(m1.west)!0.5!(m3.west)$, minimum width=2.2cm, minimum height=2.0cm] (gw)
+       {\textbf{FastAPI gateway}\\CSP, headers\\rate limit, JWT\\upload sanitiser\\Pydantic};
+  \node[box, left=13mm of gw, minimum width=2.2cm, minimum height=2.0cm, fill=green!6] (app)
+       {\textbf{PlantIQ App}\\React 18 + TS\\Android / Web\\EN / Kannada\\Cam, Mic, GPS};
+  \draw[arr, <->] (app) -- node[above=1pt, lbl]{HTTPS} node[below=1pt, lbl]{JSON} (gw);
 
   % data layer
-  \node[box, minimum width=2.95cm, right=4mm of m2, yshift=-0.5mm] (kb) {FAISS+BM25\\14 CCRI PDFs};
-  \node[box, minimum width=2.95cm, below=1.5mm of kb] (db) {Postgres/SQLite\\users, chats, lots};
-  \node[box, minimum width=2.95cm, below=1.5mm of db] (fs) {Media Store\\clean JPEGs};
+  \node[box, minimum width=2.9cm, right=5mm of m2, yshift=-0.5mm] (kb) {Knowledge index\\FAISS + BM25, 14 PDFs};
+  \node[box, minimum width=2.9cm, below=1.5mm of kb] (db) {PostgreSQL / SQLite\\users, scans, chats, lots};
+  \node[box, minimum width=2.9cm, below=1.5mm of db] (fs) {Media Store\\sanitised JPEGs};
 
   % external services
-  \coordinate (below) at ($(m3.south)!0.5!(m4.south)+(0,-0.65)$);
-  \node[ext, anchor=north] (llm) at (below) {Gemini 2.5 $\rightarrow$ Groq};
+  \coordinate (below) at ($(m3.south)!0.5!(m4.south)+(0,-0.7)$);
+  \node[ext, anchor=north] (llm) at (below) {Gemini 2.5 Flash $\rightarrow$ Groq gpt-oss-120b};
   \node[ext, left=2.5mm of llm] (om) {Open-Meteo API};
   \node[ext, right=2.5mm of llm] (stt) {Whisper Cloud STT};
 
   \begin{scope}[on background layer]
-    \node[grp, fit=(m1)(m4), inner sep=4pt] (mods) {};
+    \node[grp, fit=(m1)(m4), inner sep=4.5pt] (mods) {};
     \node[grp, fit=(kb)(fs), fill=black!2, inner sep=3pt] (data) {};
     \node[grp, fit=(om)(stt), fill=black!2, inner sep=3pt] (extg) {};
-    \node[grp, fit=(gw)(mods)(data), inner sep=4.5pt, label={[grplabel]above:PlantIQ Server (Laptop or Cloud VM)}] (srv) {};
+    \node[grp, fit=(gw)(mods)(data), inner sep=5pt, label={[grplabel]above:PlantIQ Server (Laptop or Cloud VM)}] (srv) {};
   \end{scope}
   \node[grplabel, anchor=south] at (data.north) {Data Layer};
   \node[grplabel, anchor=north] at (extg.south) {External Services};

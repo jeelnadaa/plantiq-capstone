@@ -17,7 +17,9 @@ import latex2mathml.converter as l2m
 
 import sys
 VARIANT = sys.argv[1] if len(sys.argv) > 1 else "v3"
-OUT = "../Team_35_report_v3.docx" if VARIANT == "v3" else "../Team_35_report_patched.docx"
+ALL_HEADERS = "--all-headers" in sys.argv[2:]
+OUT = (sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv
+       else ("../Team_35_report_v3.docx" if VARIANT == "v3" else "../Team_35_report_patched.docx"))
 CONTENT = (["content_1.txt", "content_2.txt", "content_3.txt"] if VARIANT == "v3"
            else ["content_old_1.txt", "content_old_2.txt", "content_old_3.txt"])
 LOGO = "../../Phase-3-Review3/deck-source/assets/pes_logo.png"
@@ -855,10 +857,10 @@ pg.set(qn("w:fmt"), "decimal")
 build_header(ch_sec.header)
 build_footer(ch_sec.footer)
 
-# REFERENCES through Appendix D: no header on any page; keep continuous footer
+# REFERENCES through Appendix D: no header by default (or inherit header when --all-headers is passed); keep continuous footer
 ref_sec = doc.sections[3]
 ref_sec.different_first_page_header_footer = False
-ref_sec.header.is_linked_to_previous = False
+ref_sec.header.is_linked_to_previous = ALL_HEADERS
 ref_sec.footer.is_linked_to_previous = True
 old_pg = ref_sec._sectPr.find(qn("w:pgNumType"))
 if old_pg is not None:

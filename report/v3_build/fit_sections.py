@@ -6,7 +6,7 @@ import sys
 
 VARIANT = sys.argv[1]
 NAME = "Team_35_report_v3" if VARIANT == "v3" else "Team_35_report_patched"
-TOP, BOTTOM, LINE = 90.0, 842.0 - 75.6, 18.0   # body text area on A4 (points)
+TOP, BOTTOM, LINE = 56.7, 841.68 - 56.7, 18.0   # body text area on A4 with 2.00 cm margins (points)
 USABLE = BOTTOM - TOP
 KEEPFILE = f"keep_{VARIANT}.txt"
 

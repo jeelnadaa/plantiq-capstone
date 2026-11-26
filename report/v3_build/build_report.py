@@ -6,7 +6,7 @@ Page numbers in the TOC / lists are PAGEREF fields; update_and_export.ps1 refres
 import re
 import copy
 from docx import Document
-from docx.shared import Pt, Inches, RGBColor
+from docx.shared import Pt, Inches, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT, WD_BREAK, WD_LINE_SPACING
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
 from docx.enum.section import WD_SECTION
@@ -30,7 +30,7 @@ TITLE = ("PlantIQ: A Unified AI Platform for Smart Cultivation, Direct Market Vi
 XSL = etree.XSLT(etree.parse(r"C:/Program Files/Microsoft Office/root/Office16/MML2OMML.XSL"))
 
 PAGE_W, PAGE_H = Inches(8.27), Inches(11.69)
-LM, RM, TM, BM = Inches(1.0), Inches(0.9), Inches(1.25), Inches(1.05)
+LM = RM = TM = BM = Cm(2.0)
 TEXT_W = PAGE_W - LM - RM
 
 doc = Document()
@@ -366,6 +366,7 @@ def figure(path, cap, width_in):
 
 
 _body_started = [False]
+_in_ref_sec = [False]
 
 
 def chapter(label, title, number=None):
@@ -373,12 +374,14 @@ def chapter(label, title, number=None):
     if not _body_started[0]:
         _body_started[0] = True
         pb = False
-    elif label is None and title.upper() == "REFERENCES":
-        # Start a new section at REFERENCES so headers are omitted from REFERENCES onward
+    elif not _in_ref_sec[0]:
+        # Each chapter (and REFERENCES) starts a new section so opening pages omit headers
         s = doc.add_section(WD_SECTION.NEW_PAGE)
         setup_section(s)
         set_page_borders(s, False)
         pb = False
+        if label is None and title.upper() == "REFERENCES":
+            _in_ref_sec[0] = True
     if label:
         para(label, size=18, bold=True, before=0, after=6, line=1.15, keep=True, page_break=pb, refs=False)
         t = para(title, size=18, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, before=0, after=18, line=1.15,
@@ -402,7 +405,7 @@ def heading(level, text):
 
 def list_item(text, marker, size=12):
     p = doc.add_paragraph()
-    pfmt(p, before=0, after=4, line=1.5, left=Inches(0.5), first=Inches(-0.25))
+    pfmt(p, align=WD_ALIGN_PARAGRAPH.JUSTIFY, before=0, after=4, line=1.5, left=Inches(0.5), first=Inches(-0.25))
     p.paragraph_format.tab_stops.add_tab_stop(Inches(0.5))
     set_font(p.add_run(marker + "\t"), size, font=ARIAL if marker == "\u25cf" else TNR,
              )
@@ -472,7 +475,7 @@ def render(path):
         elif ln.startswith("- "):
             list_item(ln[2:], "\u25cf")
         elif ln.startswith("Q: "):
-            para(ln[3:], italic=True, left=Inches(0.5), right=Inches(0.5), before=4, after=10)
+            para(ln[3:], italic=True, align=WD_ALIGN_PARAGRAPH.JUSTIFY, left=Inches(0.5), right=Inches(0.5), before=4, after=10)
         elif ln.startswith("R: "):
             num += 1
             p = doc.add_paragraph()
@@ -482,7 +485,7 @@ def render(path):
             add_rich(p, ln[3:], refs=False)
         else:
             num = 0 if not ln.startswith("**Step") else num
-            para(ln)
+            para(ln, align=WD_ALIGN_PARAGRAPH.JUSTIFY)
         i += 1
 
 
@@ -490,11 +493,11 @@ def render(path):
 def setup_section(sec):
     sec.page_width, sec.page_height = PAGE_W, PAGE_H
     sec.left_margin, sec.right_margin, sec.top_margin, sec.bottom_margin = LM, RM, TM, BM
-    sec.header_distance = Inches(0.45)
-    sec.footer_distance = Inches(0.45)
+    sec.header_distance = Cm(0.55)
+    sec.footer_distance = Cm(0.80)
 
 
-def set_page_borders(sec, enabled=True, sz="24", space="18", color="000000"):
+def set_page_borders(sec, enabled=True, sz="24", space="14", color="000000"):
     sectPr = sec._sectPr
     old = sectPr.find(qn("w:pgBorders"))
     if old is not None:
@@ -705,7 +708,7 @@ for a in ACK:
     para(a, size=14, align=WD_ALIGN_PARAGRAPH.JUSTIFY, line=1.5, after=10, refs=False)
 front_page("ABSTRACT")
 for a in ABSTRACT:
-    para(a, line=1.5, after=10, refs=False)
+    para(a, align=WD_ALIGN_PARAGRAPH.JUSTIFY, line=1.5, after=10, refs=False)
 
 # placeholders for TOC/LOF/LOT: built after the body (needs bookmark lists), then moved here
 marker = para("")
@@ -821,7 +824,7 @@ def build_header(h):
     set_font(p.add_run(TITLE), 10)
     p = c1.paragraphs[0]
     pfmt(p, align=WD_ALIGN_PARAGRAPH.RIGHT, before=0, after=2, line=1.0)
-    p.add_run().add_picture(LOGO, width=Inches(1.0))
+    p.add_run().add_picture(LOGO, width=Inches(0.9))
     hp._p.getparent().remove(hp._p)
     ep = h.add_paragraph()
     pfmt(ep, before=0, after=0, line=1.0)
@@ -851,24 +854,38 @@ for s in doc.sections[:2]:
     for hp in (s.header, s.footer):
         hp.is_linked_to_previous = False
 
-# Chapters 1-9 section: header and footer on every page, page numbering starts at 1
-ch_sec = doc.sections[2]
-ch_sec.different_first_page_header_footer = False
-ch_sec.header.is_linked_to_previous = False
-ch_sec.footer.is_linked_to_previous = False
+# Chapter 1 section: page numbering restarts at 1; no header on page 1 (starts on page 2); footer on all pages
+ch1_sec = doc.sections[2]
+ch1_sec.different_first_page_header_footer = True
+ch1_sec.header.is_linked_to_previous = False
+ch1_sec.first_page_header.is_linked_to_previous = False
+ch1_sec.footer.is_linked_to_previous = False
+ch1_sec.first_page_footer.is_linked_to_previous = False
 
-pg = ch_sec._sectPr.find(qn("w:pgNumType"))
+pg = ch1_sec._sectPr.find(qn("w:pgNumType"))
 if pg is None:
     pg = OxmlElement("w:pgNumType")
-    ch_sec._sectPr.append(pg)
+    ch1_sec._sectPr.append(pg)
 pg.set(qn("w:start"), "1")
 pg.set(qn("w:fmt"), "decimal")
 
-build_header(ch_sec.header)
-build_footer(ch_sec.footer)
+build_header(ch1_sec.header)
+build_footer(ch1_sec.footer)
+build_footer(ch1_sec.first_page_footer)
 
-# REFERENCES through Appendix D: no header by default (or inherit header when --all-headers is passed); keep continuous footer
-ref_sec = doc.sections[3]
+# Chapters 2-9: no header on each chapter's opening page; header on pages 2+; footer on all pages
+for s in doc.sections[3:-1]:
+    s.different_first_page_header_footer = True
+    s.header.is_linked_to_previous = True
+    s.first_page_header.is_linked_to_previous = True
+    s.footer.is_linked_to_previous = True
+    s.first_page_footer.is_linked_to_previous = True
+    old_pg = s._sectPr.find(qn("w:pgNumType"))
+    if old_pg is not None:
+        s._sectPr.remove(old_pg)
+
+# REFERENCES through Appendix D: no header on any page (unless --all-headers); continuous footer
+ref_sec = doc.sections[-1]
 ref_sec.different_first_page_header_footer = False
 ref_sec.header.is_linked_to_previous = ALL_HEADERS
 ref_sec.footer.is_linked_to_previous = True
